@@ -7,80 +7,160 @@ import { Menu, X } from "lucide-react"
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
+      setIsScrolled(window.scrollY > 100)
     }
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const navItems = ["Accueil", "Philosophie", "Expertise", "Marques", "Inspirations", "Contact"]
+  const navItems = [
+    { label: "Secteurs", href: "#secteurs" },
+    { label: "Produits", href: "#produits" },
+    { label: "Inspirations", href: "#inspirations" },
+    { label: "Catalogues", href: "#catalogues" },
+    { label: "Conseils", href: "#conseils" },
+    { label: "Contact", href: "#contact" },
+  ]
+
+  const handleMouseEnter = () => {
+    if (isScrolled) {
+      setIsSidebarOpen(true)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (isScrolled) {
+      setIsSidebarOpen(false)
+    }
+  }
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled ? "bg-white/95 backdrop-blur-md border-b border-black/10" : "bg-transparent"
+        className={`fixed z-50 transition-all duration-500 ease-out ${
+          isScrolled
+            ? `w-32 h-12 bg-white backdrop-blur-sm rounded-lg border-2 border-gray-200 shadow-sm ${
+                isSidebarOpen ? "-translate-x-full" : "left-4"
+              } top-4`
+            : "w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black/50 backdrop-blur-sm rounded-2xl left-4 top-4"
         }`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        <div className="container mx-auto px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div
-              className={`text-4xl font-light tracking-[-0.02em] transition-colors duration-300 ${
-                isScrolled ? "text-black" : "text-white"
-              }`}
-            >
+        <div className="h-full flex items-center px-4">
+          <div
+            className={`absolute transition-all duration-500 font-light tracking-[-0.02em] ${
+              isScrolled
+                ? "left-1/2 transform -translate-x-1/2 text-lg sm:text-xl text-black flex justify-center items-center gap-2 px-4"
+                : "left-4 text-2xl sm:text-4xl text-white drop-shadow-lg"
+            }`}
+          >
+            {isScrolled && (
+              <div>
+                <Menu size={16} className="text-black/60 sm:w-5 sm:h-5" />
+              </div>
+            )}
+            <div>
               L<span className="font-extralight opacity-60">O</span>X
               <span className="font-extralight opacity-60">E</span>N
             </div>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-12">
-              {navItems.map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className={`transition-all duration-300 font-light text-sm tracking-[0.1em] uppercase hover:opacity-60 ${
-                    isScrolled ? "text-black" : "text-white"
-                  }`}
-                >
-                  {item}
-                </a>
-              ))}
-            </nav>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className={`md:hidden hover:bg-transparent z-60 ${
-                isScrolled ? "text-black hover:text-black/60" : "text-white hover:text-white/60"
-              }`}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </Button>
           </div>
+
+          <nav
+            className={`hidden md:flex items-center space-x-6 lg:space-x-12 transition-all duration-500 ml-auto ${
+              isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+          >
+            {navItems.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className="transition-all duration-300 font-light text-xs lg:text-sm tracking-[0.1em] uppercase hover:opacity-60 text-white drop-shadow-md"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className={`md:hidden hover:bg-transparent transition-all duration-500 text-white hover:text-white/60 drop-shadow-md ml-auto ${
+              isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? (
+              <X size={20} className="sm:w-6 sm:h-6" />
+            ) : (
+              <Menu size={20} className="sm:w-6 sm:h-6" />
+            )}
+          </Button>
         </div>
       </header>
+
+      <div
+        className={`fixed top-0 left-0 h-full w-72 sm:w-80 bg-white/95 backdrop-blur-xl border-r border-gray-200/30 z-40 transition-transform duration-500 ease-out ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="p-6 sm:p-8 h-full flex flex-col">
+          <div className="mb-8 sm:mb-12">
+            <div className="text-2xl sm:text-3xl font-light tracking-[-0.02em] text-black mb-2">
+              L<span className="font-extralight opacity-60">O</span>X
+              <span className="font-extralight opacity-60">E</span>N
+            </div>
+            <div className="w-12 h-px bg-black/20"></div>
+          </div>
+
+          <nav className="flex-1">
+            <div className="space-y-4 sm:space-y-6">
+              {navItems.map((item, index) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={`block text-black font-light text-base sm:text-lg tracking-[0.05em] uppercase hover:opacity-60 transition-all duration-300 transform ${
+                    isSidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0"
+                  }`}
+                  style={{
+                    transitionDelay: isSidebarOpen ? `${index * 50}ms` : "0ms",
+                  }}
+                  onClick={() => setIsSidebarOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </nav>
+
+          <div className="mt-auto">
+            <div className="text-xs text-black/40 uppercase tracking-[0.1em] font-light">
+              Solutions Architecturales Premium
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div
         className={`fixed inset-0 z-40 md:hidden transition-all duration-500 ease-in-out ${
           isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
-        {/* Background overlay */}
         <div className="absolute inset-0 bg-black/95 backdrop-blur-lg" onClick={() => setIsMobileMenuOpen(false)} />
 
-        {/* Menu content */}
         <nav className="relative h-full flex flex-col justify-center items-center px-8">
-          <div className="flex flex-col space-y-8 text-center">
+          <div className="flex flex-col space-y-6 sm:space-y-8 text-center">
             {navItems.map((item, index) => (
               <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className={`text-white font-light text-2xl tracking-[0.1em] uppercase hover:opacity-60 transition-all duration-300 transform ${
+                key={item.label}
+                href={item.href}
+                className={`text-white font-light text-xl sm:text-2xl tracking-[0.1em] uppercase hover:opacity-60 transition-all duration-300 transform ${
                   isMobileMenuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
                 }`}
                 style={{
@@ -88,12 +168,11 @@ export function Header() {
                 }}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {item}
+                {item.label}
               </a>
             ))}
           </div>
 
-          {/* Decorative element */}
           <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2">
             <div className="w-px h-16 bg-white/20" />
             <div className="w-2 h-2 bg-white/40 rounded-full mx-auto mt-2" />

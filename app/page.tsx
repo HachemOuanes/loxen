@@ -1,10 +1,10 @@
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
-import { MissionSection } from "@/components/mission-section"
-import { DesignShowcaseSection } from "@/components/design-showcase-section"
-import { ServicesSection } from "@/components/services-section"
-import { BrandsSection } from "@/components/brands-section"
-import { InspirationsSection } from "@/components/inspirations-section"
+import { InspirationSection } from "@/components/inspiration-section"
+import { ProductsSection } from "@/components/products-section"
+import { InteriorSection } from "@/components/interior-section"
+import { ExteriorSection } from "@/components/exterior-section"
+import { PartnersSection } from "@/components/partners-section"
 import { ContactSection } from "@/components/contact-section"
 import { Footer } from "@/components/footer"
 
@@ -13,11 +13,11 @@ export default function HomePage() {
     <main className="min-h-screen">
       <Header />
       <HeroSection />
-      <MissionSection />
-      <DesignShowcaseSection />
-      <ServicesSection />
-      <BrandsSection />
-      <InspirationsSection />
+      <InspirationSection />
+      <ProductsSection />
+      <InteriorSection />
+      <ExteriorSection />
+      <PartnersSection />
       <ContactSection />
       <Footer />
     </main>
