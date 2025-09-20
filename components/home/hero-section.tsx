@@ -1,38 +1,25 @@
 "use client"
 
-import { useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
+import { urlFor } from "@/lib/sanity"
+import type { HeroSectionData } from "@/lib/sanity-static"
 
-export function HeroSection() {
-  const parallaxRef = useRef<HTMLDivElement>(null)
+interface HeroSectionStaticProps {
+  heroData: HeroSectionData
+}
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (parallaxRef.current) {
-        const scrolled = window.pageYOffset
-        const rate = Math.max(scrolled * -0.3, -200)
-        parallaxRef.current.style.transform = `translateY(${rate}px)`
-      }
-    }
+export function HeroSection({ heroData }: HeroSectionStaticProps) {
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
-    }
-  }
+  if (!heroData) return null
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden pt-20 sm:pt-32 bg-gray-900">
       <div
-        ref={parallaxRef}
         className="absolute inset-0 scale-125 -top-20"
         style={{
-          backgroundImage: `url('/clean-minimalist-architecture-facade.jpg')`,
+          backgroundImage: heroData.backgroundImage
+            ? `url('${urlFor(heroData.backgroundImage).width(1024).height(1024).quality(95).url()}')`
+            : "url('/clean-minimalist-architecture-facade.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           minHeight: "120vh",
@@ -57,7 +44,7 @@ export function HeroSection() {
       <div className="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 mt-4 sm:mt-8">
         <div className="mb-8 sm:mb-12 flex flex-col items-center">
           <p className="text-xs sm:text-sm tracking-[0.3em] sm:tracking-[0.4em] text-white/70 uppercase font-light mb-4 drop-shadow-lg">
-            Solutions Architecturales Premium
+            {heroData.title}
           </p>
         </div>
 
@@ -69,8 +56,7 @@ export function HeroSection() {
         <div className="mb-12 sm:mb-20 flex flex-col items-center">
           <div className="w-16 sm:w-24 h-px bg-white/30 mx-auto mb-6 sm:mb-8"></div>
           <p className="text-sm sm:text-lg md:text-xl text-white/80 max-w-xl sm:max-w-2xl mx-auto leading-relaxed font-light tracking-wide text-center drop-shadow-lg px-4">
-            Transformer les visions architecturales en réalité grâce à des solutions innovantes d'aluminium et de
-            façades
+            {heroData.subtitle}
           </p>
         </div>
 
@@ -78,17 +64,28 @@ export function HeroSection() {
           <Button
             size="lg"
             className="text-base sm:text-lg w-64 sm:w-72 py-4 sm:py-6 bg-black/40 backdrop-blur-md text-white hover:bg-black/50 hover:scale-105 font-light tracking-wider border-2 border-gray-200/20 rounded-none transition-all duration-300"
-            onClick={() => scrollToSection("interieur")}
+            onClick={() => {
+              const element = document.getElementById("exterieur")
+              if (element) {
+                element.scrollIntoView({ behavior: "smooth" })
+              }
+            }}
           >
-            INTÉRIEUR
+            {heroData.exteriorButtonText}
           </Button>
           <Button
             size="lg"
             className="text-base sm:text-lg w-64 sm:w-72 py-4 sm:py-6 bg-black/40 backdrop-blur-md text-white hover:bg-black/50 hover:scale-105 font-light tracking-wider border-2 border-gray-200/20 rounded-none transition-all duration-300"
-            onClick={() => scrollToSection("exterieur")}
+            onClick={() => {
+              const element = document.getElementById("interieur")
+              if (element) {
+                element.scrollIntoView({ behavior: "smooth" })
+              }
+            }}
           >
-            EXTÉRIEUR
+            {heroData.interiorButtonText}
           </Button>
+
         </div>
       </div>
 

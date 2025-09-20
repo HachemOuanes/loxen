@@ -1,10 +1,20 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { client } from "@/lib/sanity"
+import { ContactSkeleton } from "@/components/shared/skeletons/contact-skeleton"
+
+interface ContactInfo {
+  _id: string
+  email: string
+  phone: string
+  address: string
+  responseTime: string
+}
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -12,6 +22,24 @@ export function ContactSection() {
     email: "",
     message: "",
   })
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchContactInfo = async () => {
+      try {
+        const query = `*[_type == "contactInfo"][0]`
+        const data = await client.fetch(query)
+        setContactInfo(data)
+      } catch (error) {
+        console.error('Error fetching contact info:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchContactInfo()
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,6 +51,10 @@ export function ContactSection() {
       ...formData,
       [e.target.name]: e.target.value,
     })
+  }
+
+  if (loading) {
+    return <ContactSkeleton />
   }
 
   return (
@@ -73,7 +105,7 @@ export function ContactSection() {
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-3">
-                    <label className="text-base font-light text-background/70 tracking-widest uppercase text-sm">
+                    <label className="text-sm font-light text-background/70 tracking-widest uppercase">
                       Nom
                     </label>
                     <Input
@@ -87,7 +119,7 @@ export function ContactSection() {
                     />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-base font-light text-background/70 tracking-widest uppercase text-sm">
+                    <label className="text-sm font-light text-background/70 tracking-widest uppercase">
                       Email
                     </label>
                     <Input
@@ -102,7 +134,7 @@ export function ContactSection() {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <label className="text-base font-light text-background/70 tracking-widest uppercase text-sm">
+                  <label className="text-sm font-light text-background/70 tracking-widest uppercase">
                     Message
                   </label>
                   <Textarea
@@ -151,7 +183,7 @@ export function ContactSection() {
                     </div>
                     <div>
                       <h3 className="font-light text-background/70 mb-2 tracking-widest uppercase text-sm">Email</h3>
-                      <p className="text-background text-lg font-light">info@loxen.com</p>
+                      <p className="text-background text-lg font-light">{contactInfo?.email || 'info@loxen.com'}</p>
                     </div>
                   </div>
                 </div>
@@ -173,7 +205,7 @@ export function ContactSection() {
                       <h3 className="font-light text-background/70 mb-2 tracking-widest uppercase text-sm">
                         Téléphone
                       </h3>
-                      <p className="text-background text-lg font-light">+44 20 7123 4567</p>
+                      <p className="text-background text-lg font-light">{contactInfo?.phone || '+44 20 7123 4567'}</p>
                     </div>
                   </div>
                 </div>
@@ -203,9 +235,18 @@ export function ContactSection() {
                     <div>
                       <h3 className="font-light text-background/70 mb-2 tracking-widest uppercase text-sm">Studio</h3>
                       <p className="text-background text-lg font-light leading-relaxed">
-                        123 Architecture Street
-                        <br />
-                        Londres, UK EC1A 1BB
+                        {contactInfo?.address ? contactInfo.address.split('\n').map((line, index) => (
+                          <span key={index}>
+                            {line}
+                            {index < contactInfo.address.split('\n').length - 1 && <br />}
+                          </span>
+                        )) : (
+                          <>
+                            123 Architecture Street
+                            <br />
+                            Londres, UK EC1A 1BB
+                          </>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -227,7 +268,7 @@ export function ContactSection() {
                   </svg>
                 </div>
                 <p className="text-background/50 text-sm mt-6 tracking-widest uppercase text-center font-light">
-                  Réponse sous 24 heures
+                  {contactInfo?.responseTime || 'Réponse sous 24 heures'}
                 </p>
               </div>
             </div>

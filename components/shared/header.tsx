@@ -52,8 +52,9 @@ export function Header() {
         onMouseLeave={handleMouseLeave}
       >
         <div className="h-full flex items-center px-4">
-          <div
-            className={`absolute transition-all duration-500 font-light tracking-[-0.02em] ${
+          <a
+            href="/"
+            className={`absolute transition-all duration-500 font-light tracking-[-0.02em] cursor-pointer hover:opacity-80 ${
               isScrolled
                 ? "left-1/2 transform -translate-x-1/2 text-lg sm:text-xl text-black flex justify-center items-center gap-2 px-4"
                 : "left-4 text-2xl sm:text-4xl text-white drop-shadow-lg"
@@ -68,7 +69,7 @@ export function Header() {
               L<span className="font-extralight opacity-60">O</span>X
               <span className="font-extralight opacity-60">E</span>N
             </div>
-          </div>
+          </a>
 
           <nav
             className={`hidden md:flex items-center space-x-6 lg:space-x-12 transition-all duration-500 ml-auto ${
@@ -143,6 +144,18 @@ export function Header() {
             <div className="text-xs text-black/40 uppercase tracking-[0.1em] font-light">
               Solutions Architecturales Premium
             </div>
+            {process.env.NODE_ENV === 'development' && (
+              <div className="mt-2">
+                <a 
+                  href="/cms" 
+                  className="text-xs text-blue-600 hover:text-blue-800 underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  CMS Access
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

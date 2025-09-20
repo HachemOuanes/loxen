@@ -3,60 +3,93 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { client, urlFor } from "@/lib/sanity"
+import { InspirationSkeleton } from "@/components/home/skeletons/inspiration-skeleton"
+
+interface Inspiration {
+  _id: string
+  title: string
+  location: string
+  image: any
+  order: number
+}
+
+interface SectionContent {
+  title: string
+  description: string
+  buttonText: string
+}
 
 export function InspirationSection() {
+  const [inspirations, setInspirations] = useState<Inspiration[]>([])
+  const [sectionContent, setSectionContent] = useState<SectionContent | null>(null)
   const [currentSlide, setCurrentSlide] = useState(0)
-
-  const projects = [
-    {
-      title: "Tour Corporate",
-      location: "Londres, Royaume-Uni",
-      image: "/modern-corporate-glass-tower-facade.png",
-    },
-    {
-      title: "Complexe Résidentiel",
-      location: "Berlin, Allemagne",
-      image: "/modern-residential-building-aluminium-facade.png",
-    },
-    {
-      title: "Centre Culturel",
-      location: "Paris, France",
-      image: "/contemporary-cultural-center-glass-facade.png",
-    },
-    {
-      title: "Campus de Bureaux",
-      location: "Amsterdam, Pays-Bas",
-      image: "/modern-office-campus-curtain-wall.png",
-    },
-    {
-      title: "Développement Mixte",
-      location: "Barcelone, Espagne",
-      image: "/mixed-use-building-modern-facade-barcelona.png",
-    },
-    {
-      title: "Complexe Hôtelier",
-      location: "Milan, Italie",
-      image: "/luxury-hotel-glass-facade-architecture-milan.png",
-    },
-  ]
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % projects.length)
-    }, 3000)
+    const fetchData = async () => {
+      try {
+        // Fetch inspirations from unified section
+        const inspirationQuery = `*[_type == "inspirationSection"][0]{
+          title,
+          description,
+          projects[]{
+            title,
+            description,
+            image,
+            location,
+            order
+          },
+          showSection
+        }`
+        const sectionData = await client.fetch(inspirationQuery)
+        
+        if (sectionData?.projects && sectionData?.showSection !== false) {
+          const formattedInspirations = sectionData.projects.map((project: any, index: number) => ({
+            _id: `inspiration-${index}`,
+            title: project.title,
+            location: project.location || '',
+            image: project.image,
+            order: project.order || index
+          })).sort((a: any, b: any) => a.order - b.order)
+          
+          setInspirations(formattedInspirations)
+        }
+        
+        setSectionContent({
+          title: sectionData?.title || 'Inspiration',
+          description: sectionData?.description || 'Découvrez une sélection de projets qui incarnent l\'excellence architecturale et reflètent notre savoir-faire unique en matière d\'aluminium et de façades.',
+          buttonText: 'Explorer Plus de Réalisations'
+        })
+      } catch (error) {
+        console.error('Error fetching inspirations data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-    return () => clearInterval(interval)
-  }, [projects.length])
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    if (inspirations.length > 0) {
+      const interval = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % inspirations.length)
+      }, 3000)
+
+      return () => clearInterval(interval)
+    }
+  }, [inspirations.length])
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % projects.length)
+    setCurrentSlide((prev) => (prev + 1) % inspirations.length)
   }
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + projects.length) % projects.length)
+    setCurrentSlide((prev) => (prev - 1 + inspirations.length) % inspirations.length)
   }
 
-  const extendedProjects = [...projects, ...projects, ...projects]
+  const extendedProjects = [...inspirations, ...inspirations, ...inspirations]
   const getVisibleSlides = () => {
     if (typeof window !== "undefined") {
       if (window.innerWidth < 640) return 1
@@ -78,19 +111,22 @@ export function InspirationSection() {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  const maxSlide = projects.length
+  if (loading) {
+    return <InspirationSkeleton />
+  }
+
+  if (!inspirations.length) return null
 
   return (
-    <section id="inspirations" className="py-16 sm:py-24 lg:py-32 bg-white">
-      <div className="container mx-auto px-4 sm:px-6">
+    <section id="inspirations" className="py-16 bg-white">
+      <div className="container mx-auto px-8">
         <div className="text-center mb-12 sm:mb-16 lg:mb-20">
           <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extralight text-black mb-6 sm:mb-8 tracking-[-0.02em]">
-            Inspiration
+            {sectionContent?.title || 'Inspiration'}
           </h2>
           <div className="w-16 sm:w-20 lg:w-24 h-px bg-black/20 mx-auto mb-6 sm:mb-8"></div>
           <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-light px-4">
-            Découvrez une sélection de projets qui incarnent l'excellence architecturale et reflètent notre savoir-faire
-            unique en matière d'aluminium et de façades.
+            {sectionContent?.description}
           </p>
         </div>
 
@@ -109,7 +145,7 @@ export function InspirationSection() {
                 >
                   <div className="relative h-[300px] sm:h-[400px] lg:h-[500px] bg-gray-100">
                     <img
-                      src={project.image || "/placeholder.svg"}
+                      src={project.image ? urlFor(project.image).width(1024).height(1024).quality(95).url() : "/placeholder.svg"}
                       alt={`${project.title} - ${project.location}`}
                       className="w-full h-full object-cover transition-all duration-700 scale-105"
                     />
@@ -139,7 +175,7 @@ export function InspirationSection() {
           </button>
 
           <div className="flex justify-center mt-8 sm:mt-12 space-x-2 sm:space-x-3">
-            {projects.map((_, index) => (
+            {inspirations.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
@@ -157,7 +193,7 @@ export function InspirationSection() {
             size="lg"
             className="text-sm sm:text-base px-8 sm:px-12 py-3 sm:py-4 bg-transparent border-2 border-black/20 text-black hover:bg-black hover:text-white font-light tracking-wider rounded-none transition-all duration-300"
           >
-            Explorer Plus de Réalisations
+            {sectionContent?.buttonText || 'Explorer Plus de Réalisations'}
           </Button>
         </div>
       </div>

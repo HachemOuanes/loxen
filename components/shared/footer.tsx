@@ -180,7 +180,7 @@ export function Footer() {
             </svg>
           </div>
           <p className="text-background/40 font-light tracking-widest uppercase text-sm">
-            © 2024 Loxen. Tous droits réservés.
+            © 2025 Loxen. Tous droits réservés.
           </p>
         </div>
       </div>
