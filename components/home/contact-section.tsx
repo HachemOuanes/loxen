@@ -58,7 +58,7 @@ export function ContactSection() {
   }
 
   return (
-    <section className="py-32 bg-foreground text-background relative overflow-hidden">
+    <section id="contact" className="py-32 bg-foreground text-background relative overflow-hidden">
       <div className="absolute inset-0 opacity-[0.02]">
         <div className="absolute top-0 left-0 w-full h-full">
           <svg width="100%" height="100%" className="absolute inset-0">
@@ -72,7 +72,7 @@ export function ContactSection() {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="mx-auto px-6 relative z-10">
         <div className="text-center mb-20 relative">
           <div className="flex items-center justify-center mb-12">
             <svg width="120" height="2" className="text-background/20">

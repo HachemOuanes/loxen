@@ -8,23 +8,55 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [currentSection, setCurrentSection] = useState("")
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100)
+      
+      // Detect current section
+      const sections = ["interieur", "exterieur", "produits", "inspirations", "contact", "footer"]
+      const scrollPosition = window.scrollY + window.innerHeight / 2
+      
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId)
+        if (element) {
+          const rect = element.getBoundingClientRect()
+          const elementTop = rect.top + window.scrollY
+          const elementBottom = elementTop + rect.height
+          
+          if (scrollPosition >= elementTop && scrollPosition <= elementBottom) {
+            setCurrentSection(sectionId)
+            break
+          }
+        }
+      }
     }
+    
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   const navItems = [
-    { label: "Secteurs", href: "#secteurs" },
-    { label: "Produits", href: "#produits" },
-    { label: "Inspirations", href: "#inspirations" },
-    { label: "Catalogues", href: "#catalogues" },
-    { label: "Conseils", href: "#conseils" },
-    { label: "Contact", href: "#contact" },
+    { label: "Secteurs", href: "/secteurs" },
+    { label: "Produits", href: "/produits" },
+    { label: "Inspirations", href: "/inspirations" },
+    { label: "Catalogues", href: "/catalogues" },
+    { label: "Conseils", href: "/conseils" },
+    { label: "Contact", href: "/contact" },
   ]
+
+  const getSectionDisplayName = (sectionId: string) => {
+    switch (sectionId) {
+      case "interieur": return "INTÉRIEUR"
+      case "exterieur": return "EXTÉRIEUR"
+      case "produits": return "PRODUITS"
+      case "inspirations": return "INSPIRATIONS"
+      case "contact": return "CONTACT"
+      case "footer": return "LOXEN"
+      default: return ""
+    }
+  }
 
   const handleMouseEnter = () => {
     if (isScrolled) {
@@ -43,10 +75,10 @@ export function Header() {
       <header
         className={`fixed z-50 transition-all duration-500 ease-out ${
           isScrolled
-            ? `w-32 h-12 bg-white backdrop-blur-sm rounded-lg border-2 border-gray-200 shadow-sm ${
+            ? `w-44 h-12 bg-white backdrop-blur-sm rounded-lg border-2 border-gray-200 shadow-sm ${
                 isSidebarOpen ? "-translate-x-full" : "left-4"
               } top-4`
-            : "w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black/50 backdrop-blur-sm rounded-2xl left-4 top-4"
+            : "w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black backdrop-blur-sm rounded-2xl left-4 top-4"
         }`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -56,7 +88,7 @@ export function Header() {
             href="/"
             className={`absolute transition-all duration-500 font-light tracking-[-0.02em] cursor-pointer hover:opacity-80 ${
               isScrolled
-                ? "left-1/2 transform -translate-x-1/2 text-lg sm:text-xl text-black flex justify-center items-center gap-2 px-4"
+                ? "text-xl text-black flex items-center gap-2 "
                 : "left-4 text-2xl sm:text-4xl text-white drop-shadow-lg"
             }`}
           >
@@ -66,8 +98,23 @@ export function Header() {
               </div>
             )}
             <div>
-              L<span className="font-extralight opacity-60">O</span>X
-              <span className="font-extralight opacity-60">E</span>N
+              {isScrolled && currentSection ? (
+                currentSection === "footer" ? (
+                  <>
+                    L<span className="font-extralight opacity-60">O</span>X
+                    <span className="font-extralight opacity-60">E</span>N
+                  </>
+                ) : (
+                  <span className="text-lg font-light uppercase">
+                    {getSectionDisplayName(currentSection)}
+                  </span>
+                )
+              ) : (
+                <>
+                  L<span className="font-extralight opacity-60">O</span>X
+                  <span className="font-extralight opacity-60">E</span>N
+                </>
+              )}
             </div>
           </a>
 

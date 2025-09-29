@@ -42,11 +42,11 @@ export function ProductsSection() {
           showSection
         }`
         const sectionData = await client.fetch(productsQuery)
-        
+
         if (sectionData?.products && sectionData?.showSection !== false) {
           setProducts(sectionData.products.sort((a: any, b: any) => a.order - b.order))
         }
-        
+
         setSectionContent({
           title: sectionData?.title || 'Produits',
           description: sectionData?.description || 'Une sélection de matériaux et systèmes de référence adaptés à chaque projet architectural.',
@@ -69,48 +69,46 @@ export function ProductsSection() {
   if (!products.length) return null
 
   return (
-    <section id="produits" className="py-16 bg-white relative z-10">
-      <div className="container mx-auto px-8">
-        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-          <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extralight text-black mb-6 sm:mb-8 tracking-[-0.02em]">
-            {sectionContent?.title || 'Produits'}
-          </h2>
-          <div className="w-16 sm:w-20 lg:w-24 h-px bg-black/20 mx-auto mb-6 sm:mb-8"></div>
-          <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-light px-4">
-            {sectionContent?.description}
-          </p>
-        </div>
+    <section id="produits" className="py-16 px-4 bg-white relative z-10">
+      <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+        <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extralight text-black mb-6 sm:mb-8 tracking-[-0.02em]">
+          {sectionContent?.title || 'Produits'}
+        </h2>
+        <div className="w-16 sm:w-20 lg:w-24 h-px bg-black/20 mx-auto mb-6 sm:mb-8"></div>
+        <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-light px-4">
+          {sectionContent?.description}
+        </p>
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 4 mb-12 sm:mb-16">
-          {products.map((product, index) => (
-            <div
-              key={product._key || index}
-              className="group bg-white border border-gray-100 hover:border-gray-200 transition-all duration-300"
-            >
-              <div className="aspect-[3/4] overflow-hidden">
-                <img
-                  src={product.image ? urlFor(product.image).width(1024).height(1024).quality(95).url() : "/placeholder.svg"}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="p-3 sm:p-4 lg:p-6">
-                <h3 className="text-lg sm:text-xl font-light text-black mb-3 sm:mb-4 tracking-wide">{product.name}</h3>
-                <p className="text-gray-600 font-light leading-relaxed text-xs sm:text-sm">{product.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="text-center">
-          <Button
-            variant="outline"
-            size="lg"
-            className="text-sm sm:text-base px-8 sm:px-12 py-3 sm:py-4 bg-transparent border-2 border-black/20 text-black hover:bg-black hover:text-white font-light tracking-wider rounded-none transition-all duration-300"
+      <div className="grid grid-cols-3 mb-12 sm:mb-16 h-[100vh]">
+        {products.map((product, index) => (
+          <div
+            key={product._key || index}
+            className="group relative overflow-hidden border border-gray-100 hover:border-gray-200 transition-all duration-300"
           >
-            {sectionContent?.buttonText || 'Voir les catalogues produits'}
-          </Button>
-        </div>
+            <div className="aspect-[3/4] overflow-hidden">
+              <img
+                src={product.image ? urlFor(product.image).width(1024).height(1024).quality(95).url() : "/placeholder.svg"}
+                alt={product.name}
+                className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+              />
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-3 sm:p-4 lg:p-6">
+              <h3 className="text-lg sm:text-xl font-light text-white mb-2 sm:mb-3 tracking-wide">{product.name}</h3>
+              <p className="text-white/90 font-light leading-relaxed text-xs sm:text-sm">{product.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="text-center">
+        <Button
+          variant="outline"
+          size="lg"
+          className="text-sm sm:text-base px-8 sm:px-12 py-3 sm:py-4 bg-transparent border-2 border-black/20 text-black hover:bg-black hover:text-white font-light tracking-wider rounded-none transition-all duration-300"
+        >
+          {sectionContent?.buttonText || 'Voir les catalogues produits'}
+        </Button>
       </div>
     </section>
   )

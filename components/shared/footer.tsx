@@ -2,7 +2,7 @@ export function Footer() {
   const quickLinks = ["Produits", "Marques", "Inspirations", "Catalogues", "À Propos", "Contact"]
 
   return (
-    <footer className="bg-foreground text-background py-24 relative overflow-hidden">
+    <footer id="footer" className="bg-foreground text-background relative overflow-hidden border-t border-background/10 ">
       <div className="absolute inset-0 opacity-[0.02]">
         <svg width="100%" height="100%" className="absolute inset-0">
           <defs>
@@ -14,7 +14,7 @@ export function Footer() {
         </svg>
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="mx-auto px-4 relative z-10">
         <div className="flex items-center justify-center mb-16">
           <svg width="160" height="2" className="text-background/15">
             <line x1="0" y1="1" x2="160" y2="1" stroke="currentColor" strokeWidth="0.5" />
@@ -165,7 +165,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-background/10 pt-12 text-center">
+        <div className="border-t border-background/10 py-4 text-center">
           <div className="flex items-center justify-center mb-6">
             <svg width="100" height="2" className="text-background/10">
               <line x1="0" y1="1" x2="100" y2="1" stroke="currentColor" strokeWidth="0.5" />

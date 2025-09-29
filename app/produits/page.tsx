@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return createMetadata(siteSettings, pageSeo)
 }
 
-export default function ProductsPage() {
+export default function ProduitsPage() {
   return (
     <main className="min-h-screen">
       <Header />

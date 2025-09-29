@@ -5,82 +5,77 @@ export const productsPage = defineType({
   title: 'Products Page',
   type: 'document',
   fields: [
+    // Header Section
     defineField({
       name: 'title',
       title: 'Page Title',
       type: 'string',
+      initialValue: 'Produits',
       validation: (Rule) => Rule.required(),
+      description: 'Main title displayed in the header section',
     }),
     defineField({
       name: 'subtitle',
       title: 'Page Subtitle',
       type: 'text',
       rows: 3,
-      description: 'Brief description shown below the title',
+      description: 'Brief description shown below the title in the header',
     }),
     defineField({
       name: 'heroImage',
-      title: 'Hero Background Image',
+      title: 'Header Background Image',
       type: 'image',
       options: {
         hotspot: true,
       },
+      description: 'Background image for the page header (optional - will use gradient if not set)',
     }),
-    defineField({
-      name: 'filterTitle',
-      title: 'Filter Section Title',
-      type: 'string',
-      initialValue: 'Filtrer par catégorie',
-    }),
+
+    // Products Section
     defineField({
       name: 'allCategoriesText',
       title: 'All Categories Button Text',
       type: 'string',
-      initialValue: 'Tous les produits',
+      initialValue: 'Tous',
+      description: 'Text for the "show all categories" filter button',
     }),
     defineField({
       name: 'noResultsText',
       title: 'No Results Text',
       type: 'string',
-      initialValue: 'Aucun produit trouvé dans cette catégorie.',
+      initialValue: 'Aucun produit trouvé.',
+      description: 'Message shown when no products match the search/filter',
     }),
-    defineField({
-      name: 'featuredSectionTitle',
-      title: 'Featured Section Title',
-      type: 'string',
-      initialValue: 'Produits Vedettes',
-    }),
-    defineField({
-      name: 'showFeaturedSection',
-      title: 'Show Featured Section',
-      type: 'boolean',
-      description: 'Display a separate section for featured products',
-      initialValue: true,
-    }),
+
+    // Call to Action Section
     defineField({
       name: 'ctaTitle',
-      title: 'Call to Action Title',
+      title: 'CTA Section Title',
       type: 'string',
-      initialValue: 'Besoin d\'une solution sur mesure ?',
+      initialValue: 'Besoin d\'accompagnement pour votre projet ?',
+      description: 'Title for the call-to-action section',
     }),
     defineField({
       name: 'ctaDescription',
-      title: 'Call to Action Description',
+      title: 'CTA Section Description',
       type: 'text',
-      rows: 2,
-      initialValue: 'Contactez nos experts pour discuter de votre projet architectural.',
+      rows: 4,
+      initialValue: 'Notre équipe d\'experts vous accompagne dans le choix des solutions les plus adaptées à vos besoins. Conseil technique, devis personnalisé et support projet : nous sommes là pour concrétiser vos idées architecturales.',
+      description: 'Description text for the call-to-action section',
     }),
     defineField({
       name: 'ctaButtonText',
-      title: 'Call to Action Button Text',
+      title: 'CTA Button Text',
       type: 'string',
       initialValue: 'Nous Contacter',
+      description: 'Text for the call-to-action button',
     }),
     defineField({
       name: 'ctaButtonLink',
-      title: 'Call to Action Button Link',
+      title: 'CTA Button Link',
       type: 'string',
       initialValue: '#contact',
+      description: 'Where the CTA button should link to (use # for scroll to section)',
     }),
   ],
   preview: {

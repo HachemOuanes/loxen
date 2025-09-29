@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { client, urlFor } from "@/lib/sanity"
+import { ProductsSkeleton } from "./products-skeleton"
 
 interface Product {
   _id: string
@@ -56,6 +56,7 @@ export function ProductsPageContent() {
   const [categories, setCategories] = useState<ProductCategory[]>([])
   const [pageData, setPageData] = useState<ProductsPageData | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [searchQuery, setSearchQuery] = useState<string>('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -105,11 +106,15 @@ export function ProductsPageContent() {
     fetchData()
   }, [])
 
-  const filteredProducts = selectedCategory === 'all' 
-    ? products 
-    : products.filter(product => product.category?._id === selectedCategory)
-
-  const featuredProducts = products.filter(product => product.featured)
+  const filteredProducts = products.filter(product => {
+    const matchesCategory = selectedCategory === 'all' || product.category?._id === selectedCategory
+    const matchesSearch = searchQuery === '' || 
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.category?.name.toLowerCase().includes(searchQuery.toLowerCase())
+    
+    return matchesCategory && matchesSearch
+  })
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
@@ -119,212 +124,200 @@ export function ProductsPageContent() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement des produits...</p>
-        </div>
-      </div>
-    )
+    return <ProductsSkeleton />
   }
 
   return (
     <>
-      {/* Hero Section */}
-      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden pt-20">
-        {pageData?.heroImage && (
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: `url('${urlFor(pageData.heroImage).width(1920).height(1080).quality(95).url()}')`,
-            }}
-          />
-        )}
-        <div className="absolute inset-0 bg-black/40" />
+      {/* Minimal Header Section with Background */}
+      <section className="pt-40 pb-4 px-4 relative z-10 min-h-[20vh] flex items-center">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          {pageData?.heroImage ? (
+            <img
+              src={urlFor(pageData.heroImage).width(1920).height(800).quality(90).url()}
+              alt="Products Header"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-gray-100 via-gray-50 to-white"></div>
+          )}
+          <div className="absolute inset-0 bg-black/30"></div>
+        </div>
         
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-light text-white mb-6 tracking-[-0.02em]">
-            {pageData?.title || 'Nos Produits'}
+        {/* Content */}
+        <div className="relative z-10 text-center w-full">
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-extralight text-white mb-6 sm:mb-8 tracking-[-0.02em] drop-shadow-lg">
+            {pageData?.title || 'Produits'}
           </h1>
           {pageData?.subtitle && (
-            <p className="text-lg sm:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed font-light">
+            <p className="text-sm sm:text-base lg:text-lg text-white/90 font-light max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed drop-shadow-md px-4 mb-8">
               {pageData.subtitle}
             </p>
           )}
+          
+          {/* Search Bar in Header */}
+          <div className="max-w-md mx-auto mt-8 mb-6">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Rechercher un produit..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-3 text-sm border-2 border-white/30 rounded-none focus:outline-none focus:border-white bg-white/10 backdrop-blur-sm text-white placeholder-white/70 font-light tracking-wide transition-all duration-300"
+              />
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <svg className="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+          <div className="w-16 sm:w-20 h-px bg-white/40 mx-auto mt-6"></div>
         </div>
       </section>
 
-      {/* Featured Products Section */}
-      {pageData?.showFeaturedSection && featuredProducts.length > 0 && (
-        <section className="py-16 sm:py-20 bg-gray-50">
-          <div className="container mx-auto px-4 sm:px-6">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extralight text-black mb-6 tracking-[-0.02em]">
-                {pageData?.featuredSectionTitle || 'Produits Vedettes'}
-              </h2>
-              <div className="w-16 sm:w-20 lg:w-24 h-px bg-black/20 mx-auto"></div>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {featuredProducts.slice(0, 3).map((product) => (
-                <div key={product._id} className="group bg-white border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-lg">
-                  <div className="aspect-[4/3] overflow-hidden relative">
-                    <img
-                      src={urlFor(product.image).width(800).height(600).quality(95).url()}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
-                    />
-                    <Badge 
-                      className="absolute top-4 left-4 bg-black text-white"
-                    >
-                      Vedette
-                    </Badge>
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Badge 
-                        variant="outline" 
-                        style={{ 
-                          borderColor: product.category?.color || '#3B82F6',
-                          color: product.category?.color || '#3B82F6'
-                        }}
-                      >
-                        {product.category?.name}
-                      </Badge>
-                    </div>
-                    <h3 className="text-xl font-light text-black mb-3 tracking-wide">{product.name}</h3>
-                    <p className="text-gray-600 font-light leading-relaxed text-sm mb-4">
-                      {product.longDescription || product.description}
-                    </p>
-                    {product.price && (
-                      <p className="text-lg font-medium text-black mb-4">{product.price}</p>
-                    )}
-                    {product.features && product.features.length > 0 && (
-                      <div className="mb-4">
-                        <h4 className="text-sm font-medium text-black mb-2">Caractéristiques clés:</h4>
-                        <ul className="text-xs text-gray-600 space-y-1">
-                          {product.features.slice(0, 3).map((feature, index) => (
-                            <li key={index} className="flex items-center gap-2">
-                              <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                              {feature}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
-      {/* Filter Section */}
-      <section className="py-16 sm:py-20 bg-white">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extralight text-black mb-6 tracking-[-0.02em]">
-              {pageData?.filterTitle || 'Tous nos Produits'}
-            </h2>
-            <div className="w-16 sm:w-20 lg:w-24 h-px bg-black/20 mx-auto"></div>
-          </div>
 
-          {/* Category Filters */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            <Button
-              onClick={() => setSelectedCategory('all')}
-              variant={selectedCategory === 'all' ? 'default' : 'outline'}
-              className="rounded-full"
+      {/* Products Section */}
+      <section className="py-16 px-4 bg-white relative z-10">
+        {/* Category Filters */}
+        <div className="flex flex-wrap justify-center gap-2 mb-12 sm:mb-16">
+          <button
+            onClick={() => setSelectedCategory('all')}
+            className={`px-4 py-2 text-sm font-light tracking-wide uppercase transition-all duration-300 ${
+              selectedCategory === 'all'
+                ? 'bg-black text-white'
+                : 'bg-transparent text-gray-600 hover:text-black border border-gray-200 hover:border-gray-300'
+            }`}
+          >
+            {pageData?.allCategoriesText || 'Tous'}
+          </button>
+          {categories.map((category) => (
+            <button
+              key={category._id}
+              onClick={() => setSelectedCategory(category._id)}
+              className={`px-4 py-2 text-sm font-light tracking-wide uppercase transition-all duration-300 ${
+                selectedCategory === category._id
+                  ? 'bg-black text-white'
+                  : 'bg-transparent text-gray-600 hover:text-black border border-gray-200 hover:border-gray-300'
+              }`}
             >
-              {pageData?.allCategoriesText || 'Tous les produits'}
-            </Button>
-            {categories.map((category) => (
-              <Button
-                key={category._id}
-                onClick={() => setSelectedCategory(category._id)}
-                variant={selectedCategory === category._id ? 'default' : 'outline'}
-                className="rounded-full"
-                style={selectedCategory === category._id ? {
-                  backgroundColor: category.color || '#000',
-                  borderColor: category.color || '#000'
-                } : {}}
-              >
-                {category.name}
-              </Button>
-            ))}
-          </div>
+              {category.name}
+            </button>
+          ))}
+        </div>
 
-          {/* Products Grid */}
-          {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredProducts.map((product) => (
-                <div key={product._id} className="group bg-white border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-md">
-                  <div className="aspect-[3/4] overflow-hidden">
-                    <img
-                      src={urlFor(product.image).width(600).height(800).quality(95).url()}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
-                    />
-                  </div>
-                  <div className="p-4">
+        {/* Products Grid */}
+        {filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-12 sm:mb-16">
+            {filteredProducts.map((product) => (
+              <div key={product._id} className="group relative overflow-hidden border border-gray-100 hover:border-gray-200 transition-all duration-300 cursor-pointer">
+                <div className="aspect-[3/4] overflow-hidden">
+                  <img
+                    src={urlFor(product.image).width(1024).height(1024).quality(95).url()}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+                  />
+                </div>
+                
+                {/* Content that expands upward while staying anchored to bottom */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent transition-all duration-700 ease-out">
+                  {/* Container for all content with proper padding */}
+                  <div className="w-full px-5 sm:px-6 lg:px-7 pt-5 sm:pt-6 lg:pt-7 pb-5 sm:pb-6 lg:pb-7 group-hover:pb-2">
+                    {/* Minimal initial content */}
                     <div className="flex items-center gap-2 mb-2">
-                      <Badge 
-                        variant="outline" 
-                        className="text-xs"
-                        style={{ 
-                          borderColor: product.category?.color || '#3B82F6',
-                          color: product.category?.color || '#3B82F6'
-                        }}
-                      >
+                      <span className="text-xs text-white/80 uppercase tracking-wider font-light">
                         {product.category?.name}
-                      </Badge>
+                      </span>
                       {product.featured && (
-                        <Badge className="text-xs bg-black text-white">
-                          Vedette
-                        </Badge>
+                        <>
+                          <span className="text-xs text-white/60">•</span>
+                          <span className="text-xs text-white/80 uppercase tracking-wider font-light">
+                            Vedette
+                          </span>
+                        </>
                       )}
                     </div>
-                    <h3 className="text-lg font-light text-black mb-2 tracking-wide">{product.name}</h3>
-                    <p className="text-gray-600 font-light leading-relaxed text-sm mb-3 line-clamp-3">
+                    
+                    <h3 className="text-lg sm:text-xl font-light text-white mb-2 tracking-wide">{product.name}</h3>
+                    
+                    {/* Brief description - only show on hover or keep it minimal */}
+                    <p className="text-white/90 font-light leading-relaxed text-xs sm:text-sm line-clamp-1 group-hover:line-clamp-none mb-2 group-hover:mb-3">
                       {product.description}
                     </p>
-                    {product.price && (
-                      <p className="text-base font-medium text-black">{product.price}</p>
-                    )}
+
+                    {/* Additional detailed content that reveals on hover */}
+                    <div className="opacity-0 max-h-0 overflow-hidden transition-all duration-700 ease-out group-hover:opacity-100 group-hover:max-h-48">
+                      {/* Features list if available */}
+                      {product.features && product.features.length > 0 && (
+                        <div className="mb-4">
+                          <ul className="text-xs text-white/80 space-y-1">
+                            {product.features.slice(0, 3).map((feature, index) => (
+                              <li key={index} className="flex items-center gap-2">
+                                <div className="w-1 h-1 bg-white/60 rounded-full"></div>
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Price if available */}
+                      {product.price && (
+                        <div className="mb-4">
+                          <span className="text-sm font-medium text-white">{product.price}</span>
+                        </div>
+                      )}
+
+                      {/* CTA Button */}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full border-2 border-white bg-white text-black hover:bg-transparent hover:text-white font-light tracking-wider text-xs uppercase transition-all duration-300 rounded-none mb-6"
+                        onClick={() => {
+                          // Navigate to product detail page
+                          window.location.href = `/produits/${product.slug?.current || product._id}`
+                        }}
+                      >
+                        Voir le détail
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-600 text-lg">
-                {pageData?.noResultsText || 'Aucun produit trouvé dans cette catégorie.'}
-              </p>
-            </div>
-          )}
-        </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-gray-600 text-lg font-light">
+              {pageData?.noResultsText || 'Aucun produit trouvé dans cette catégorie.'}
+            </p>
+          </div>
+        )}
       </section>
 
       {/* Call to Action Section */}
-      {pageData && (
-        <section className="py-16 sm:py-20 bg-black text-white">
-          <div className="container mx-auto px-4 sm:px-6 text-center">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extralight mb-6 tracking-[-0.02em]">
-              {pageData.ctaTitle}
+      {pageData?.ctaButtonText && (
+        <section className="py-16 px-4 bg-gray-50 relative z-10">
+          <div className="text-center max-w-4xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extralight text-black mb-6 sm:mb-8 tracking-[-0.02em]">
+              {pageData?.ctaTitle || 'Besoin d\'accompagnement pour votre projet ?'}
             </h2>
-            {pageData.ctaDescription && (
-              <p className="text-lg sm:text-xl text-white/90 max-w-2xl mx-auto mb-8 leading-relaxed font-light">
-                {pageData.ctaDescription}
-              </p>
-            )}
+            <div className="w-16 sm:w-20 h-px bg-black/20 mx-auto mb-6 sm:mb-8"></div>
+            
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed font-light mb-8 sm:mb-12 px-4">
+              {pageData?.ctaDescription || 'Notre équipe d\'experts vous accompagne dans le choix des solutions les plus adaptées à vos besoins. Conseil technique, devis personnalisé et support projet : nous sommes là pour concrétiser vos idées architecturales.'}
+            </p>
+            
             <Button
+              variant="outline"
               size="lg"
-              className="bg-white text-black hover:bg-gray-100 font-light tracking-wider px-8 py-6 text-lg"
-              onClick={() => scrollToSection(pageData.ctaButtonLink.replace('#', ''))}
+              className="text-sm sm:text-base px-8 sm:px-12 py-3 sm:py-4 bg-transparent border-2 border-black/20 text-black hover:bg-black hover:text-white font-light tracking-wider rounded-none transition-all duration-300"
+              onClick={() => scrollToSection(pageData?.ctaButtonLink?.replace('#', '') || 'contact')}
             >
-              {pageData.ctaButtonText}
+              {pageData?.ctaButtonText || 'Nous Contacter'}
             </Button>
           </div>
         </section>

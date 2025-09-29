@@ -67,6 +67,144 @@ export const productItem = defineType({
       to: [{ type: 'productCategory' }],
       validation: (Rule) => Rule.required(),
     }),
+    // Product Details Section
+    defineField({
+      name: 'characteristics',
+      title: 'Caractéristiques',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Product characteristics (e.g., "Haute résistance à la lumière du soleil")',
+    }),
+    defineField({
+      name: 'applications',
+      title: 'Applications',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Common use cases (e.g., "Façades ventilées", "Balcons")',
+    }),
+    defineField({
+      name: 'panelFormats',
+      title: 'Format des panneaux (mm)',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Available panel sizes (e.g., "3050 x 1300", "4200 x 1300")',
+    }),
+    defineField({
+      name: 'thickness',
+      title: 'Épaisseur (mm)',
+      type: 'string',
+      description: 'Available thickness options (e.g., "6 - 8 - 10 - 12")',
+    }),
+    defineField({
+      name: 'technicalDocuments',
+      title: 'Documents techniques',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'title',
+              title: 'Document Title',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'file',
+              title: 'Document File',
+              type: 'file',
+              options: {
+                accept: '.pdf,.doc,.docx',
+              },
+            }),
+            defineField({
+              name: 'downloadText',
+              title: 'Download Button Text',
+              type: 'string',
+              initialValue: 'Télécharger',
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'title',
+              subtitle: 'downloadText',
+            },
+          },
+        },
+      ],
+    }),
+    defineField({
+      name: 'bimRequest',
+      title: 'BIM Request Available',
+      type: 'boolean',
+      description: 'Show "Demande de fichier BIM" option',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'availableFinishes',
+      title: 'Décors disponibles',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'code',
+              title: 'Finish Code',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'name',
+              title: 'Finish Name',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'image',
+              title: 'Finish Image',
+              type: 'image',
+              options: {
+                hotspot: true,
+              },
+            }),
+            defineField({
+              name: 'color',
+              title: 'Primary Color',
+              type: 'string',
+              description: 'Hex color code for preview',
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'name',
+              subtitle: 'code',
+              media: 'image',
+            },
+          },
+        },
+      ],
+      description: 'Available finishes/colors for this product',
+    }),
+    defineField({
+      name: 'totalFinishesCount',
+      title: 'Total Finishes Available',
+      type: 'number',
+      description: 'Total number of finishes in collection (e.g., 106 for MEG)',
+    }),
+    defineField({
+      name: 'collectionName',
+      title: 'Collection Name',
+      type: 'string',
+      description: 'Collection this product belongs to (e.g., "Abet")',
+    }),
+    defineField({
+      name: 'features',
+      title: 'Key Features',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'List of key product features and benefits',
+    }),
     defineField({
       name: 'specifications',
       title: 'Technical Specifications',
@@ -96,20 +234,6 @@ export const productItem = defineType({
           },
         },
       ],
-    }),
-    defineField({
-      name: 'features',
-      title: 'Key Features',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'List of key product features and benefits',
-    }),
-    defineField({
-      name: 'applications',
-      title: 'Applications',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'Common use cases and applications for this product',
     }),
     defineField({
       name: 'price',

@@ -48,7 +48,7 @@ export function HeroSection({ heroData }: HeroSectionStaticProps) {
           </p>
         </div>
 
-        <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-[12rem] font-light font-[var(--font-inter)] text-white mb-8 sm:mb-16 leading-[0.8] tracking-[-0.02em] text-center drop-shadow-xl">
+        <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-[12rem] font-[var(--font-inter)] text-white mb-8 sm:mb-16 leading-[0.8] tracking-[-0.02em] text-center drop-shadow-xl">
           L<span className="font-extralight text-white/60">O</span>X
           <span className="font-extralight text-white/60">E</span>N
         </h1>

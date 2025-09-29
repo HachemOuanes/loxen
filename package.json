@@ -9,7 +9,13 @@
     "lint": "next lint",
     "start": "next start",
     "migrate:content": "node migrations/content.js",
-    "migrate:seo": "node migrations/seo.js"
+    "migrate:seo": "node migrations/seo.js",
+    "populate:products": "node scripts/populate-products.js",
+    "setup:env": "node scripts/setup-env.js",
+    "test:sanity": "node scripts/setup-env.js --test",
+    "backup:create": "node scripts/backup-data.js backup",
+    "backup:restore": "node scripts/backup-data.js restore",
+    "backup:list": "node scripts/backup-data.js list"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -48,6 +54,7 @@
     "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.2",
     "framer-motion": "^11.11.17",
     "lucide-react": "^0.468.0",
     "next": "14.2.32",
