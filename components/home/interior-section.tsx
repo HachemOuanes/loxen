@@ -84,9 +84,9 @@ export function InteriorSection() {
   return (
     <section id="interieur" className="py-6 px-4 bg-white relative z-10">
       <div className="text-center mb-12">
-        <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extralight text-black mb-6 sm:mb-8 tracking-[-0.02em]">
+        {/* <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extralight text-black mb-6 sm:mb-8 tracking-[-0.02em]">
           {sectionContent?.title || 'Intérieur'}
-        </h2>
+        </h2> */}
         {/* <div className="w-16 sm:w-20 lg:w-24 h-px bg-black/20 mx-auto mb-6 sm:mb-8"></div>
         <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-light px-4">
           {sectionContent?.description}

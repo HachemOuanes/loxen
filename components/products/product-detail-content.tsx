@@ -6,6 +6,8 @@ import { urlFor, client } from "@/lib/sanity"
 import { ProductGallery } from "./product-gallery"
 import { ProductSpecifications } from "./product-specifications"
 import { RelatedProducts } from "./related-products"
+import { ProductImageSections } from "./product-image-sections"
+import { ProductTechDocs } from "./product-tech-docs"
 
 interface Product {
     _id: string
@@ -52,8 +54,8 @@ interface ProductDetailContentProps {
 
 export function ProductDetailContent({ product }: ProductDetailContentProps) {
     const [selectedFinish, setSelectedFinish] = useState<number>(0)
-    const [expandedCharacteristics, setExpandedCharacteristics] = useState(false)
-    const [expandedApplications, setExpandedApplications] = useState(false)
+    const [expandedCharacteristics, setExpandedCharacteristics] = useState(true)
+    const [expandedApplications, setExpandedApplications] = useState(true)
 
     return (
         <>
@@ -120,15 +122,6 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
                                             <h3 className="text-sm font-medium text-black uppercase tracking-wide">
                                                 Caractéristiques
                                             </h3>
-                                            <svg
-                                                className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${expandedCharacteristics ? 'rotate-180' : ''
-                                                    }`}
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                            </svg>
                                         </button>
 
                                         <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedCharacteristics ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
@@ -154,15 +147,6 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
                                             <h3 className="text-sm font-medium text-black uppercase tracking-wide">
                                                 Applications
                                             </h3>
-                                            <svg
-                                                className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${expandedApplications ? 'rotate-180' : ''
-                                                    }`}
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                            </svg>
                                         </button>
 
                                         <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedApplications ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
@@ -309,6 +293,12 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
 
             {/* Detailed Specifications */}
             <ProductSpecifications product={product} />
+
+            {/* Static image/text alternating sections */}
+            <ProductImageSections />
+
+            {/* Technical specifications and documents moved below images */}
+            <ProductTechDocs product={product} />
 
             {/* Related Products */}
             <RelatedProducts

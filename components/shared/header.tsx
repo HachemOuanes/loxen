@@ -13,18 +13,18 @@ export function Header() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100)
-      
+
       // Detect current section
       const sections = ["interieur", "exterieur", "produits", "inspirations", "contact", "footer"]
       const scrollPosition = window.scrollY + window.innerHeight / 2
-      
+
       for (const sectionId of sections) {
         const element = document.getElementById(sectionId)
         if (element) {
           const rect = element.getBoundingClientRect()
           const elementTop = rect.top + window.scrollY
           const elementBottom = elementTop + rect.height
-          
+
           if (scrollPosition >= elementTop && scrollPosition <= elementBottom) {
             setCurrentSection(sectionId)
             break
@@ -32,7 +32,7 @@ export function Header() {
         }
       }
     }
-    
+
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
@@ -73,24 +73,21 @@ export function Header() {
   return (
     <>
       <header
-        className={`fixed z-50 transition-all duration-500 ease-out ${
-          isScrolled
-            ? `w-44 h-12 bg-white backdrop-blur-sm rounded-lg border-2 border-gray-200 shadow-sm ${
-                isSidebarOpen ? "-translate-x-full" : "left-4"
-              } top-4`
+        className={`fixed z-50 transition-all duration-500 ease-out ${isScrolled
+            ? `w-44 h-12 bg-white backdrop-blur-sm rounded-lg border-2 border-gray-200 shadow-sm ${isSidebarOpen ? "-translate-x-full" : "left-4"
+            } top-4`
             : "w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black backdrop-blur-sm rounded-2xl left-4 top-4"
-        }`}
+          }`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         <div className="h-full flex items-center px-4">
           <a
             href="/"
-            className={`absolute transition-all duration-500 font-light tracking-[-0.02em] cursor-pointer hover:opacity-80 ${
-              isScrolled
+            className={`absolute transition-all duration-500 font-light tracking-[-0.02em] cursor-pointer hover:opacity-80 ${isScrolled
                 ? "text-xl text-black flex items-center gap-2 "
                 : "left-4 text-2xl sm:text-4xl text-white drop-shadow-lg"
-            }`}
+              }`}
           >
             {isScrolled && (
               <div>
@@ -119,9 +116,8 @@ export function Header() {
           </a>
 
           <nav
-            className={`hidden md:flex items-center space-x-6 lg:space-x-12 transition-all duration-500 ml-auto ${
-              isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"
-            }`}
+            className={`hidden md:flex items-center space-x-6 lg:space-x-12 transition-all duration-500 ml-auto ${isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"
+              }`}
           >
             {navItems.map((item) => (
               <a
@@ -137,9 +133,8 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            className={`md:hidden hover:bg-transparent transition-all duration-500 text-white hover:text-white/60 drop-shadow-md ml-auto ${
-              isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"
-            }`}
+            className={`md:hidden hover:bg-transparent transition-all duration-500 text-white hover:text-white/60 drop-shadow-md ml-auto ${isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"
+              }`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? (
@@ -152,9 +147,8 @@ export function Header() {
       </header>
 
       <div
-        className={`fixed top-0 left-0 h-full w-72 sm:w-80 bg-white/95 backdrop-blur-xl border-r border-gray-200/30 z-40 transition-transform duration-500 ease-out ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 h-full w-72 sm:w-80 bg-white/95 backdrop-blur-xl border-r border-gray-200/30 z-40 transition-transform duration-500 ease-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -173,9 +167,8 @@ export function Header() {
                 <a
                   key={item.label}
                   href={item.href}
-                  className={`block text-black font-light text-base sm:text-lg tracking-[0.05em] uppercase hover:opacity-60 transition-all duration-300 transform ${
-                    isSidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0"
-                  }`}
+                  className={`block text-black font-light text-base sm:text-lg tracking-[0.05em] uppercase hover:opacity-60 transition-all duration-300 transform ${isSidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0"
+                    }`}
                   style={{
                     transitionDelay: isSidebarOpen ? `${index * 50}ms` : "0ms",
                   }}
@@ -193,8 +186,8 @@ export function Header() {
             </div>
             {process.env.NODE_ENV === 'development' && (
               <div className="mt-2">
-                <a 
-                  href="/cms" 
+                <a
+                  href="/cms"
                   className="text-xs text-blue-600 hover:text-blue-800 underline"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -208,9 +201,8 @@ export function Header() {
       </div>
 
       <div
-        className={`fixed inset-0 z-40 md:hidden transition-all duration-500 ease-in-out ${
-          isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className={`fixed inset-0 z-40 md:hidden transition-all duration-500 ease-in-out ${isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
       >
         <div className="absolute inset-0 bg-black/95 backdrop-blur-lg" onClick={() => setIsMobileMenuOpen(false)} />
 
@@ -220,9 +212,8 @@ export function Header() {
               <a
                 key={item.label}
                 href={item.href}
-                className={`text-white font-light text-xl sm:text-2xl tracking-[0.1em] uppercase hover:opacity-60 transition-all duration-300 transform ${
-                  isMobileMenuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-                }`}
+                className={`text-white font-light text-xl sm:text-2xl tracking-[0.1em] uppercase hover:opacity-60 transition-all duration-300 transform ${isMobileMenuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+                  }`}
                 style={{
                   transitionDelay: isMobileMenuOpen ? `${index * 100}ms` : "0ms",
                 }}

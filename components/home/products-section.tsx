@@ -69,8 +69,8 @@ export function ProductsSection() {
   if (!products.length) return null
 
   return (
-    <section id="produits" className="py-16 px-4 bg-white relative z-10">
-      <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+    <section id="produits" className="py-16 px-4 bg-gradient-to-b relative z-10">
+      {/* <div className="text-center mb-12 sm:mb-16 lg:mb-20">
         <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extralight text-black mb-6 sm:mb-8 tracking-[-0.02em]">
           {sectionContent?.title || 'Produits'}
         </h2>
@@ -78,9 +78,9 @@ export function ProductsSection() {
         <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-light px-4">
           {sectionContent?.description}
         </p>
-      </div>
+      </div> */}
 
-      <div className="grid grid-cols-3 mb-12 sm:mb-16 h-[100vh]">
+      <div className="grid grid-cols-3 mb-12 sm:mb-16 h-[40vh]">
         {products.map((product, index) => (
           <div
             key={product._key || index}
@@ -101,7 +101,7 @@ export function ProductsSection() {
         ))}
       </div>
 
-      <div className="text-center">
+      {/* <div className="text-center">
         <Button
           variant="outline"
           size="lg"
@@ -109,7 +109,7 @@ export function ProductsSection() {
         >
           {sectionContent?.buttonText || 'Voir les catalogues produits'}
         </Button>
-      </div>
+      </div> */}
     </section>
   )
 }

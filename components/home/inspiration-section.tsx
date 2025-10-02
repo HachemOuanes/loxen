@@ -118,16 +118,16 @@ export function InspirationSection() {
   if (!inspirations.length) return null
 
   return (
-    <section id="inspirations" className="py-16 px-4">
-      <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-        <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extralight text-black mb-6 sm:mb-8 tracking-[-0.02em]">
+    <section id="inspirations" className="py-16 px-4 bg-gradient-to-b from-gray-100 to-white relative z-10">
+      {/* <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+        <h2 className="text-3xl sm:text-4xl lg:text-4xl mb-6 sm:mb-8 tracking-[-0.02em]">
           {sectionContent?.title || 'Inspiration'}
         </h2>
         <div className="w-16 sm:w-20 lg:w-24 h-px bg-black/20 mx-auto mb-6 sm:mb-8"></div>
         <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-light px-4">
           {sectionContent?.description}
         </p>
-      </div>
+      </div> */}
 
       <div className="relative">
         <div className="overflow-hidden rounded-none">
@@ -172,7 +172,7 @@ export function InspirationSection() {
           <ChevronRight size={20} className="sm:w-6 sm:h-6" />
         </button>
 
-        <div className="flex justify-center mt-8 sm:mt-12 space-x-2 sm:space-x-3">
+        {/* <div className="flex justify-center mt-8 sm:mt-12 space-x-2 sm:space-x-3">
           {inspirations.map((_, index) => (
             <button
               key={index}
@@ -181,10 +181,10 @@ export function InspirationSection() {
                 }`}
             />
           ))}
-        </div>
+        </div> */}
       </div>
 
-      <div className="text-center mt-12 sm:mt-16">
+      {/* <div className="text-center mt-12 sm:mt-16">
         <Button
           variant="outline"
           size="lg"
@@ -192,7 +192,7 @@ export function InspirationSection() {
         >
           {sectionContent?.buttonText || 'Explorer Plus de Réalisations'}
         </Button>
-      </div>
+      </div> */}
     </section>
   )
 }
