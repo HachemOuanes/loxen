@@ -42,7 +42,7 @@ export function InteriorSection() {
           showSection
         }`
         const sectionData = await client.fetch(interiorQuery)
-        
+
         if (sectionData?.categories && sectionData?.showSection !== false) {
           const formattedCategories = sectionData.categories.map((cat: any, index: number) => ({
             _id: `interior-${index}`,
@@ -51,10 +51,10 @@ export function InteriorSection() {
             image: cat.image,
             order: cat.order || index
           })).sort((a: any, b: any) => a.order - b.order)
-          
+
           setCategories(formattedCategories)
         }
-        
+
         setSectionContent({
           title: sectionData?.title || 'Intérieur',
           description: sectionData?.description || 'Solutions d\'aménagement intérieur sur mesure alliant esthétique contemporaine et fonctionnalité optimale pour tous types d\'espaces.',
@@ -98,7 +98,7 @@ export function InteriorSection() {
           {categories.map((category, index) => (
             <div key={category._id} className="relative group overflow-hidden h-[50vh]">
               <img
-                src={category.image ? urlFor(category.image).width(1024).height(1024).quality(95).url() : "/placeholder.svg"}
+                src={category.image ? urlFor(category.image).quality(100).url() : "/placeholder.svg"}
                 alt={category.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
               />

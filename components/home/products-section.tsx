@@ -86,13 +86,11 @@ export function ProductsSection() {
             key={product._key || index}
             className="group relative overflow-hidden border border-gray-100 hover:border-gray-200 transition-all duration-300"
           >
-            <div className="aspect-[3/4] overflow-hidden">
-              <img
-                src={product.image ? urlFor(product.image).width(1024).height(1024).quality(95).url() : "/placeholder.svg"}
-                alt={product.name}
-                className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
-              />
-            </div>
+            <img
+              src={product.image ? urlFor(product.image).quality(100).url() : "/placeholder.svg"}
+              alt={product.name}
+              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+            />
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-3 sm:p-4 lg:p-6">
               <h3 className="text-lg sm:text-xl font-light text-white mb-2 sm:mb-3 tracking-wide">{product.name}</h3>
               <p className="text-white/90 font-light leading-relaxed text-xs sm:text-sm">{product.description}</p>

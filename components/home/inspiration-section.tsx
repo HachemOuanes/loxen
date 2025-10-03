@@ -143,7 +143,7 @@ export function InspirationSection() {
               >
                 <div className="relative h-[300px] sm:h-[400px] lg:h-[500px] bg-gray-100">
                   <img
-                    src={project.image ? urlFor(project.image).width(1024).height(1024).quality(95).url() : "/placeholder.svg"}
+                    src={project.image ? urlFor(project.image).quality(100).url() : "/placeholder.svg"}
                     alt={`${project.title} - ${project.location}`}
                     className="w-full h-full object-cover transition-all duration-700 scale-105"
                   />

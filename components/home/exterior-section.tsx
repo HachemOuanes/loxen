@@ -98,7 +98,7 @@ export function ExteriorSection() {
           {categories.map((category, index) => (
             <div key={category._id} className="relative group overflow-hidden h-[50vh]">
               <img
-                src={category.image ? urlFor(category.image).width(1024).height(1024).quality(95).url() : "/placeholder.svg"}
+                src={category.image ? urlFor(category.image).quality(100).url() : "/placeholder.svg"}
                 alt={category.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
               />
