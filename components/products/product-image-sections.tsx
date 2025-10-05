@@ -137,7 +137,7 @@ function ParallaxImage({
 const sections: Section[] = [
     {
         type: 'full',
-        imageBase: '/meg/meg-1',
+        imageBase: '/composite-panel-system-architectural-facade',
         title: 'Un matériau robuste et fiable',
         intro:
             "Conçu pour résister aux conditions climatiques les plus extrêmes, le MEG conserve ses performances et son aspect au fil des années, notamment face :",
@@ -157,7 +157,7 @@ const sections: Section[] = [
     },
     {
         type: 'split',
-        imageBase: '/meg/meg-2',
+        imageBase: '/easy-meg-panels',
         title: 'Des performances techniques élevées',
         intro: 'Grâce à sa densité et sa composition homogène, le MEG offre des garanties de mise en œuvre et de durabilité :',
         bullets: [
@@ -176,7 +176,7 @@ const sections: Section[] = [
     },
     {
         type: 'split',
-        imageBase: '/meg/meg-3',
+        imageBase: '/copanel-composite',
         title: 'Une liberté esthétique totale',
         intro: "Des palettes de finitions et de textures étendues permettent d’exprimer l’identité du projet, du minimalisme aux compositions graphiques.",
         paragraphs: [
@@ -195,7 +195,7 @@ const sections: Section[] = [
     },
     {
         type: 'split',
-        imageBase: '/meg/meg-4',
+        imageBase: '/exterior-facades-ventilees',
         title: 'Pourquoi choisir le MEG en Tunisie ?',
         intro:
             "Avec son climat chaud, humide et soumis aux variations, la Tunisie met les matériaux à rude épreuve.",
@@ -210,6 +210,39 @@ const sections: Section[] = [
         ],
         outro: "Une solution fiable pour les enveloppes performantes, des villas aux équipements publics.",
         alt: 'MEG – avantages en Tunisie',
+        imageLeft: true,
+    },
+    {
+        type: 'split',
+        imageBase: '/composite-panel-system',
+        title: 'Mise en œuvre maîtrisée',
+        intro:
+            "Compatible avec les principales sous-structures, le MEG s’installe facilement en façade ventilée avec des détails simples et durables.",
+        bullets: [
+            'Calepinages précis et répétables',
+            'Fixations apparentes ou invisibles selon les besoins',
+            'Dilatations contrôlées pour une stabilité de longue durée',
+        ],
+        paragraphs: [
+            "Nous privilégions des assemblages robustes et un entretien réduit pour optimiser le coût global sur la durée de vie du bâtiment.",
+        ],
+        alt: 'MEG – mise en œuvre',
+        imageLeft: false,
+    },
+    {
+        type: 'split',
+        imageBase: '/aluminium-facade-panels-modern-building',
+        title: 'Tenue et entretien',
+        intro: 'La surface décorative résiste aux UV et se nettoie simplement à l’eau claire avec un chiffon doux.',
+        bullets: [
+            'Résistance aux salissures et graisses',
+            'Couleurs stables et durables',
+            'Surface non poreuse limitant l’encrassement',
+        ],
+        paragraphs: [
+            "Idéal pour les zones à fort rayonnement solaire ou soumises aux embruns marins, tout en conservant l’esthétique d’origine.",
+        ],
+        alt: 'MEG – entretien',
         imageLeft: true,
     },
 ]
