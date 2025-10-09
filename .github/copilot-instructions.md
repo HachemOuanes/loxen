@@ -1,69 +1,43 @@
 # Copilot instructions for this repo
 
-Use these notes to be productive quickly in this Next.js + Sanity project. Prefer concrete patterns already used in the codebase.
+Use these notes to get productive quickly. They capture the actual patterns used in this Next.js + Sanity codebase.
 
-## Overview
-- Stack: Next.js 14 App Router (TypeScript), Tailwind CSS, shadcn/ui (Radix primitives), Sanity v3 (Studio mounted at `/cms`), next-sanity client.
-- Purpose: Marketing/catalog site for “Loxen” with CMS-managed sections (hero, products, SEO), French content by default.
-- Path aliases: Use `@/` (e.g. `@/lib/sanity`, `@/components/...`).
+## Big picture
+- Stack: Next.js 14 App Router (TS), Tailwind, shadcn/ui (Radix), Sanity v3 (Studio at `/cms`), next-sanity.
+- Purpose: Marketing/catalog site (“Loxen”), CMS-driven content (hero, products, SEO). Default language: FR.
+- Path alias: always import via `@/` (see `tsconfig.json`).
 
-## App architecture
-- Routing in `app/` with server components by default.
-  - `app/layout.tsx`: global fonts, `<Analytics />`, global CSS.
-  - `app/page.tsx`: home page; uses ISR (`export const revalidate = 86400`), server-side `generateMetadata`, and server-side data fetch for hero + site settings.
-- Components split by domain: `components/home/*`, `components/shared/*`, `components/products/*`, `components/ui/*`.
-  - Interactive pieces are explicit client components (`"use client"`), e.g. `components/home/products-section.tsx`, `components/shared/header.tsx`.
-- Utilities in `lib/`:
-  - `lib/sanity.ts`: configured `next-sanity` client + `urlFor` image builder; reads env or defaults to project `uoshkmah/production`.
-  - `lib/seo.ts`: site/page SEO fetchers and helpers to build Next Metadata and JSON-LD.
-  - `lib/sanity-static.ts`: shared TS shapes for CMS-driven sections (e.g., `HeroSectionData`).
+## App structure & data flow
+- Server-first. Routes under `app/`; `app/layout.tsx` sets fonts and `<Analytics />`.
+- Home (`app/page.tsx`) uses ISR: `export const revalidate = 86400`, server-side `generateMetadata`, and server fetches for hero + site settings via `@/lib/seo` + `@/lib/sanity`.
+- Dynamic routes: `app/secteurs/[slug]/page.tsx` uses `generateStaticParams()` from `lib/secteurs-data.ts` and `revalidate = 86400`.
+- Client-only UI uses "use client" (e.g., `components/shared/header.tsx`, `components/home/products-section.tsx`). Client components may fetch from Sanity directly.
 
 ## Sanity integration
-- Studio config in `sanity.config.ts` with `basePath: '/cms'` and a custom structure (`sanity/structure.ts`).
-- Data fetching:
-  - Server components: use `client.fetch(query, params)` directly (see `app/page.tsx`).
-  - Client components: allowed pattern already used (e.g., `ProductsSection`); relies on CDN; keep queries simple and sort client-side when needed.
-- Common queries:
-  - Hero: `*[_type == "heroSection"][0]` → passed to `HeroSection`.
-  - Products section: single doc `productsSection` with nested `products[]` objects; sort by `order` in code.
-- Images: always use `urlFor(sanityImage).width(...).height(...).quality(...).url()`; project currently uses native `<img>` instead of `next/image`.
+- Config: `sanity.config.ts` (project `uoshkmah/production`, `basePath: '/cms'`).
+- Client: `lib/sanity.ts` exports `client` and `urlFor()`. Note: `useCdn: false` (avoids stale cache in dev). Adjust if you rely on CDN reads in prod.
+- Common queries: hero `*[_type == "heroSection"][0]`; products `*[_type == "productsSection"][0]{title,description,products[]{...},ctaText,showSection}` sorted by `order` in code (see `components/home/products-section.tsx`).
 
 ## SEO pattern
-- Page-level SEO: In pages, implement `export async function generateMetadata()` and call `createMetadata` from `lib/seo.ts` with `[siteSettings, pageSeo]` (e.g., `getPageSEO('home')`).
-- JSON-LD: Generate via `generateStructuredData(siteSettings)` and inject with a `<script type="application/ld+json" ... />` in the page component.
+- Use `getSiteSettings()` + `getPageSEO(pageId)` from `lib/seo.ts` inside a page `generateMetadata()`; example in `app/page.tsx`.
+- JSON‑LD: `generateStructuredData(siteSettings)` and inject via `<script type="application/ld+json" ... />` in the page component.
 
-## Styling & UI
-- Tailwind for styling; `lib/utils.ts` exposes `cn()` (clsx + tailwind-merge) for class merging.
-- shadcn/ui components live in `components/ui/`; Radix UI is used via shadcn.
-- Typography via Next Fonts in layout (Inter, Playfair). Header/footer contain scroll/section behaviors keyed to element IDs (e.g., `interieur`, `exterieur`, `produits`).
+## UI, images, anchors
+- Tailwind; `lib/utils.ts` provides `cn()`.
+- next/image is not used; images are unoptimized (see `next.config.mjs`). Build URLs with `urlFor(image).width(...).height(...).quality(...).url()` and render with `<img>`.
+- Section IDs matter for header scroll logic: `interieur`, `exterieur`, `produits`, `inspirations`, `contact`, `footer` (see `components/shared/header.tsx`, `components/shared/footer.tsx`).
 
-## Builds, dev, scripts
-- Run/dev:
-  - `npm run dev` (Next dev server), `npm run build`, `npm start`.
-  - Lint/type errors are ignored during `next build` per `next.config.mjs` (eslint/typescript `ignore*` flags); still prefer `npm run lint` locally.
-- Sanity/data tooling (`package.json` scripts):
-  - `npm run setup:env` to scaffold env vars; `npm run test:sanity` checks env.
-  - Migrations: `npm run migrate:content`, `npm run migrate:seo` (see `migrations/*`).
-  - Product data population: `npm run populate:products` (see `scripts/populate-products.js` + `scripts/README.md`).
-  - Backup: `npm run backup:create|restore|list`.
+## Dev workflows
+- Run: `npm run dev`; build: `npm run build`; start: `npm start`. Lint: `npm run lint` (note: build ignores ESLint/TS errors per `next.config.mjs`).
+- Env scaffolding: `npm run setup:env`; validate: `npm run test:sanity`.
+- Content tooling: migrations (`npm run migrate:content`, `npm run migrate:seo`), product population (`npm run populate:products`), backups (`npm run backup:create|restore|list`). See `scripts/README.md`.
+- In dev the header shows a “CMS Access” link; Studio mounts at `/cms`.
 
 ## Environment
-- Expected vars (typically in `.env.local`):
-  - `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, optional `SANITY_API_TOKEN` (for write scripts).
-  - If missing, client defaults to `uoshkmah/production`.
-- In dev, a "CMS Access" link appears in the sidebar header; Studio is served at `/cms`.
+- `.env.local`: `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, optional `SANITY_API_TOKEN` (write scripts). Missing values fall back to `uoshkmah/production`.
 
-## Conventions and examples
-- Client vs server:
-  - Default to server components; add `"use client"` for interactive UI/state/effects.
-  - Example: `components/home/products-section.tsx` fetches a single `productsSection` doc in a client component and renders a 3-column grid.
-- ISR: Prefer `export const revalidate = <seconds>` on route files for sections driven by Sanity.
-- IDs/anchors: Sections use specific IDs that header logic expects: `interieur`, `exterieur`, `produits`, `inspirations`, `contact`, `footer`.
-- Aliases/imports: Always import via `@/` to keep paths stable when moving files.
-
-## When adding features
-- Fetching new CMS content: add a schema/type in Sanity, expose a single doc or referenced list; fetch with `client.fetch` in server components when possible, or client components if interactivity requires it.
-- Images: keep using `urlFor(...).width().height().quality().url()` for consistent sizing.
-- SEO: create or reuse a `pageSeo` doc and wire `getPageSEO('<pageId>')` in the page’s `generateMetadata`.
-
-Questions or gaps? If anything above is unclear (e.g., adding a new page with SEO, switching to next/image, or Sanity schema locations), ask and I’ll refine these instructions.
+## Adding features (copy patterns)
+- Fetch CMS data on the server when possible with `client.fetch`; for interactive views, use a client component and keep queries simple.
+- Images: keep `urlFor(...).width().height().quality().url()`.
+- SEO: create/extend a `pageSeo` doc and wire `getPageSEO('<pageId>')` in the route’s `generateMetadata()`.
+- Prefer `export const revalidate = <seconds>` for Sanity-driven pages.

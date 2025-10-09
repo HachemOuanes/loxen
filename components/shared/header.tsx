@@ -74,9 +74,9 @@ export function Header() {
     <>
       <header
         className={`fixed z-50 transition-all duration-500 ease-out ${isScrolled
-            ? `w-44 h-12 bg-white backdrop-blur-sm rounded-lg border-2 border-gray-200 shadow-sm ${isSidebarOpen ? "-translate-x-full" : "left-4"
+            ? `w-44 h-12 bg-white backdrop-blur-sm border-2 border-gray-200 shadow-sm ${isSidebarOpen ? "-translate-x-full" : "left-4"
             } top-4`
-            : "w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black backdrop-blur-sm rounded-2xl left-4 top-4"
+            : "w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black backdrop-blur-sm left-4 top-4"
           }`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
