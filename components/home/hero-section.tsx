@@ -13,17 +13,16 @@ export function HeroSection({ heroData }: HeroSectionStaticProps) {
   if (!heroData) return null
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden pt-20 sm:pt-32 bg-gray-900">
-      <div
-        className="absolute inset-0 scale-125 -top-20"
-        style={{
-          backgroundImage: heroData.backgroundImage
-            ? `url('${urlFor(heroData.backgroundImage).width(1024).height(1024).quality(95).url()}')`
-            : "url('/clean-minimalist-architecture-facade.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          minHeight: "120vh",
-        }}
+    <section className="relative h-screen flex items-center justify-center overflow-hidden pt-20 sm:pt-32 bg-black">
+      {/* Background video */}
+      <video
+        className="absolute inset-0 w-full h-full object-cover"
+        src="/videos/15191845-hd_1920_1080_60fps.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
       />
 
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/50" />
