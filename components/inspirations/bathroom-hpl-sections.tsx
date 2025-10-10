@@ -1,12 +1,209 @@
 "use client"
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { client, urlFor } from '@/lib/sanity'
 
 type BathroomHPLSectionsProps = {
   title?: string
   description?: string
+}
+
+type Finish = {
+  code: string
+  name: string
+  image?: any
+  color?: string
+}
+
+function DecorsDispoGrid({ slug }: { slug: string }) {
+  const [finishes, setFinishes] = useState<Finish[] | null>(null)
+  const [total, setTotal] = useState<number | undefined>(undefined)
+  const [collectionName, setCollectionName] = useState<string | undefined>(undefined)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [currentIndex, setCurrentIndex] = useState<number>(0)
+  const trackRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    let mounted = true
+    async function load() {
+      try {
+        const data = await client.fetch(
+          `*[_type == "productItem" && slug.current == $slug][0]{
+            availableFinishes[]{code,name,image,color},
+            totalFinishesCount,
+            collectionName
+          }`,
+          { slug }
+        )
+        if (!mounted) return
+        setFinishes(data?.availableFinishes || [])
+        setTotal(data?.totalFinishesCount)
+        setCollectionName(data?.collectionName)
+      } catch (_e) {
+        if (!mounted) return
+        setFinishes([])
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    }
+    load()
+    return () => {
+      mounted = false
+    }
+  }, [slug])
+
+  // Precompute render list with one cloned item for seamless looping
+  const renderItems = React.useMemo(() => {
+    if (!finishes || finishes.length === 0) return []
+    const cloneCount = Math.min(5, finishes.length) // clone first 5 items for seamless loop (5 visible on desktop)
+    return [...finishes, ...finishes.slice(0, cloneCount)]
+  }, [finishes])
+
+  // Auto-advance one item at a time with seamless loop
+  useEffect(() => {
+    if (!finishes || finishes.length <= 1) return
+    const prefersReduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
+    const track = trackRef.current
+    if (!track) return
+
+    const getStep = () => {
+      const cards = Array.from(track.querySelectorAll('.js-decor-card')) as HTMLElement[]
+      if (cards.length >= 2) {
+        const step = cards[1].offsetLeft - cards[0].offsetLeft
+        return step > 0 ? step : cards[0].offsetWidth
+      }
+      return cards[0]?.offsetWidth || 0
+    }
+
+    let index = 0
+    let disposed = false
+
+    const align = () => {
+      const step = getStep()
+      gsap.set(track, { x: -index * step })
+    }
+
+    align()
+
+    const tick = () => {
+      const total = finishes.length
+      const step = getStep()
+      if (!step) return
+      const next = index + 1
+      gsap.to(track, {
+        x: -next * step,
+        duration: 0.5,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          if (disposed) return
+          if (next >= total) {
+            // Snap back to start (after sliding onto the first cloned item)
+            gsap.set(track, { x: 0 })
+            index = 0
+            setCurrentIndex(0)
+          } else {
+            index = next
+            setCurrentIndex(next)
+          }
+        },
+      })
+    }
+
+    const id = setInterval(tick, 2000)
+    const onResize = () => align()
+    window.addEventListener('resize', onResize)
+    return () => {
+      disposed = true
+      clearInterval(id)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [finishes?.length])
+
+  // (replaced by pre-rendered slides carousel)
+
+  return (
+    <div>
+      <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-4">
+        <span className="h-[1px] w-8 bg-black/20" /> Décors disponibles
+        {typeof total === 'number' && (
+          <span className="ml-2 text-black/40 normal-case tracking-normal">• {total} décors</span>
+        )}
+      </div>
+
+      {loading ? (
+        <p className="text-black/60 text-sm">Chargement des décors…</p>
+      ) : finishes && finishes.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start">
+            {/* Left intro text */}
+            <div className="md:col-span-4">
+              <div className="js-reveal sticky top-24">
+                <h3 className="text-xl md:text-2xl font-light tracking-tight text-black">
+                  {(typeof total === 'number' ? total : (finishes?.length || 0))} décors d'exception vous attendent.
+                </h3>
+                <p className="mt-3 text-black/70 leading-relaxed">
+                  Commandez dès maintenant vos échantillons gratuits et démarrez votre projet.
+                </p>
+                <div className="mt-5">
+                  <a href="/contact" className="inline-block border border-black/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-black hover:text-white transition-colors">
+                    Commander des échantillons
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Right grid */}
+            <div className="md:col-span-8">
+              <div className="relative overflow-hidden">
+                <div ref={trackRef} className="flex gap-4 lg:gap-6 will-change-transform">
+                  {renderItems.map((finish, idx) => (
+                    <article
+                      key={(finish.code + finish.name) + '-' + idx}
+                      className="js-decor-card basis-1/2 shrink-0 group border border-black/10 bg-white overflow-hidden box-border lg:basis-[calc((100%_-_1.5rem_*_4)/5)]"
+                    >
+                      <div className="aspect-[4/5] overflow-hidden bg-gray-50">
+                        {finish.image ? (
+                          <img
+                            src={urlFor(finish.image).width(320).height(400).quality(85).url()}
+                            alt={finish.name}
+                            className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ) : (
+                          <div className="h-full w-full" style={{ backgroundColor: finish.color || '#e5e7eb' }} />
+                        )}
+                      </div>
+                      <div className="p-3">
+                        <p className="text-xs font-medium text-black">{finish.code}</p>
+                        <p className="text-xs text-black/70 truncate">{finish.name}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          {collectionName && (
+            <div className="bg-gray-50 mt-6 p-3 border border-gray-200">
+              <p className="text-xs text-gray-700 text-center">
+                Collection <span className="font-medium">{collectionName}</span>
+                {typeof total === 'number' ? <span> • {total} décors</span> : null}
+                {" "}
+                {/** Inline action to view all decors */}
+                <a href="/decors" className="underline underline-offset-2 decoration-black/30 hover:decoration-black ml-1">Voir tous</a>
+              </p>
+            </div>
+          )}
+        </>
+      ) : (
+        <p className="text-black/60 text-sm">Aucun décor disponible pour le moment.</p>
+      )}
+    </div>
+  )
 }
 
 export function BathroomHPLSections({
@@ -141,7 +338,7 @@ export function BathroomHPLSections({
           <img src="/salle-de-bain/solid-top-piano-hpl-bagni-02.jpg" alt="Plan vasque HPL effet bois" className="js-hero-figure h-screen w-full object-cover" loading="eager" decoding="async" fetchPriority="high" />
 
           <div className="relative h-screen max-w-7xl mx-auto px-4 md:px-6 py-16 gap-6 js-hero-text flex flex-col justify-center">
-            <div className='bg-white/50 backdrop-blur-sm w-fit p-4'>
+            <div className='bg-white/50 backdrop-blur-sm w-fit py-6 pr-6'>
               <div className=''>
                 <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-3">
                   <span className="h-[1px] w-8 bg-black/30" /> Inspirations
@@ -267,105 +464,77 @@ export function BathroomHPLSections({
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {/* TOP A */}
-            <article className="js-reveal border border-black/10 bg-white overflow-hidden">
+            <article className="js-reveal group border border-black/10 bg-white overflow-hidden pb-4">
               <div className="aspect-[4/3] overflow-hidden">
-                <img src="/finitions/solid-top-HPL-TOP-A.jpg" alt="TOP A — Corsé et épais" className="h-full w-full object-cover" />
+                <img src="/finitions/solid-top-HPL-TOP-A.jpg" alt="TOP A — Corsé et épais" className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110" />
               </div>
               <div className="p-5 md:p-6">
                 <h4 className="text-lg md:text-xl font-medium tracking-tight text-black">TOP A</h4>
                 <p className="text-sm uppercase tracking-[0.14em] text-black/60">Corsé et épais</p>
                 <p className="mt-3 text-black/70 leading-relaxed">Entièrement fabriqué en stratifié HPL renforcé de contreplaqué de peuplier, il permet la réalisation de plateaux très épais (de 20 mm à 160 mm).</p>
               </div>
+              <img src="/finitions/solid-top-HPL-TOP-A-schema.jpg" alt="Schéma TOP A" className="mx-auto h-auto w-2/3 object-contain" />
             </article>
 
             {/* TOP D */}
-            <article className="js-reveal border border-black/10 bg-white overflow-hidden">
+            <article className="js-reveal group border border-black/10 bg-white overflow-hidden pb-4">
               <div className="aspect-[4/3] overflow-hidden">
-                <img src="/finitions/solid-top-HPL-TOP-D.jpg" alt="TOP D — Minimaliste et élégant" className="h-full w-full object-cover" />
+                <img src="/finitions/solid-top-HPL-TOP-D.jpg" alt="TOP D — Minimaliste et élégant" className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110" />
               </div>
               <div className="p-5 md:p-6">
                 <h4 className="text-lg md:text-xl font-medium tracking-tight text-black">TOP D</h4>
                 <p className="text-sm uppercase tracking-[0.14em] text-black/60">Minimaliste et élégant</p>
-                <p className="mt-3 text-black/70 leading-relaxed">Entièrement fabriqué en HPL laminé, il présente un style minimaliste et essentiel. Il permet également de créer des formes courbes et à motifs et est idéal pour les plans de travail de cuisine, de salle de bain, de bureau et de table pour les espaces commerciaux et publics (12 mm d'épaisseur).</p>
+                <p className="mt-3 text-black/70 leading-relaxed">Entièrement fabriqué en HPL laminé, il présente un style minimaliste et essentiel. Il permet également de créer des formes courbes et à motifs (12 mm d'épaisseur).</p>
               </div>
+              <img src="/finitions/solid-top-HPL-TOP-D-schema.jpg" alt="Schéma TOP D" className="mx-auto h-auto w-2/3 object-contain" />
             </article>
 
             {/* TOP S */}
-            <article className="js-reveal border border-black/10 bg-white overflow-hidden">
+            <article className="js-reveal group border border-black/10 bg-white overflow-hidden pb-4">
               <div className="aspect-[4/3] overflow-hidden">
-                <img src="/finitions/solid-top-HPL-TOP-S.jpg" alt="TOP S — Doux et essentiel" className="h-full w-full object-cover" />
+                <img src="/finitions/solid-top-HPL-TOP-S.jpg" alt="TOP S — Doux et essentiel" className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110" />
               </div>
               <div className="p-5 md:p-6">
                 <h4 className="text-lg md:text-xl font-medium tracking-tight text-black">TOP S</h4>
                 <p className="text-sm uppercase tracking-[0.14em] text-black/60">Doux et essentiel</p>
-                <p className="mt-3 text-black/70 leading-relaxed">Le dernier-né de la gamme de plateaux disponibles. Il offre le même potentiel et les mêmes caractéristiques techniques que le Top D, mais présente une découpe terminale chanfreinée qui souligne son élégance (12 mm d'épaisseur).</p>
+                <p className="mt-3 text-black/70 leading-relaxed">Le dernier-né de la gamme de plateaux disponibles. Il offre le même potentiel et les mêmes caractéristiques techniques que le Top D (12 mm d'épaisseur).</p>
               </div>
+              <img src="/finitions/solid-top-HPL-TOP-S-schema.jpg" alt="Schéma TOP S" className="mx-auto h-auto w-2/3 object-contain" />
             </article>
-          </div>
-
-          {/* Schémas techniques (optionnel) */}
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            <div className="js-reveal border border-black/10 p-4 bg-white">
-              <img src="/finitions/solid-top-HPL-TOP-A-schema.jpg" alt="Schéma TOP A" className="mx-auto h-auto w-full object-contain" />
-            </div>
-            <div className="js-reveal border border-black/10 p-4 bg-white">
-              <img src="/finitions/solid-top-HPL-TOP-D-schema.jpg" alt="Schéma TOP D" className="mx-auto h-auto w-full object-contain" />
-            </div>
-            <div className="js-reveal border border-black/10 p-4 bg-white">
-              <img src="/finitions/solid-top-HPL-TOP-S-schema.jpg" alt="Schéma TOP S" className="mx-auto h-auto w-full object-contain" />
-            </div>
           </div>
         </div>
       </section >
 
       {/* Monolithes, plans et épaules */}
-      < section className="relative bg-white py-16 md:py-24" >
+      < section className="relative bg-white" >
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-6">
             <span className="h-[1px] w-8 bg-black/20" /> Monolithes, plans & épaules
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            <div className="js-reveal md:col-span-6">
-              <h4 className="text-2xl md:text-3xl font-light tracking-tight text-black">Joint à 45°</h4>
-              <p className="mt-4 text-black/70 leading-relaxed">Avec les modèles TOP D et TOP S, il est possible de réaliser des joints à 45° entre le dessus, les côtés et le dos (ancrés par des tirants spéciaux haute résistance), créant ainsi des monolithes uniques aux finitions pierre, métal ou béton. Disponible dans toutes les variantes de couleurs dans le nuancier.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="js-reveal">
+              <p className="text-sm uppercase tracking-[0.14em] text-black/60">Monolithes</p>
+              <h4 className="mt-2 text-lg md:text-xl font-medium tracking-tight text-black">Joint à 45°</h4>
+              <p className="mt-3 text-black/70 leading-relaxed">Avec les modèles TOP D et TOP S, il est possible de réaliser des joints à 45° entre le dessus, les côtés et le dos (ancrés par des tirants spéciaux haute résistance), créant ainsi des monolithes uniques aux finitions pierre, métal ou béton. Disponible dans toutes les variantes de couleurs dans le nuancier.</p>
             </div>
-            <div className="md:col-span-6 grid grid-cols-2 gap-4">
-              <div className="js-reveal border border-black/10 overflow-hidden">
-                <img src="/finitions/solid-top-HPL-monolite.jpg" alt="Monolithe HPL" className="h-full w-full object-cover" />
+            <div className="w-full  border border-black/10">
+              <div className="js-reveal group overflow-hidden">
+                <img src="/finitions/solid-top-HPL-monolite.jpg" alt="Monolithe HPL" className="h-64 w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110" />
               </div>
-              <div className="js-reveal border border-black/10 overflow-hidden">
-                <img src="/finitions/profili-top-monolite.jpg" alt="Profilé monolithe" className="h-full w-full object-cover" />
+              <div className="js-reveal group overflow-hidden py-4">
+                <img src="/finitions/profili-top-monolite.jpg" alt="Profilé monolithe" className="mx-auto w-1/2 object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110" />
               </div>
             </div>
           </div>
         </div>
       </section >
 
-      {/* Materials grid & CTA */}
-      < section id="examples" className="relative bg-white py-20 md:py-28" >
+      {/* Décors disponibles (from MEG Standard) */}
+      <section id="examples" className="relative bg-white py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-4">
-            <span className="h-[1px] w-8 bg-black/20" /> Exemples de rendus
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {[
-              { src: '/salle-de-bain/solid-top-piano-hpl-bagni-01.jpg', label: 'Plan vasque — marbre' },
-              { src: '/salle-de-bain/solid-top-piano-hpl-bagni-02.jpg', label: 'Plan vasque — bois' },
-              { src: '/salle-de-bain/solid-top-piano-hpl-bagni-03.png', label: 'Large format — continuité' },
-              { src: '/salle-de-bain/solid-top-piano-hpl-bagni-vasche-integrate-01.png', label: 'Vasques intégrées — marbre' },
-              { src: '/salle-de-bain/solid-top-piano-hpl-bagni-vasche-integrate-02.jpg', label: 'Vasques intégrées — bois' },
-            ].map(({ src, label }) => (
-              <article key={label} className="js-reveal group relative h-64 md:h-72 overflow-hidden border border-black/10">
-                <img src={src} alt={label} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5">
-                  <p className="text-white/90 text-sm uppercase tracking-[0.14em]">{label}</p>
-                </div>
-              </article>
-            ))}
-          </div>
+          <DecorsDispoGrid slug="meg-standard" />
         </div>
-      </section >
+      </section>
 
       <section className="relative bg-white py-16 md:py-24">
         <div className="max-w-5xl mx-auto px-4 md:px-6 text-center">
