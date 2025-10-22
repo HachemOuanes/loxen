@@ -1,360 +1,231 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Image from 'next/image'
+import { urlFor } from '@/lib/sanity'
 
-// Static image/text sections for MEG. Images expected under public/meg as meg-1.jpg, meg-2.jpg, ...
-// If images are not yet available, add them under /public/meg to avoid 404s.
+// This component should render only CMS-provided sections. No static
+// content or hard-coded JSON is kept here.
 
-type Section =
-    | {
-        type: 'full'
-        imageBase: string
-        title?: string
-        intro?: string
-        text?: string
-        bullets?: string[]
-        outro?: string
-        alt?: string
-    }
-    | {
-        type: 'split'
-        imageBase: string
-        title?: string
-        intro?: string
-        paragraphs?: string[]
-        text?: string
-        bullets?: string[]
-        outro?: string
-        alt?: string
-        imageLeft?: boolean
-    }
-
-function ImageWithExtFallback({
-    baseSrc,
-    alt,
-    className,
-    loading = 'lazy',
-    style,
-    extensions,
-}: {
-    baseSrc: string
-    alt?: string
-    className?: string
-    loading?: 'eager' | 'lazy'
-    style?: React.CSSProperties
-    extensions?: string[]
-}) {
-    const defaultExts = ['.jpg', '.jpeg', '.JPG', '.JPEG', '.png', '.webp']
-    const candidates = extensions && extensions.length ? extensions : defaultExts
-    const [extIndex, setExtIndex] = useState(0)
-    const [src, setSrc] = useState<string>(`${baseSrc}${candidates[0]}`)
-
-    const handleError = () => {
-        // Try next extension; if none left, fallback to placeholder
-        if (extIndex < candidates.length - 1) {
-            const next = extIndex + 1
-            setExtIndex(next)
-            setSrc(`${baseSrc}${candidates[next]}`)
-        } else {
-            setSrc('/abstract-black-white-geometric-pattern-minimal.png')
-        }
-    }
-
-    // Reset when baseSrc changes
-    React.useEffect(() => {
-        setExtIndex(0)
-        setSrc(`${baseSrc}${candidates[0]}`)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [baseSrc])
-
-    return (
-        <img
-            src={src}
-            alt={alt || ''}
-            className={className}
-            onError={handleError}
-            loading={loading}
-            style={style}
-        />
-    )
+type CmsSection = {
+    _key?: string
+    layout?: string
+    title?: string
+    subtitle?: string
+    description?: string
+    features?: string[]
+    image?: any
+    imageUrl?: string
+    heroLeft?: { title?: string; subtitle?: string; description?: string }
+    heroRight?: { title?: string; subtitle?: string; description?: string }
 }
 
-function ParallaxImage({
-    baseSrc,
-    alt,
-    speed = 0.2,
-    className,
-}: {
-    baseSrc: string
-    alt?: string
-    speed?: number
-    className?: string
-}) {
-    const wrapperRef = useRef<HTMLDivElement | null>(null)
-    const [offset, setOffset] = useState(0)
-    const tickingRef = useRef(false)
+interface ProductImageSectionsProps {
+    sections?: CmsSection[]
+}
 
-    const update = () => {
-        if (!wrapperRef.current) return
-        const rect = wrapperRef.current.getBoundingClientRect()
-        const viewportH = window.innerHeight || 0
-        // Distance from element center to viewport center
-        const distance = rect.top + rect.height / 2 - viewportH / 2
-        const translate = -distance * speed
-        setOffset(translate)
-        tickingRef.current = false
-    }
+export function ProductImageSections({ sections }: ProductImageSectionsProps) {
+    const sectionRef = useRef<HTMLElement | null>(null)
 
-    const onScroll = () => {
-        if (!tickingRef.current) {
-            tickingRef.current = true
-            window.requestAnimationFrame(update)
-        }
-    }
-
+    // Set up GSAP animations
     useEffect(() => {
-        update()
-        window.addEventListener('scroll', onScroll, { passive: true })
-        window.addEventListener('resize', onScroll)
-        return () => {
-            window.removeEventListener('scroll', onScroll)
-            window.removeEventListener('resize', onScroll)
-        }
+        gsap.registerPlugin(ScrollTrigger)
+        const section = sectionRef.current
+        if (!section) return
+
+        const ctx = gsap.context(() => {
+            // Hero image parallax
+            const heroImage = section.querySelector('.js-hero-image')
+            if (heroImage) {
+                gsap.set(heroImage, { willChange: 'transform', force3D: true })
+                gsap.fromTo(
+                    heroImage,
+                    { scale: 1.1 },
+                    {
+                        scale: 1,
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: heroImage,
+                            start: 'top bottom',
+                            end: 'bottom top',
+                            scrub: 0.6,
+                        },
+                    }
+                )
+            }
+
+            // Reveal animations for text elements
+            const revealElements = gsap.utils.toArray<HTMLElement>('.js-reveal')
+            revealElements.forEach((el) => {
+                gsap.fromTo(
+                    el,
+                    { y: 60, opacity: 0 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 1,
+                        ease: 'power2.out',
+                        scrollTrigger: {
+                            trigger: el,
+                            start: 'top 80%',
+                            end: 'bottom 20%',
+                            toggleActions: 'play none none reverse',
+                        },
+                    }
+                )
+            })
+
+            // Parallax for feature images
+            const parallaxImages = gsap.utils.toArray<HTMLElement>('.js-parallax')
+            parallaxImages.forEach((el) => {
+                gsap.set(el, { willChange: 'transform', force3D: true })
+                gsap.fromTo(
+                    el,
+                    { scale: 1.1 },
+                    {
+                        scale: 1,
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: el,
+                            start: 'top bottom',
+                            end: 'bottom top',
+                            scrub: 0.4,
+                        },
+                    }
+                )
+            })
+        }, section)
+
+        return () => ctx.revert()
     }, [])
 
+    // Only render when CMS sections are provided. If none are available,
+    // render nothing — avoid any static fallback content in the component.
+    if (!sections || !sections.length) return null
+
+    const first = sections[0]
+    // schema now defines a distinct object type for hero sections
+    const hasHero = first && (first as any)._type === 'productHeroSection'
+    const hero = hasHero ? first : null
+    const bodySections = hasHero ? sections.slice(1) : sections
+
     return (
-        <div ref={wrapperRef} className={className}>
-            <ImageWithExtFallback
-                baseSrc={baseSrc}
-                alt={alt}
-                className="w-full h-[135%] object-cover will-change-transform"
-                style={{ transform: `translateY(${offset}px) scale(1.12)` }}
-            />
-        </div>
-    )
-}
-
-const sections: Section[] = [
-    {
-        type: 'full',
-        imageBase: '/composite-panel-system-architectural-facade',
-        title: 'Un matériau robuste et fiable',
-        intro:
-            "Conçu pour résister aux conditions climatiques les plus extrêmes, le MEG conserve ses performances et son aspect au fil des années, notamment face :",
-        bullets: [
-            'aux fortes variations de température (de -30°C à +70°C),',
-            "à l’humidité élevée (jusqu’à 90%),",
-            'aux rayons UV et à l’ensoleillement intense,',
-            'aux pluies acides et polluants atmosphériques,',
-            'au vent et aux sollicitations mécaniques extérieures,',
-            'au brouillard salin et aux environnements côtiers.',
-        ],
-        text:
-            "Sa surface décorative et son cœur haute densité assurent une excellente tenue dans le temps, même en conditions d’usage intensif.",
-        outro:
-            "Ne se déforme pas, ne se fissure pas et conserve une esthétique nette et durable, limitant les interventions d’entretien.",
-        alt: 'MEG – matériau robuste et fiable',
-    },
-    {
-        type: 'split',
-        imageBase: '/easy-meg-panels',
-        title: 'Des performances techniques élevées',
-        intro: 'Grâce à sa densité et sa composition homogène, le MEG offre des garanties de mise en œuvre et de durabilité :',
-        bullets: [
-            'une excellente résistance aux chocs et à la flexion,',
-            'une solidité parfaite pour les fixations mécaniques (vis, rivets, etc.),',
-            'une option ignifugée (classification B – s1 d0), répondant aux normes européennes les plus strictes (EN 438:2016 – partie 6),',
-            'une stabilité dimensionnelle maîtrisée sur la durée,',
-            'un comportement optimal en façade ventilée (dilatations contrôlées).',
-        ],
-        paragraphs: [
-            "La pose est facilitée par une tolérance maîtrisée et une compatibilité avec les systèmes de sous-structures courants.",
-            "Le matériau supporte les cycles thermiques répétés sans altération visible de la surface décorative.",
-        ],
-        alt: 'MEG – performances techniques',
-        imageLeft: true,
-    },
-    {
-        type: 'split',
-        imageBase: '/copanel-composite',
-        title: 'Une liberté esthétique totale',
-        intro: "Des palettes de finitions et de textures étendues permettent d’exprimer l’identité du projet, du minimalisme aux compositions graphiques.",
-        paragraphs: [
-            "Disponible dans une large gamme de décors, effets bois, unis ou motifs contemporains, le MEG permet de créer des façades qui allient design et modernité, tout en restant intemporelles.",
-            "Les teintes conservent leur intensité et gagnent en caractère avec le temps, sans entretien contraignant.",
-        ],
-        bullets: [
-            'Effets bois naturels et essences variées',
-            'Unis profonds et neutres sophistiqués',
-            'Motifs contemporains et géométries graphiques',
-            'Surfaces texturées et mates',
-        ],
-        outro: "Possibilité d’associer formats, calepinages et décors pour une écriture de façade sur-mesure.",
-        alt: 'MEG – liberté esthétique',
-        imageLeft: false,
-    },
-    {
-        type: 'split',
-        imageBase: '/exterior-facades-ventilees',
-        title: 'Pourquoi choisir le MEG en Tunisie ?',
-        intro:
-            "Avec son climat chaud, humide et soumis aux variations, la Tunisie met les matériaux à rude épreuve.",
-        bullets: [
-            'Résistance élevée au rayonnement solaire et aux UV',
-            'Durabilité en zones côtières et milieux salins',
-            'Entretien réduit grâce à une surface facile à nettoyer',
-            'Stabilité thermique et mécanique sur la durée',
-        ],
-        paragraphs: [
-            "Le MEG concilie durabilité, résistance et élégance, tout en offrant une grande liberté de conception.",
-        ],
-        outro: "Une solution fiable pour les enveloppes performantes, des villas aux équipements publics.",
-        alt: 'MEG – avantages en Tunisie',
-        imageLeft: true,
-    },
-    {
-        type: 'split',
-        imageBase: '/composite-panel-system',
-        title: 'Mise en œuvre maîtrisée',
-        intro:
-            "Compatible avec les principales sous-structures, le MEG s’installe facilement en façade ventilée avec des détails simples et durables.",
-        bullets: [
-            'Calepinages précis et répétables',
-            'Fixations apparentes ou invisibles selon les besoins',
-            'Dilatations contrôlées pour une stabilité de longue durée',
-        ],
-        paragraphs: [
-            "Nous privilégions des assemblages robustes et un entretien réduit pour optimiser le coût global sur la durée de vie du bâtiment.",
-        ],
-        alt: 'MEG – mise en œuvre',
-        imageLeft: false,
-    },
-    {
-        type: 'split',
-        imageBase: '/aluminium-facade-panels-modern-building',
-        title: 'Tenue et entretien',
-        intro: 'La surface décorative résiste aux UV et se nettoie simplement à l’eau claire avec un chiffon doux.',
-        bullets: [
-            'Résistance aux salissures et graisses',
-            'Couleurs stables et durables',
-            'Surface non poreuse limitant l’encrassement',
-        ],
-        paragraphs: [
-            "Idéal pour les zones à fort rayonnement solaire ou soumises aux embruns marins, tout en conservant l’esthétique d’origine.",
-        ],
-        alt: 'MEG – entretien',
-        imageLeft: true,
-    },
-]
-
-export function ProductImageSections() {
-    return (
-        <section id="details-media" className="bg-white">
-            {/* Full-width hero image with text */}
-            {sections[0]?.type === 'full' && (
-                <div className="w-full">
-                    <div className="relative max-w-7xl mx-auto w-full h-[60vh] md:h-[80vh] overflow-hidden">
-                        <ParallaxImage
-                            baseSrc={(sections[0] as any).imageBase}
-                            alt={(sections[0] as any).alt || 'MEG visuel'}
-                            speed={0.5}
-                            className="absolute inset-0"
-                        />
-                    </div>
-                    {(sections[0] as any).title || (sections[0] as any).intro || (sections[0] as any).bullets || (sections[0] as any).text || (sections[0] as any).outro ? (
-                        <div className="max-w-7xl mx-auto px-4 py-10 md:py-14">
-                            {(sections[0] as any).title && (
-                                <h2 className="text-2xl md:text-3xl font-light tracking-[-0.01em] mb-3">
-                                    {(sections[0] as any).title}
-                                </h2>
-                            )}
-                            {(sections[0] as any).intro && (
-                                <p className="text-gray-700 leading-relaxed font-light text-base md:text-lg">
-                                    {(sections[0] as any).intro}
-                                </p>
-                            )}
-                            {(sections[0] as any).bullets && Array.isArray((sections[0] as any).bullets) && (
-                                <ul className="list-disc pl-6 md:pl-8 text-gray-700 font-light space-y-1 md:space-y-1.5 mt-4">
-                                    {(sections[0] as any).bullets.map((b: string, i: number) => (
-                                        <li key={i} className="text-base md:text-lg">{b}</li>
-                                    ))}
-                                </ul>
-                            )}
-                            {(sections[0] as any).text && (
-                                <p className="text-gray-700 leading-relaxed font-light text-base md:text-lg mt-4">
-                                    {(sections[0] as any).text}
-                                </p>
-                            )}
-                            {(sections[0] as any).outro && (
-                                <p className="text-gray-700 leading-relaxed font-light text-base md:text-lg mt-4">
-                                    {(sections[0] as any).outro}
-                                </p>
-                            )}
-                        </div>
-                    ) : null}
-                </div>
-            )}
-
-            {/* Alternating split sections */}
-            <div className="max-w-7xl mx-auto px-4 space-y-12 md:space-y-16 pb-16 md:pb-24">
-                {sections.slice(1).map((s, idx) => {
-                    if (s.type !== 'split') return null
-                    const imageLeft = s.imageLeft ?? idx % 2 === 0
-                    return (
-                        <div
-                            key={idx}
-                            className="grid md:grid-cols-2 gap-6 md:gap-12 items-center"
-                        >
-                            <div className={imageLeft ? '' : 'md:order-2'}>
-                                <div className="relative h-[40rem] w-full overflow-hidden border border-gray-100">
-                                    <ParallaxImage
-                                        baseSrc={s.imageBase}
-                                        alt={s.alt || 'MEG visuel'}
-                                        speed={0.3}
-                                        className="absolute inset-0"
-                                    />
-                                </div>
+        <section ref={sectionRef} className="relative bg-white py-16 md:py-24">
+            <div className="max-w-7xl mx-auto px-4 md:px-6">
+                {/* Hero Section - big image + two text columns */}
+                {hero && (hero.image || (hero as any).imageUrl) && (
+                    <>
+                        <div className="mb-12 md:mb-16">
+                            <div className="js-reveal relative h-[60vh] md:h-[80vh] overflow-hidden border border-black/10">
+                                <Image
+                                    src={
+                                        (hero as any).imageUrl
+                                            ? (hero as any).imageUrl
+                                            : hero.image
+                                                ? typeof hero.image === 'string'
+                                                    ? hero.image
+                                                    : urlFor(hero.image).width(1920).height(1080).quality(90).url()
+                                                : ''
+                                    }
+                                    alt={hero.heroLeft?.title || hero.heroRight?.title || hero.subtitle || hero.title || ''}
+                                    className="js-hero-image h-full w-full object-cover"
+                                    width={1920}
+                                    height={1080}
+                                />
                             </div>
-                            <div className={imageLeft ? '' : 'md:order-1'}>
-                                {s.title && (
-                                    <h3 className="text-xl md:text-2xl font-light tracking-[-0.01em] mb-3 md:mb-4">
-                                        {s.title}
-                                    </h3>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-12 md:gap-16 mb-16 md:mb-24">
+                            <div className="js-reveal">
+                                {hero.heroLeft?.subtitle && (
+                                    <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60">{hero.heroLeft.subtitle}</p>
                                 )}
-                                {s.intro && (
-                                    <p className="text-gray-700 leading-relaxed font-light mb-4">
-                                        {s.intro}
-                                    </p>
+                                {hero.heroLeft?.title && (
+                                    <h3 className="mt-2 text-2xl md:text-3xl font-light tracking-tight text-black leading-tight">{hero.heroLeft.title}</h3>
                                 )}
-                                {s.bullets && Array.isArray(s.bullets) && (
-                                    <ul className="list-disc pl-5 md:pl-6 text-gray-700 font-light space-y-1 md:space-y-1.5">
-                                        {s.bullets.map((b, i) => (
-                                            <li key={i}>{b}</li>
+                                {hero.heroLeft?.description && (
+                                    <p className="text-base md:text-lg text-black/75 italic leading-snug mb-6">{hero.heroLeft.description}</p>
+                                )}
+                            </div>
+
+                            <div className="js-reveal text-right">
+                                {hero.heroRight?.subtitle && (
+                                    <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60">{hero.heroRight.subtitle}</p>
+                                )}
+                                {hero.heroRight?.title && (
+                                    <h3 className="mt-2 text-2xl md:text-3xl font-light tracking-tight text-black leading-tight">{hero.heroRight.title}</h3>
+                                )}
+                                {hero.heroRight?.description && (
+                                    <p className="text-base md:text-lg text-black/75 italic leading-snug mb-6">{hero.heroRight.description}</p>
+                                )}
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {/* Applications header (optional) */}
+                <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-8">
+                    <span className="h-[1px] w-8 bg-black/20" /> Applications
+                </div>
+
+                {/* Render body sections in alternating layout */}
+                {bodySections.map((feature, idx) => {
+                    const index = idx // index within bodySections
+                    const isFlexReverse = index % 2 === 1
+
+                    return (
+                        <div key={feature._key || index} className={`flex flex-col md:flex-row gap-8 items-center ${index < bodySections.length - 1 ? 'mb-12' : ''} ${isFlexReverse ? 'md:flex-row-reverse' : ''}`}>
+                            {/* Image section */}
+                            {(feature.image || (feature as any).imageUrl) && (
+                                <div className="w-full md:w-1/2">
+                                    <div className="js-reveal relative h-[50vh] md:h-[60vh] overflow-hidden border border-black/10">
+                                        <Image
+                                            src={
+                                                (feature as any).imageUrl
+                                                    ? (feature as any).imageUrl
+                                                    : feature.image
+                                                        ? typeof feature.image === 'string'
+                                                            ? feature.image
+                                                            : urlFor(feature.image).width(1200).height(800).quality(90).url()
+                                                        : ''
+                                            }
+                                            alt={feature.subtitle || feature.title || ''}
+                                            className="js-parallax h-full w-full object-cover"
+                                            width={800}
+                                            height={600}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Text section */}
+                            <div className="w-full md:w-1/2">
+                                {feature.title && (
+                                    <p className="js-reveal mb-2 text-xs uppercase tracking-[0.18em] text-black/60">{feature.title}</p>
+                                )}
+                                {feature.subtitle && (
+                                    <h3 className="js-reveal text-2xl md:text-3xl font-light tracking-tight text-black">{feature.subtitle}</h3>
+                                )}
+                                {feature.description && (
+                                    <p className="js-reveal mt-4 text-black/70 leading-relaxed">{feature.description}</p>
+                                )}
+                                {(feature.features || []).length > 0 && (
+                                    <ul className="js-reveal mt-5 space-y-2 text-black/75">
+                                        {(feature.features || []).slice(0, 6).map((featureItem, featureIndex) => (
+                                            <li key={featureIndex} className="flex items-start gap-3">
+                                                <span className="h-1.5 w-1.5 rounded-full bg-black/60 mt-2 flex-shrink-0" />
+                                                <span>{featureItem}</span>
+                                            </li>
                                         ))}
                                     </ul>
-                                )}
-                                {s.paragraphs && s.paragraphs.length > 0 ? (
-                                    <div className="space-y-4 mt-4">
-                                        {s.paragraphs.map((p, i) => (
-                                            <p key={i} className="text-gray-700 leading-relaxed font-light">
-                                                {p}
-                                            </p>
-                                        ))}
-                                    </div>
-                                ) : s.text ? (
-                                    <p className="text-gray-700 leading-relaxed font-light">
-                                        {s.text}
-                                    </p>
-                                ) : null}
-                                {s.outro && (
-                                    <p className="text-gray-700 leading-relaxed font-light mt-4">
-                                        {s.outro}
-                                    </p>
                                 )}
                             </div>
                         </div>
                     )
                 })}
+
             </div>
         </section>
     )

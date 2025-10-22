@@ -8,13 +8,24 @@ import { partnersSection } from './home/partnersSection'
 import { contactInfo } from './home/contactInfo'
 
 // Products Page
+import { interiorProduct } from './products/interiorProduct'
+import { exteriorProduct } from './products/exteriorProduct'
 import { productItem } from './products/productItem'
-import { productCategory } from './products/productCategory'
-import { productsPage } from './products/productsPage'
+import { productImageSection, productHeroSection } from './products/productImageSection'
 
 // SEO & Settings
 import { seoSettings } from './seo/seoSettings'
 import { pageSeo } from './seo/pageSeo'
+
+// Inspirations
+import { inspiration } from './inspirations/inspiration'
+import { decorFinishes } from './inspirations/decorFinishes'
+import { finitionTypes } from './inspirations/finitionTypes'
+import { productCategory } from './products/productCategory'
+
+// Secteurs
+import { secteur } from './secteurs/secteur'
+import { secteursIndex } from './secteurs/secteursIndex'
 
 export const schemaTypes = [
   // 🏠 Home Page Sections
@@ -27,11 +38,23 @@ export const schemaTypes = [
   contactInfo,
   
   // 🛍️ Products Page
+  interiorProduct,
+  exteriorProduct,
   productItem,
+  productHeroSection,
+  productImageSection,
   productCategory,
-  productsPage,
   
   // ⚙️ SEO & Settings
   seoSettings,
   pageSeo,
+  
+  // 🎨 Inspirations
+  inspiration,
+  decorFinishes,
+  finitionTypes,
+  
+  // 🏢 Secteurs
+  secteur,
+  secteursIndex,
 ]

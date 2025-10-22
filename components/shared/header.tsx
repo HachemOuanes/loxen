@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { client, urlFor } from "@/lib/sanity"
 import { Menu, X } from "lucide-react"
+import { getSecteursForMegaMenu, getExteriorProductsForMegaMenu, getInteriorProductsForMegaMenu } from '@/lib/sanity-queries'
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -21,40 +22,64 @@ export function Header() {
   const panelRef = useRef<HTMLDivElement | null>(null)
   const contentRef = useRef<HTMLDivElement | null>(null)
   const startScaleXRef = useRef<number>(0.1)
-  const originRef = useRef<{x:number;y:number}>({x:0,y:0})
+  const originRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
   const openTlRef = useRef<gsap.core.Timeline | null>(null)
   const isClosingRef = useRef<boolean>(false)
 
-  // Minimal product type and state for Interieur products list (first 4)
+  // Minimal product type and state for products list (first 4)
   type MiniProduct = {
     _id: string
     name: string
     slug: { current: string }
     description?: string
     image?: any
-    category?: { _id: string; name: string }
+    category?: string
+    type: 'exterior' | 'interior'
   }
   const [miniProducts, setMiniProducts] = useState<MiniProduct[]>([])
+  const [interiorProducts, setInteriorProducts] = useState<MiniProduct[]>([])
+  const [secteurs, setSecteurs] = useState<any[]>([])
+
   useEffect(() => {
-    // Prefetch a few products once for the mega menu
+    // Prefetch products for the mega menu
     const fetchMini = async () => {
       try {
-        const data: MiniProduct[] = await client.fetch(
-          `*[_type == "productItem"] | order(featured desc, order asc)[0...4]{
-            _id,
-            name,
-            slug,
-            description,
-            image,
-            category->{ _id, name }
-          }`
-        )
-        setMiniProducts(data || [])
+        // Fetch exterior products (current/available)
+        const exteriorData: MiniProduct[] = await getExteriorProductsForMegaMenu()
+
+        // Fetch interior products (coming soon)
+        const interiorData: MiniProduct[] = await getInteriorProductsForMegaMenu()
+
+        // Add type and category to products
+        const exteriorWithType = exteriorData.map(p => ({ ...p, type: 'exterior' as const, category: 'Extérieur' }))
+        const interiorWithType = interiorData.map(p => ({ ...p, type: 'interior' as const, category: 'Intérieur' }))
+
+        console.log('Mega menu exterior products fetched:', exteriorWithType.length)
+        console.log('Mega menu interior products fetched:', interiorWithType.length)
+        console.log('Exterior products:', exteriorWithType.map(p => p.name))
+        console.log('Interior products:', interiorWithType.map(p => p.name))
+
+        setMiniProducts(exteriorWithType || [])
+        setInteriorProducts(interiorWithType || [])
       } catch (e) {
         console.error('Mega menu products fetch failed', e)
       }
     }
+    
+    // Fetch secteurs for the mega menu
+    const fetchSecteurs = async () => {
+      try {
+        const secteursData = await getSecteursForMegaMenu()
+        setSecteurs(secteursData || [])
+        console.log('📊 Secteurs fetched for mega menu:', secteursData?.length || 0)
+        console.log('📊 Secteurs data:', secteursData)
+      } catch (error) {
+        console.error('Error fetching secteurs:', error)
+      }
+    }
+    
     fetchMini()
+    fetchSecteurs()
   }, [])
 
   useEffect(() => {
@@ -86,8 +111,8 @@ export function Header() {
 
   const navItems = [
     { key: "secteurs", label: "Secteurs", href: "/secteurs" },
-    { key: "produits", label: "Produits", href: "/produits" },
-    { key: "inspirations", label: "Inspirations", href: "/inspirations" },
+    { key: "produits", label: "Produits", href: "/" },
+    { key: "inspirations", label: "Inspirations", href: "/" },
     { key: "catalogues", label: "Catalogues", href: "/catalogues" },
     { key: "conseils", label: "Conseils", href: "/conseils" },
     { key: "contact", label: "Contact", href: "/contact" },
@@ -223,12 +248,14 @@ export function Header() {
     const { x, y } = originRef.current
     const startScaleX = startScaleXRef.current || 0.1
     gsap.set(panel, { transformOrigin: `${x}px ${y}px` })
-    gsap.to(panel, { scaleX: startScaleX, scaleY: 0.1, duration: 0.45, ease: "power3.out", onComplete: () => {
-      gsap.set(overlay, { autoAlpha: 0, pointerEvents: "none" as any })
-      setMegaOpen(false)
-      setActiveMega(null)
-      isClosingRef.current = false
-    } })
+    gsap.to(panel, {
+      scaleX: startScaleX, scaleY: 0.1, duration: 0.45, ease: "power3.out", onComplete: () => {
+        gsap.set(overlay, { autoAlpha: 0, pointerEvents: "none" as any })
+        setMegaOpen(false)
+        setActiveMega(null)
+        isClosingRef.current = false
+      }
+    })
   }
 
   // Close when hovering outside the panel area: if mouse is on the overlay itself (not the panel)
@@ -250,9 +277,9 @@ export function Header() {
       <header
         ref={headerRef}
         className={`fixed z-50 transition-all duration-500 ease-out ${isScrolled
-            ? `w-44 h-12 bg-white backdrop-blur-sm border-2 border-gray-200 shadow-sm ${isSidebarOpen ? "-translate-x-full" : "left-4"
-            } top-4`
-            : "w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black backdrop-blur-sm left-4 top-4"
+          ? `w-44 h-12 bg-white backdrop-blur-sm border-2 border-gray-200 shadow-sm ${isSidebarOpen ? "-translate-x-full" : "left-4"
+          } top-4`
+          : "w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black backdrop-blur-sm left-4 top-4"
           }`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -261,8 +288,8 @@ export function Header() {
           <a
             href="/"
             className={`absolute transition-all duration-500 font-light tracking-[-0.02em] cursor-pointer hover:opacity-80 ${isScrolled
-                ? "text-xl text-black flex items-center gap-2 "
-                : "left-4 text-2xl sm:text-4xl text-white drop-shadow-lg"
+              ? "text-xl text-black flex items-center gap-2 "
+              : "left-4 text-2xl sm:text-4xl text-white drop-shadow-lg"
               }`}
           >
             {isScrolled && (
@@ -296,14 +323,13 @@ export function Header() {
               }`}
           >
             {navItems.map((item) => (
-              <a
+              <div
                 key={item.label}
-                href={item.href}
-                className="transition-all duration-300 font-light text-xs lg:text-sm tracking-[0.1em] uppercase hover:opacity-60 text-white drop-shadow-md"
+                className="transition-all duration-300 font-light text-xs lg:text-sm tracking-[0.1em] uppercase hover:opacity-60 text-white drop-shadow-md cursor-pointer"
                 onMouseEnter={() => openMega(item.key)}
               >
                 {item.label}
-              </a>
+              </div>
             ))}
           </nav>
 
@@ -323,172 +349,241 @@ export function Header() {
         </div>
       </header>
 
-        {/* Mega menu overlay (desktop) */}
+      {/* Mega menu overlay (desktop) */}
+      <div
+        ref={overlayRef}
+        className={`hidden md:block fixed inset-0 z-40`} // visibility controlled by gsap
+        onMouseLeave={closeMega}
+        onMouseMove={handleOverlayPointer}
+        style={{ pointerEvents: megaOpen ? "auto" : "none", opacity: 0 as any }}
+      >
         <div
-          ref={overlayRef}
-          className={`hidden md:block fixed inset-0 z-40`} // visibility controlled by gsap
-          onMouseLeave={closeMega}
-          onMouseMove={handleOverlayPointer}
-          style={{ pointerEvents: megaOpen ? "auto" : "none", opacity: 0 as any }}
+          ref={panelRef}
+          className="absolute left-4 right-4 bg-black overflow-hidden"
+          style={{ top: 0, height: "75vh" }}
         >
-          <div
-            ref={panelRef}
-            className="absolute left-4 right-4 bg-black rounded-sm overflow-hidden"
-            style={{ top: 0, height: "75vh" }}
-          >
-            <div ref={contentRef} className="h-full text-white pt-6 md:pt-8 px-4 md:px-6 max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-                {activeMega === "produits" && (
-                  <>
-                    {/* Left: Interieur & Exterieur headings and short copy */}
-                    <div className="md:col-span-4 space-y-8">
-                      <div>
-                        <h3 className="text-2xl font-light">
-                          <span className="italic font-extralight">Intérieur</span>
-                        </h3>
-                        <p className="text-white/70 mt-2">Matériaux et systèmes pour l’agencement, cloisons, plans et revêtements.</p>
-                        <a href="/produits" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Voir tous</a>
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-light">
-                          <span className="italic font-extralight">Extérieur</span>
-                        </h3>
-                        <p className="text-white/70 mt-2">Façades ventilées, bardages et solutions enveloppe du bâtiment.</p>
-                        <div className="mt-3 inline-flex border border-white/20 px-3 py-1 text-[10px] tracking-[0.18em] uppercase text-white/70">Coming Soon</div>
-                      </div>
+          <div ref={contentRef} className="h-full text-white pt-6 md:pt-8 px-4 md:px-6 max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+              {activeMega === "produits" && (
+                <>
+                  {/* Left half: Intérieur (Coming Soon) */}
+                  <div className="md:col-span-6">
+                    <div className="mb-4">
+                      <h3 className="text-2xl font-light">
+                        <span className="italic font-extralight">Intérieur</span>
+                      </h3>
+                      <p className="text-white/70 mt-2">Matériaux et systèmes pour l'agencement, cloisons, plans et revêtements.</p>
+                      <div className="mt-3 inline-flex border border-white/20 px-3 py-1 text-[10px] tracking-[0.18em] uppercase text-white/70">Coming Soon</div>
                     </div>
 
-                    {/* Right: Interieur products (first four) */}
-                    <div className="md:col-span-8 grid grid-cols-2 lg:grid-cols-4 gap-6">
-                      {miniProducts.length === 0 && (
-                        <div className="col-span-2 lg:col-span-4 text-white/60 text-sm">Aucun produit à afficher pour le moment.</div>
+                    {/* Intérieur products grid (blurred) */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {interiorProducts.length === 0 ? (
+                        <div className="col-span-2 text-white/60 text-sm">Produits intérieurs bientôt disponibles.</div>
+                      ) : (
+                        interiorProducts.map((p) => (
+                          <div key={`int-${p._id}`} className="group border border-white/10 bg-white/0 p-2 flex flex-col relative h-32">
+                            <div className="aspect-[4/3] overflow-hidden border border-white/10 relative flex-1">
+                              {p.image ? (
+                                <img
+                                  src={urlFor(p.image).width(480).height(360).quality(80).url()}
+                                  alt={p.name}
+                                  className="w-full h-full object-cover filter blur-sm"
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-white/5" />
+                              )}
+                              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <div className="text-white/60 text-xs tracking-[0.18em] uppercase">Coming Soon</div>
+                              </div>
+                            </div>
+                            <div className="mt-2">
+                              <div className="text-sm text-white/40 leading-tight">{p.name}</div>
+                              <div className="text-xs text-white/30 mt-1">{p.category}</div>
+                            </div>
+                          </div>
+                        ))
                       )}
-                      {miniProducts.map((p) => (
-                        <a key={p._id} href={`/produits/${p.slug?.current ?? ''}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-3 flex flex-col">
-                          <div className="aspect-[4/3] overflow-hidden border border-white/10">
-                            {p.image ? (
-                              <img
-                                src={urlFor(p.image).width(480).height(360).quality(80).url()}
-                                alt={p.name}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-white/5" />
-                            )}
-                          </div>
-                          <div className="mt-3">
-                            <div className="text-sm text-white leading-tight">{p.name}</div>
-                            {p.category?.name && (
-                              <div className="text-[11px] text-white/60 mt-1">{p.category.name}</div>
-                            )}
-                          </div>
-                        </a>
-                      ))}
                     </div>
-                  </>
-                )}
+                  </div>
 
-                {activeMega === "secteurs" && (
-                  <>
-                    <div className="md:col-span-4">
-                      <h3 className="text-2xl font-light">Secteurs</h3>
-                      <p className="text-white/70 mt-2">Intérieur, extérieur et projets spécifiques.</p>
-                      <a href="/secteurs" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Explorer</a>
+                  {/* Right half: Extérieur (Current Products) */}
+                  <div className="md:col-span-6">
+                    <div className="mb-4">
+                      <h3 className="text-2xl font-light">
+                        <span className="italic font-extralight">Extérieur</span>
+                      </h3>
+                      <p className="text-white/70 mt-2">Façades ventilées, bardages et solutions enveloppe du bâtiment.</p>
+                      <a href="/produits/exterieur" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Voir tous</a>
                     </div>
-                    <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
-                      {["Résidentiel", "Bureaux", "Hôtellerie", "Éducation", "Retail", "Santé"].map((c) => (
-                        <a key={c} href="/secteurs" className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-4">
-                          <div className="text-sm text-white">{c}</div>
-                          <div className="mt-1 text-xs text-white/60">En savoir plus</div>
-                        </a>
-                      ))}
-                    </div>
-                  </>
-                )}
 
-                {activeMega === "inspirations" && (
-                  <>
-                    <div className="md:col-span-4">
-                      <h3 className="text-2xl font-light">Inspirations</h3>
-                      <p className="text-white/70 mt-2">Projets, tendances et références.</p>
-                      <a href="/inspirations" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Voir la galerie</a>
+                    {/* Extérieur products grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {miniProducts.length === 0 ? (
+                        <div className="col-span-2 text-white/60 text-sm">Aucun produit à afficher pour le moment.</div>
+                      ) : (
+                        miniProducts.map((p) => (
+                          <a key={p._id} href={`/produits/exterieur/${p.slug?.current ?? ''}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-2 flex flex-col h-32">
+                            <div className="aspect-[4/3] overflow-hidden border border-white/10 flex-1">
+                              {p.image ? (
+                                <img
+                                  src={urlFor(p.image).width(480).height(360).quality(80).url()}
+                                  alt={p.name}
+                                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-white/5" />
+                              )}
+                            </div>
+                            <div className="mt-2">
+                              <div className="text-sm text-white leading-tight">{p.name}</div>
+                              <div className="text-xs text-white/60 mt-1">{p.category}</div>
+                            </div>
+                          </a>
+                        ))
+                      )}
                     </div>
-                    <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
-                      {["Salle de bain HPL", "Façades ventilées", "Espaces publics", "Espaces de travail", "Retail", "Habitat"].map((c) => (
-                        <a key={c} href="/inspirations" className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-4">
-                          <div className="text-sm text-white">{c}</div>
-                          <div className="mt-1 text-xs text-white/60">Découvrir</div>
-                        </a>
-                      ))}
-                    </div>
-                  </>
-                )}
+                  </div>
+                </>
+              )}
 
-                {activeMega === "catalogues" && (
-                  <>
-                    <div className="md:col-span-4">
-                      <h3 className="text-2xl font-light">Catalogues</h3>
-                      <p className="text-white/70 mt-2">Téléchargez nos documents et fiches techniques.</p>
-                      <a href="/catalogues" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Accéder</a>
-                    </div>
-                    <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
-                      {["Plaquettes", "Nuanciers", "Guides techniques", "Fiches produits", "BIM", "Certifications"].map((c) => (
-                        <a key={c} href="/catalogues" className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-4">
-                          <div className="text-sm text-white">{c}</div>
-                          <div className="mt-1 text-xs text-white/60">Télécharger</div>
-                        </a>
-                      ))}
-                    </div>
-                  </>
-                )}
+              {activeMega === "secteurs" && (
+                <>
+                  <div className="md:col-span-4">
+                    <h3 className="text-2xl font-light">Secteurs</h3>
+                    <p className="text-white/70 mt-2">Intérieur, extérieur et projets spécifiques.</p>
+                    <a href="/secteurs" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Explorer</a>
+                  </div>
+                  <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
+                    {secteurs.length === 0 ? (
+                      <div className="col-span-2 text-white/60 text-sm">Secteurs en cours de chargement...</div>
+                    ) : (
+                      secteurs.map((s) => (
+                      <a key={s.slug?.current || s.slug} href={`/secteurs/${s.slug?.current || s.slug}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors overflow-hidden">
+                        <div className="relative h-36 overflow-hidden">
+                          <img src={urlFor(s.heroImage).width(400).height(200).url()} alt={s.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+                        </div>
+                        <div className="p-4">
+                          <div className="text-base font-medium text-white">{s.title}</div>
+                          <div className="mt-2 text-sm text-white/60 line-clamp-2">{s.description}</div>
+                        </div>
+                      </a>
+                      ))
+                    )}
+                  </div>
+                </>
+              )}
 
-                {activeMega === "conseils" && (
-                  <>
-                    <div className="md:col-span-4">
-                      <h3 className="text-2xl font-light">Conseils</h3>
-                      <p className="text-white/70 mt-2">Mise en œuvre, entretien et recommandations.</p>
-                      <a href="/conseils" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Lire les articles</a>
-                    </div>
-                    <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
-                      {["Pose & fixation", "Entretien", "Compatibilités", "FAQ", "Normes", "Contact expert"].map((c) => (
-                        <a key={c} href="/conseils" className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-4">
-                          <div className="text-sm text-white">{c}</div>
-                          <div className="mt-1 text-xs text-white/60">Découvrir</div>
-                        </a>
-                      ))}
-                    </div>
-                  </>
-                )}
+              {activeMega === "inspirations" && (
+                <>
+                  <div className="md:col-span-4">
+                    <h3 className="text-2xl font-light">Inspirations</h3>
+                    <p className="text-white/70 mt-2">Découvrez nos réalisations HPL dans différents espaces.</p>
+                    <a href="/inspirations" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Explorer</a>
+                  </div>
+                  <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
+                    {[
+                      {
+                        label: "Salle de bain HPL",
+                        slug: "salle-de-bain",
+                        image: "/salle-de-bain/solid-top-piano-hpl-bagni-02.jpg"
+                      },
+                      {
+                        label: "Cuisine HPL",
+                        slug: "cuisine",
+                        image: "/cuisine/cuisine-hpl.jpg"
+                      },
+                      {
+                        label: "Chambre à coucher HPL",
+                        slug: "chambre-a-coucher",
+                        image: "/chambre/chambre-hpl.webp"
+                      }
+                    ].map((c) => (
+                      <a key={c.slug} href={`/inspirations/${c.slug}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors overflow-hidden h-full">
+                        <div className="relative h-36 overflow-hidden">
+                          <img
+                            src={c.image}
+                            alt={c.label}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+                        </div>
+                        <div className="p-4">
+                          <div className="text-base font-medium text-white">{c.label}</div>
+                          <div className="mt-2 text-sm text-white/60">Découvrir les réalisations</div>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </>
+              )}
 
-                {activeMega === "contact" && (
-                  <>
-                    <div className="md:col-span-12 md:max-w-3xl">
-                      <h3 className="text-2xl font-light">Contact</h3>
-                      <p className="text-white/70 mt-2">Parlez-nous de votre projet, nous revenons vers vous rapidement.</p>
-                      <form className="mt-6 space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                          <div className="space-y-2">
-                            <label className="text-sm font-light text-white/70 tracking-widest uppercase">Nom</label>
-                            <Input placeholder="Votre nom" className="bg-transparent border-0 border-b border-white/20 text-white placeholder:text-white/40 focus:border-white/60 h-14 rounded-none px-0 text-lg font-light focus-visible:ring-0" />
-                          </div>
-                          <div className="space-y-2">
-                            <label className="text-sm font-light text-white/70 tracking-widest uppercase">Email</label>
-                            <Input type="email" placeholder="vous@email.com" className="bg-transparent border-0 border-b border-white/20 text-white placeholder:text-white/40 focus:border-white/60 h-14 rounded-none px-0 text-lg font-light focus-visible:ring-0" />
-                          </div>
+              {activeMega === "catalogues" && (
+                <>
+                  <div className="md:col-span-4">
+                    <h3 className="text-2xl font-light">Catalogues</h3>
+                    <p className="text-white/70 mt-2">Téléchargez nos documents et fiches techniques.</p>
+                    <a href="/catalogues" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Accéder</a>
+                  </div>
+                  <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
+                    {["Plaquettes", "Nuanciers", "Guides techniques", "Fiches produits", "BIM", "Certifications"].map((c) => (
+                      <a key={c} href="/catalogues" className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-4">
+                        <div className="text-sm text-white">{c}</div>
+                        <div className="mt-1 text-xs text-white/60">Télécharger</div>
+                      </a>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {activeMega === "conseils" && (
+                <>
+                  <div className="md:col-span-4">
+                    <h3 className="text-2xl font-light">Conseils</h3>
+                    <p className="text-white/70 mt-2">Mise en œuvre, entretien et recommandations.</p>
+                    <a href="/conseils" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Lire les articles</a>
+                  </div>
+                  <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
+                    {["Pose & fixation", "Entretien", "Compatibilités", "FAQ", "Normes", "Contact expert"].map((c) => (
+                      <a key={c} href="/conseils" className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-4">
+                        <div className="text-sm text-white">{c}</div>
+                        <div className="mt-1 text-xs text-white/60">Découvrir</div>
+                      </a>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {activeMega === "contact" && (
+                <>
+                  <div className="md:col-span-12 md:max-w-3xl">
+                    <h3 className="text-2xl font-light">Contact</h3>
+                    <p className="text-white/70 mt-2">Parlez-nous de votre projet, nous revenons vers vous rapidement.</p>
+                    <form className="mt-6 space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <div className="space-y-2">
+                          <label className="text-sm font-light text-white/70 tracking-widest uppercase">Nom</label>
+                          <Input placeholder="Votre nom" className="bg-transparent border-0 border-b border-white/20 text-white placeholder:text-white/40 focus:border-white/60 h-14 rounded-none px-0 text-lg font-light focus-visible:ring-0" />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-sm font-light text-white/70 tracking-widest uppercase">Message</label>
-                          <Textarea rows={6} placeholder="Parlez-nous de votre projet..." className="bg-transparent border-0 border-b border-white/20 text-white placeholder:text-white/40 focus:border-white/60 resize-none rounded-none px-0 text-lg font-light focus-visible:ring-0" />
+                          <label className="text-sm font-light text-white/70 tracking-widest uppercase">Email</label>
+                          <Input type="email" placeholder="vous@email.com" className="bg-transparent border-0 border-b border-white/20 text-white placeholder:text-white/40 focus:border-white/60 h-14 rounded-none px-0 text-lg font-light focus-visible:ring-0" />
                         </div>
-                        <Button type="submit" className="bg-white text-black hover:bg-white/90 rounded-none tracking-[0.18em] uppercase text-xs h-12 px-8">Envoyer</Button>
-                      </form>
-                    </div>
-                  </>
-                )}
-              </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-light text-white/70 tracking-widest uppercase">Message</label>
+                        <Textarea rows={6} placeholder="Parlez-nous de votre projet..." className="bg-transparent border-0 border-b border-white/20 text-white placeholder:text-white/40 focus:border-white/60 resize-none rounded-none px-0 text-lg font-light focus-visible:ring-0" />
+                      </div>
+                      <Button type="submit" className="bg-white text-black hover:bg-white/90 rounded-none tracking-[0.18em] uppercase text-xs h-12 px-8">Envoyer</Button>
+                    </form>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
+      </div>
 
       <div
         className={`fixed top-0 left-0 h-full w-72 sm:w-80 bg-white/95 backdrop-blur-xl border-r border-gray-200/30 z-40 transition-transform duration-500 ease-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"

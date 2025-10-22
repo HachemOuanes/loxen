@@ -1,24 +1,33 @@
-import { Header } from "@/components/shared/header"
-import { Footer } from "@/components/shared/footer"
-import { SectorImageSections } from "@/components/secteurs/sector-image-sections"
-import { getSectorBySlug, secteursIndex } from "@/lib/secteurs-data"
-import { notFound } from "next/navigation"
+import { notFound } from 'next/navigation';
+import { SecteursPageContent } from '@/components/secteurs/secteurs-page-content';
+import { Header } from '@/components/shared/header';
+import { Footer } from '@/components/shared/footer';
+import { getSecteurBySlug, getSecteursSlugs } from '@/lib/sanity-queries/secteurs';
 
 export const revalidate = 86400
 
 export async function generateStaticParams() {
-    return secteursIndex.map((s) => ({ slug: s.slug }))
+  const slugs = await getSecteursSlugs()
+  return slugs.map((slug) => ({ slug }))
 }
 
-export default function SecteursPage({ params }: { params: { slug: string } }) {
-    const data = getSectorBySlug(params.slug)
-    if (!data) return notFound()
-    return (
-        <main className="min-h-screen bg-white overflow-x-hidden">
-            <Header />
-            <div className="pt-20" />
-            <SectorImageSections title={`${data.title} — MEG, Easy MEG & HPL`} description={data.description} />
-            <Footer />
-        </main>
-    )
+export default async function SecteursPage({ params }: { params: { slug: string } }) {
+  const specific = await getSecteurBySlug(params.slug);
+  if (!specific) return notFound();
+
+  // Mock shared data for now (will be replaced with Sanity data later)
+  const shared = {
+    contact: {
+      link: '/contact',
+      cta: 'Nous contacter'
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-white overflow-x-hidden">
+      <Header />
+      <SecteursPageContent shared={shared} specific={specific} />
+      <Footer />
+    </main>
+  );
 }

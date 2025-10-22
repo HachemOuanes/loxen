@@ -1,10 +1,10 @@
 import { defineType, defineField } from 'sanity'
 
-export const productItem = defineType({
-  name: 'productItem',
-  title: 'Product Item',
+export const interiorProduct = defineType({
+  name: 'interiorProduct',
+  title: 'Interior Product',
   type: 'document',
-  description: 'Products for the dedicated products page with full details and filtering',
+  description: 'Products for interior applications (agencement, cloisons, plans, revêtements)',
   fields: [
     defineField({
       name: 'name',
@@ -53,19 +53,10 @@ export const productItem = defineType({
       of: [
         {
           type: 'image',
-          options: {
-            hotspot: true,
-          },
+          options: { hotspot: true },
         },
       ],
       description: 'Additional product images for galleries',
-    }),
-    defineField({
-      name: 'category',
-      title: 'Product Category',
-      type: 'reference',
-      to: [{ type: 'productCategory' }],
-      validation: (Rule) => Rule.required(),
     }),
     // Product Details Section
     defineField({
@@ -80,7 +71,7 @@ export const productItem = defineType({
       title: 'Applications',
       type: 'array',
       of: [{ type: 'string' }],
-      description: 'Common use cases (e.g., "Façades ventilées", "Balcons")',
+      description: 'Common use cases (e.g., "Agencement", "Cloisons", "Plans de travail")',
     }),
     defineField({
       name: 'panelFormats',
@@ -205,6 +196,14 @@ export const productItem = defineType({
       of: [{ type: 'string' }],
       description: 'List of key product features and benefits',
     }),
+    // Image sections (rich content blocks shown on product pages)
+    defineField({
+      name: 'imageSections',
+      title: 'Image Sections',
+      type: 'array',
+      of: [{ type: 'productHeroSection' }, { type: 'productImageSection' }],
+      description: 'Structured image sections: first can be a hero section followed by feature sections',
+    }),
     defineField({
       name: 'specifications',
       title: 'Technical Specifications',
@@ -272,51 +271,18 @@ export const productItem = defineType({
       },
       description: 'Tags for additional filtering and search',
     }),
-    // Image sections (rich content blocks shown on product pages)
-    defineField({
-      name: 'imageSections',
-      title: 'Image Sections',
-      type: 'array',
-      of: [{ type: 'productHeroSection' }, { type: 'productImageSection' }],
-      description: 'Structured image sections: first can be a hero section followed by feature sections',
-      initialValue: [
-        {
-          title: 'Résistance',
-          subtitle: 'Un matériau robuste et fiable',
-          description: "Conçu pour résister aux conditions climatiques les plus extrêmes, le MEG conserve ses performances et son aspect au fil des années.",
-          image: { _type: 'image', asset: null },
-          features: [
-            'Forte résistance aux variations de température (-30°C à +70°C)',
-            "Résistance à l'humidité élevée (jusqu'à 90%)",
-            "Protection contre les rayons UV et l'ensoleillement intense",
-          ],
-        },
-        {
-          title: 'Performance',
-          subtitle: 'Des performances techniques élevées',
-          description: 'Grâce à sa densité et sa composition homogène, le MEG offre des garanties de mise en œuvre et de durabilité exceptionnelles.',
-          image: { _type: 'image', asset: null },
-          features: [
-            'Excellente résistance aux chocs et à la flexion',
-            'Solidité parfaite pour les fixations mécaniques',
-            'Classification ignifugée B – s1 d0 (EN 438:2016)',
-          ],
-        },
-      ],
-    }),
   ],
   preview: {
     select: {
       title: 'name',
       subtitle: 'description',
       media: 'image',
-      category: 'category.name',
       featured: 'featured',
     },
-    prepare({ title, subtitle, media, category, featured }) {
+    prepare({ title, subtitle, media, featured }) {
       return {
         title: `${title}${featured ? ' ⭐' : ''}`,
-        subtitle: `${category ? `${category} • ` : ''}${subtitle}`,
+        subtitle: `Intérieur • ${subtitle}`,
         media,
       }
     },

@@ -15,7 +15,15 @@
     "test:sanity": "node scripts/setup-env.js --test",
     "backup:create": "node scripts/backup-data.js backup",
     "backup:restore": "node scripts/backup-data.js restore",
-    "backup:list": "node scripts/backup-data.js list"
+    "backup:list": "node scripts/backup-data.js list",
+    "seed:inspirations": "node scripts/seed-inspirations.js",
+    "update:hero-images": "node scripts/update-hero-images.js",
+    "migrate:products": "node scripts/migrate-products.js",
+    "check:products": "node scripts/check-existing-products.js",
+    "export:products": "node scripts/export-product-data.js",
+    "fetch:migrate": "node scripts/fetch-and-migrate-products.js",
+    "cleanup:old": "node scripts/cleanup-old-products.js",
+    "test:mega": "node scripts/test-mega-menu.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { client, urlFor } from "@/lib/sanity"
+import { urlFor } from "@/lib/sanity"
+import { getExteriorSection } from "@/lib/sanity-queries"
 import { InteriorExteriorSkeleton } from "@/components/home/skeletons/interior-exterior-skeleton"
 
 interface ExteriorCategory {
@@ -29,19 +30,7 @@ export function ExteriorSection() {
     const fetchData = async () => {
       try {
         // Fetch exterior section data
-        const exteriorQuery = `*[_type == "exteriorSection"][0]{
-          title,
-          description,
-          sectionImage,
-          categories[]{
-            name,
-            description,
-            image,
-            order
-          },
-          showSection
-        }`
-        const sectionData = await client.fetch(exteriorQuery)
+        const sectionData = await getExteriorSection()
 
         if (sectionData?.categories && sectionData?.showSection !== false) {
           const formattedCategories = sectionData.categories.map((cat: any, index: number) => ({

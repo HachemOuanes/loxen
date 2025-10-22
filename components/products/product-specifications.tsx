@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { urlFor } from "@/lib/sanity"
-import { Plus } from "lucide-react"
 
 interface Product {
   _id: string
@@ -33,7 +32,6 @@ interface ProductSpecificationsProps {
 
 export function ProductSpecifications({ product }: ProductSpecificationsProps) {
   const [showAllFinishes, setShowAllFinishes] = useState(false)
-  const [expandedDocument, setExpandedDocument] = useState<string | null>(null)
 
 
   const displayedFinishes = showAllFinishes

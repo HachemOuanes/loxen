@@ -2,8 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { urlFor, client } from "@/lib/sanity"
-import { ProductGallery } from "./product-gallery"
+import { urlFor } from "@/lib/sanity"
 import { ProductSpecifications } from "./product-specifications"
 import { RelatedProducts } from "./related-products"
 import { ProductImageSections } from "./product-image-sections"
@@ -16,7 +15,6 @@ interface Product {
     description: string
     longDescription?: string
     image: any
-    gallery?: any[]
     category: {
         _id: string
         name: string
@@ -46,6 +44,14 @@ interface Product {
     price?: string
     inStock?: boolean
     tags?: string[]
+    imageSections?: Array<{
+        _key?: string
+        title?: string
+        subtitle?: string
+        description?: string
+        features?: string[]
+        image?: any
+    }>
 }
 
 interface ProductDetailContentProps {
@@ -61,21 +67,8 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
         <>
             {/* Hero Section */}
             <section className="pt-28 pb-12 px-4 bg-white">
-                <div className="mx-auto">
+                <div className="mx-auto max-w-7xl">
                     <div className="flex gap-4 ">
-
-                        {/* Product Gallery */}
-                        <div className="space-y-6">
-                            {/* <ProductGallery
-                                mainImage={product.image}
-                                gallery={product.gallery}
-                                productName={product.name}
-                            /> */}
-
-                            {/* Available Finishes Preview */}
-
-                        </div>
-
                         {/* Product Information */}
                         <div className="space-y-6 w-2/5">
                             {/* Header */}
@@ -171,16 +164,17 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
                         <div className="space-y-8 flex w-3/5 ">
                             <div className="w-2/3 space-y-4 flex flex-col items-center">
                                 <div className="border-2 border-gray-200">
-                                    <ProductGallery
-                                        mainImage={product.image}
-                                        gallery={product.gallery}
-                                        productName={product.name}
+                                    <img
+                                        src={urlFor(product.image).width(800).height(1200).quality(90).url()}
+                                        alt={product.name}
+                                        className="w-full h-full object-cover"
                                     />
                                 </div>
                                 <div className="space-y-4">
                                     <Button
                                         size="lg"
-                                        className="w-fit  bg-white text-black border border-gray-600 hover:bg-white text-sm uppercase tracking-wider py-3 font-light rounded-none transition-all duration-300"
+                                        variant="outline"
+                                        className="border-2 border-black/20 bg-transparent text-black hover:bg-black hover:text-white font-light tracking-wider text-sm uppercase transition-all duration-300 rounded-none px-12"
                                         onClick={() => (window.location.href = '/contact')}
                                     >
                                         Télécharger le catalogue
@@ -192,7 +186,7 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
 
                             {/* Quick Specs */}
                             {(product.panelFormats || product.thickness) && (
-                                <div className="w-full space-y-6 bg-gray-50 pl-8">
+                                <div className="w-full space-y-6 bg-gray-50 p-4 h-fit">
                                     <div className="space-y-6">
                                         {product.panelFormats && (
                                             <div className="space-y-2">
@@ -284,9 +278,7 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
                                     )}
                                 </div>
                             )}
-
                         </div>
-
                     </div>
                 </div>
             </section>
@@ -294,8 +286,8 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
             {/* Detailed Specifications */}
             <ProductSpecifications product={product} />
 
-            {/* Static image/text alternating sections */}
-            <ProductImageSections />
+            {/* Image/text alternating sections (from CMS if available) */}
+            <ProductImageSections sections={product.imageSections} />
 
             {/* Technical specifications and documents moved below images */}
             <ProductTechDocs product={product} />
