@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { urlFor } from '@/lib/sanity';
-import { getInspirationBySlug, getFinitionTypes, getDecorFinishes } from '@/lib/sanity-queries';
+import { getInspirationBySlug, getFinitionTypes, getRandomDecors } from '@/services/sanity';
 import { InspirationPageContent } from '@/components/inspirations/inspiration-page-content';
 import { Header } from '@/components/shared/header';
 import { Footer } from '@/components/shared/footer';
@@ -12,17 +12,21 @@ async function getInspirationData(slug: string) {
 
         if (!inspiration) return null;
 
-        // Fetch shared data (finition types and decor finishes)
-        const [finitionTypes, decorFinishes] = await Promise.all([
+        // Fetch shared data (finition types and random decors)
+        const [finitionTypes, randomDecors] = await Promise.all([
             getFinitionTypes(),
-            getDecorFinishes()
+            getRandomDecors(20)
         ]);
 
         return {
             specific: inspiration,
             shared: {
                 typesFinitions: finitionTypes,
-                finitionsDisponibles: decorFinishes,
+                finitionsDisponibles: {
+                    title: 'Décors disponibles',
+                    productSlug: 'random', // Special flag for random decors
+                    decors: randomDecors
+                },
                 contact: {
                     link: inspiration.contactSection?.contactLink || '/contact',
                     cta: inspiration.contactSection?.contactCta || 'Nous contacter'

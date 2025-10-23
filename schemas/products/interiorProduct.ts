@@ -46,18 +46,6 @@ export const interiorProduct = defineType({
       },
       validation: (Rule) => Rule.required(),
     }),
-    defineField({
-      name: 'gallery',
-      title: 'Product Gallery',
-      type: 'array',
-      of: [
-        {
-          type: 'image',
-          options: { hotspot: true },
-        },
-      ],
-      description: 'Additional product images for galleries',
-    }),
     // Product Details Section
     defineField({
       name: 'characteristics',
@@ -130,58 +118,6 @@ export const interiorProduct = defineType({
       type: 'boolean',
       description: 'Show "Demande de fichier BIM" option',
       initialValue: false,
-    }),
-    defineField({
-      name: 'availableFinishes',
-      title: 'Décors disponibles',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            defineField({
-              name: 'code',
-              title: 'Finish Code',
-              type: 'string',
-              validation: (Rule) => Rule.required(),
-            }),
-            defineField({
-              name: 'name',
-              title: 'Finish Name',
-              type: 'string',
-              validation: (Rule) => Rule.required(),
-            }),
-            defineField({
-              name: 'image',
-              title: 'Finish Image',
-              type: 'image',
-              options: {
-                hotspot: true,
-              },
-            }),
-            defineField({
-              name: 'color',
-              title: 'Primary Color',
-              type: 'string',
-              description: 'Hex color code for preview',
-            }),
-          ],
-          preview: {
-            select: {
-              title: 'name',
-              subtitle: 'code',
-              media: 'image',
-            },
-          },
-        },
-      ],
-      description: 'Available finishes/colors for this product',
-    }),
-    defineField({
-      name: 'totalFinishesCount',
-      title: 'Total Finishes Available',
-      type: 'number',
-      description: 'Total number of finishes in collection (e.g., 106 for MEG)',
     }),
     defineField({
       name: 'collectionName',

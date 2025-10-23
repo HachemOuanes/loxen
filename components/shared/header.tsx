@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { client, urlFor } from "@/lib/sanity"
 import { Menu, X } from "lucide-react"
-import { getSecteursForMegaMenu, getExteriorProductsForMegaMenu, getInteriorProductsForMegaMenu } from '@/lib/sanity-queries'
+import { getSecteursForMegaMenu, getExteriorProductsForMegaMenu, getInteriorProductsForMegaMenu } from '@/services/sanity'
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)

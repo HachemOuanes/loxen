@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { urlFor } from "@/lib/sanity"
-import { getRelatedProducts } from "@/lib/sanity-queries"
+import { getRelatedProducts } from "@/services/sanity"
 
 interface RelatedProduct {
   _id: string

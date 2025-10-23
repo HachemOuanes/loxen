@@ -46,11 +46,14 @@ interface Product {
     tags?: string[]
     imageSections?: Array<{
         _key?: string
+        _type?: string
         title?: string
         subtitle?: string
         description?: string
         features?: string[]
         image?: any
+        heroLeft?: { title?: string; subtitle?: string; description?: string }
+        heroRight?: { title?: string; subtitle?: string; description?: string }
     }>
 }
 

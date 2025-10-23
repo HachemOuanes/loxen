@@ -11,6 +11,7 @@ import { urlFor } from '@/lib/sanity'
 
 type CmsSection = {
     _key?: string
+    _type?: string
     layout?: string
     title?: string
     subtitle?: string

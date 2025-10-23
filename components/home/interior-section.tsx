@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { urlFor } from "@/lib/sanity"
-import { getInteriorSection } from "@/lib/sanity-queries"
+import { getInteriorSection } from "@/services/sanity"
 import { InteriorExteriorSkeleton } from "@/components/home/skeletons/interior-exterior-skeleton"
 
 interface InteriorCategory {

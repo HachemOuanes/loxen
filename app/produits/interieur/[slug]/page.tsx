@@ -1,12 +1,15 @@
 import { notFound } from 'next/navigation'
-import { getInteriorProductBySlug } from '@/lib/sanity-queries'
+import { getInteriorProductBySlug, getDecorsByProductType } from '@/services/sanity'
 import { Header } from '@/components/shared/header'
 import { Footer } from '@/components/shared/footer'
 import { ProductDetailContent } from '@/components/products/product-detail-content'
 
 async function getInteriorProduct(slug: string) {
     try {
-        const product = await getInteriorProductBySlug(slug)
+        const [product, decors] = await Promise.all([
+            getInteriorProductBySlug(slug),
+            getDecorsByProductType('interior')
+        ])
 
         // Add category information
         if (product) {
@@ -15,6 +18,16 @@ async function getInteriorProduct(slug: string) {
                 name: "Intérieur",
                 slug: { current: "interieur" }
             }
+            
+            // Add decors to product
+            product.availableFinishes = decors.map((decor: any) => ({
+                code: decor.code,
+                name: decor.name,
+                image: decor.image,
+                color: decor.color
+            }))
+            
+            product.totalFinishesCount = decors.length
         }
 
         return product

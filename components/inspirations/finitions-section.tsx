@@ -69,7 +69,7 @@ export function FinitionsSection({ title, items }: FinitionsSectionProps) {
                     </div>
                     {f.schema && (
                       <img 
-                        src={urlFor(f.schema).width(300).height(200).quality(85).url()} 
+                        src={urlFor(f.schema).width(500).height(200).quality(85).url()} 
                         alt={f.title + ' schema'} 
                         className="mx-auto h-auto w-2/3 object-contain" 
                       />

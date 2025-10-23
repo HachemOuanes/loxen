@@ -108,6 +108,12 @@ export const structure: StructureResolver = (S) =>
             ])
         ),
 
+      // Decors - Standalone Section
+      S.listItem()
+        .title('🎨 Decors')
+        .icon(TagIcon)
+        .child(S.documentTypeList('decor').title('All Decors')),
+
       // Secteurs Page Content
       S.listItem()
         .title('🏢 Secteurs')
@@ -146,7 +152,7 @@ export const structure: StructureResolver = (S) =>
             .title('All Documents')
             .items([
               ...S.documentTypeListItems().filter(
-                (listItem) => !['seoSettings', 'heroSection', 'contactInfo', 'productsSection', 'inspirationSection', 'interiorSection', 'exteriorSection', 'partnersSection', 'finitionTypes', 'decorFinishes', 'secteursIndex'].includes(listItem.getId() || '')
+                (listItem) => !['seoSettings', 'heroSection', 'contactInfo', 'productsSection', 'inspirationSection', 'interiorSection', 'exteriorSection', 'partnersSection', 'finitionTypes', 'decorFinishes', 'decor', 'secteursIndex'].includes(listItem.getId() || '')
               ),
             ])
         ),

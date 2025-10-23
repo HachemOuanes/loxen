@@ -3,6 +3,9 @@
 // Products
 export * from './products'
 
+// Decors
+export * from './decors'
+
 // Inspirations
 export * from './inspirations'
 

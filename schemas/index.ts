@@ -23,6 +23,9 @@ import { decorFinishes } from './inspirations/decorFinishes'
 import { finitionTypes } from './inspirations/finitionTypes'
 import { productCategory } from './products/productCategory'
 
+// Decors
+import { decor } from './decor'
+
 // Secteurs
 import { secteur } from './secteurs/secteur'
 import { secteursIndex } from './secteurs/secteursIndex'
@@ -53,6 +56,9 @@ export const schemaTypes = [
   inspiration,
   decorFinishes,
   finitionTypes,
+  
+  // 🎨 Decors
+  decor,
   
   // 🏢 Secteurs
   secteur,

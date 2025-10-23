@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import gsap from 'gsap'
 import { urlFor } from '@/lib/sanity'
-import { getProductItemBySlug } from '@/lib/sanity-queries'
+import { getProductItemBySlug } from '@/services/sanity'
 
 type Finish = {
   code: string
@@ -29,11 +29,20 @@ export function DecorsDispoGrid({ slug, shared }: DecorsDispoGridProps) {
     let mounted = true
     async function load() {
       try {
-        const data = await getProductItemBySlug(slug)
-        if (!mounted) return
-        setFinishes(data?.availableFinishes || [])
-        setTotal(data?.totalFinishesCount)
-        setCollectionName(data?.collectionName)
+        // Check if we have random decors from shared data
+        if (slug === 'random' && shared?.finitionsDisponibles?.decors) {
+          if (!mounted) return
+          setFinishes(shared.finitionsDisponibles.decors)
+          setTotal(shared.finitionsDisponibles.decors.length)
+          setCollectionName('Collection variée')
+        } else {
+          // Fallback to product-based decors
+          const data = await getProductItemBySlug(slug)
+          if (!mounted) return
+          setFinishes(data?.availableFinishes || [])
+          setTotal(data?.totalFinishesCount)
+          setCollectionName(data?.collectionName)
+        }
       } catch (_e) {
         if (!mounted) return
         setFinishes([])
@@ -45,7 +54,7 @@ export function DecorsDispoGrid({ slug, shared }: DecorsDispoGridProps) {
     return () => {
       mounted = false
     }
-  }, [slug])
+  }, [slug, shared])
 
   // Precompute render list with one cloned item for seamless looping
   const renderItems = useMemo(() => {

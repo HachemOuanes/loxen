@@ -18,28 +18,13 @@ export async function getInspirationBySlug(slug: string) {
         description,
         features,
         image
-      }
-    },
-    collageSection{
+      },
       images[],
       tiles[]{
         title,
         subtitle,
         description
       }
-    },
-    finitionSection{
-      title,
-      description,
-      finitionTypes[]{
-        key,
-        name,
-        image
-      }
-    },
-    decorsDispo{
-      title,
-      productSlug
     },
     contactSection{
       title,
@@ -66,8 +51,11 @@ export async function getFinitionTypes() {
     title,
     items[]{
       key,
-      name,
-      image
+      title,
+      subtitle,
+      description,
+      image,
+      schema
     }
   }`
   

@@ -1,13 +1,20 @@
 import { Metadata } from 'next'
-import { client, urlFor } from '@/lib/sanity'
+import { urlFor } from '@/lib/sanity'
+import { getAllDecors } from '@/services/sanity'
 import React from 'react'
 
 type Finish = {
+  _id: string
   code: string
   name: string
   image?: any
   color?: string
   collectionName?: string
+  category?: {
+    _id: string
+    name: string
+    slug: { current: string }
+  }
 }
 
 export const revalidate = 86400
@@ -18,25 +25,21 @@ export const metadata: Metadata = {
 }
 
 async function getAllFinishes(): Promise<Finish[]> {
-  // Gather finishes from the product catalog; if multiple products share the same finish entry, flatten uniquely by code+name
-  const data = await client.fetch(`
-    {
-      "items": *[_type == "productItem"]{collectionName, availableFinishes[]{code,name,image,color}}
-    }
-  `)
-  const items = (data?.items || []) as Array<{collectionName?: string, availableFinishes?: Finish[]}>;
-  const all: Finish[] = []
-  const seen = new Set<string>()
-  for (const it of items) {
-    for (const f of (it.availableFinishes || [])) {
-      const key = `${f.code}|${f.name}`
-      if (!seen.has(key)) {
-        seen.add(key)
-        all.push({ ...f, collectionName: it.collectionName })
-      }
-    }
+  try {
+    const decors = await getAllDecors()
+    return decors.map(decor => ({
+      _id: decor._id,
+      code: decor.code,
+      name: decor.name,
+      image: decor.image,
+      color: decor.color,
+      collectionName: decor.collectionName,
+      category: decor.category
+    }))
+  } catch (error) {
+    console.error('Error fetching decors:', error)
+    return []
   }
-  return all
 }
 
 export default async function DecorsPage() {

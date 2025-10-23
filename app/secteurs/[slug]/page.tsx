@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { SecteursPageContent } from '@/components/secteurs/secteurs-page-content';
 import { Header } from '@/components/shared/header';
 import { Footer } from '@/components/shared/footer';
-import { getSecteurBySlug, getSecteursSlugs } from '@/lib/sanity-queries/secteurs';
+import { getSecteurBySlug, getSecteursSlugs } from '@/services/sanity/secteurs';
 
 export const revalidate = 86400
 
