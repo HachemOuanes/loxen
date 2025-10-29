@@ -6,7 +6,7 @@ export const client = createClient({
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
   useCdn: false, // Set to false for development to avoid caching issues
   apiVersion: '2023-05-03', // Use same API version as migration script
-  // perspective: 'published', // Removed to fetch both published and draft documents
+  perspective: 'published', // Removed to fetch both published and draft documents
 })
 
 const builder = imageUrlBuilder(client)

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { client, urlFor } from "@/lib/sanity"
 import { Menu, X } from "lucide-react"
-import { getSecteursForMegaMenu, getExteriorProductsForMegaMenu, getInteriorProductsForMegaMenu } from '@/services/sanity'
+import { getSecteursForMegaMenu, getExteriorProductsForMegaMenu, getInteriorProductsForMegaMenu, getInspirationsForMegaMenu } from '@/services/sanity'
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -39,6 +39,7 @@ export function Header() {
   const [miniProducts, setMiniProducts] = useState<MiniProduct[]>([])
   const [interiorProducts, setInteriorProducts] = useState<MiniProduct[]>([])
   const [secteurs, setSecteurs] = useState<any[]>([])
+  const [inspirations, setInspirations] = useState<any[]>([])
 
   useEffect(() => {
     // Prefetch products for the mega menu
@@ -54,32 +55,36 @@ export function Header() {
         const exteriorWithType = exteriorData.map(p => ({ ...p, type: 'exterior' as const, category: 'Extérieur' }))
         const interiorWithType = interiorData.map(p => ({ ...p, type: 'interior' as const, category: 'Intérieur' }))
 
-        console.log('Mega menu exterior products fetched:', exteriorWithType.length)
-        console.log('Mega menu interior products fetched:', interiorWithType.length)
-        console.log('Exterior products:', exteriorWithType.map(p => p.name))
-        console.log('Interior products:', interiorWithType.map(p => p.name))
-
         setMiniProducts(exteriorWithType || [])
         setInteriorProducts(interiorWithType || [])
       } catch (e) {
         console.error('Mega menu products fetch failed', e)
       }
     }
-    
+
     // Fetch secteurs for the mega menu
     const fetchSecteurs = async () => {
       try {
         const secteursData = await getSecteursForMegaMenu()
         setSecteurs(secteursData || [])
-        console.log('📊 Secteurs fetched for mega menu:', secteursData?.length || 0)
-        console.log('📊 Secteurs data:', secteursData)
       } catch (error) {
         console.error('Error fetching secteurs:', error)
       }
     }
-    
+
+    // Fetch inspirations for the mega menu
+    const fetchInspirations = async () => {
+      try {
+        const inspirationsData = await getInspirationsForMegaMenu()
+        setInspirations(inspirationsData || [])
+      } catch (error) {
+        console.error('Error fetching inspirations:', error)
+      }
+    }
+
     fetchMini()
     fetchSecteurs()
+    fetchInspirations()
   }, [])
 
   useEffect(() => {
@@ -459,16 +464,16 @@ export function Header() {
                       <div className="col-span-2 text-white/60 text-sm">Secteurs en cours de chargement...</div>
                     ) : (
                       secteurs.map((s) => (
-                      <a key={s.slug?.current || s.slug} href={`/secteurs/${s.slug?.current || s.slug}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors overflow-hidden">
-                        <div className="relative h-36 overflow-hidden">
-                          <img src={urlFor(s.heroImage).width(400).height(200).url()} alt={s.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
-                        </div>
-                        <div className="p-4">
-                          <div className="text-base font-medium text-white">{s.title}</div>
-                          <div className="mt-2 text-sm text-white/60 line-clamp-2">{s.description}</div>
-                        </div>
-                      </a>
+                        <a key={s.slug?.current || s.slug} href={`/secteurs/${s.slug?.current || s.slug}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors overflow-hidden">
+                          <div className="relative h-36 overflow-hidden">
+                            <img src={urlFor(s.heroImage).width(400).height(200).url()} alt={s.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+                          </div>
+                          <div className="p-4">
+                            <div className="text-base font-medium text-white">{s.title}</div>
+                            <div className="mt-2 text-sm text-white/60 line-clamp-2">{s.description}</div>
+                          </div>
+                        </a>
                       ))
                     )}
                   </div>
@@ -483,38 +488,30 @@ export function Header() {
                     <a href="/inspirations" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Explorer</a>
                   </div>
                   <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
-                    {[
-                      {
-                        label: "Salle de bain HPL",
-                        slug: "salle-de-bain",
-                        image: "/salle-de-bain/solid-top-piano-hpl-bagni-02.jpg"
-                      },
-                      {
-                        label: "Cuisine HPL",
-                        slug: "cuisine",
-                        image: "/cuisine/cuisine-hpl.jpg"
-                      },
-                      {
-                        label: "Chambre à coucher HPL",
-                        slug: "chambre-a-coucher",
-                        image: "/chambre/chambre-hpl.webp"
-                      }
-                    ].map((c) => (
-                      <a key={c.slug} href={`/inspirations/${c.slug}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors overflow-hidden h-full">
-                        <div className="relative h-36 overflow-hidden">
-                          <img
-                            src={c.image}
-                            alt={c.label}
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          />
-                          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
-                        </div>
-                        <div className="p-4">
-                          <div className="text-base font-medium text-white">{c.label}</div>
-                          <div className="mt-2 text-sm text-white/60">Découvrir les réalisations</div>
-                        </div>
-                      </a>
-                    ))}
+                    {inspirations.length === 0 ? (
+                      <div className="col-span-2 text-white/60 text-sm">Inspirations en cours de chargement...</div>
+                    ) : (
+                      inspirations.map((inspiration) => (
+                        <a key={inspiration._id} href={`/inspirations/${inspiration.slug?.current || inspiration.slug}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors overflow-hidden h-full">
+                          <div className="relative h-36 overflow-hidden">
+                            {inspiration.heroImage ? (
+                              <img
+                                src={urlFor(inspiration.heroImage).width(400).height(200).url()}
+                                alt={inspiration.title}
+                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-white/5" />
+                            )}
+                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+                          </div>
+                          <div className="p-4">
+                            <div className="text-base font-medium text-white">{inspiration.title}</div>
+                            <div className="mt-2 text-sm text-white/60 line-clamp-2">{inspiration.description}</div>
+                          </div>
+                        </a>
+                      ))
+                    )}
                   </div>
                 </>
               )}

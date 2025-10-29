@@ -43,6 +43,19 @@ export async function getInspirationSlugs() {
   return await client.fetch(query)
 }
 
+// Get inspirations for mega menu
+export async function getInspirationsForMegaMenu() {
+  const query = `*[_type == "inspiration"] | order(order asc, title asc)[0...6]{
+    _id,
+    title,
+    slug,
+    description,
+    heroImage
+  }`
+  
+  return await client.fetch(query)
+}
+
 // ===== FINITION TYPES =====
 
 // Get finition types
