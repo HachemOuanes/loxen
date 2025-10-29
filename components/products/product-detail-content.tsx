@@ -77,12 +77,14 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
                             {/* Header */}
                             <div>
                                 <div className="flex items-center gap-2 mb-3">
-                                    <span className="text-sm text-gray-600 uppercase tracking-wider font-light">
-                                        {product.category?.name}
-                                    </span>
+                                    {product.category?.name && (
+                                        <span className="text-sm text-gray-600 uppercase tracking-wider font-light">
+                                            {product.category.name}
+                                        </span>
+                                    )}
                                     {!product.inStock && (
                                         <>
-                                            <span className="text-sm text-gray-400">•</span>
+                                            {product.category?.name && <span className="text-sm text-gray-400">•</span>}
                                             <span className="text-sm text-gray-600 uppercase tracking-wider font-light">
                                                 Sur commande
                                             </span>
@@ -298,8 +300,8 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
             {/* Related Products */}
             <RelatedProducts
                 currentProductId={product._id}
-                categoryId={product.category._id}
-                categoryName={product.category.name}
+                categoryId={product.category?._id || 'default'}
+                categoryName={product.category?.name || 'Produits'}
             />
         </>
     )

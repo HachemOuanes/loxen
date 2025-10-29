@@ -30,7 +30,7 @@ export function RelatedProducts({ currentProductId, categoryId, categoryName }: 
   useEffect(() => {
     const fetchRelatedProducts = async () => {
       try {
-        // Determine product type based on category
+        // Determine product type based on category or fallback to interior
         const productType = categoryName === 'Extérieur' ? 'exteriorProduct' : 'interiorProduct'
 
         const products = await getRelatedProducts(productType, currentProductId)
