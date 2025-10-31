@@ -4,22 +4,29 @@ import { client } from '@/lib/sanity'
 
 // Get all decors
 export async function getAllDecors() {
-  const query = `*[_type == "decor"] | order(featured desc, order asc, name asc) {
+  const query = `*[_type == "decor"] | order(featured desc, abet_order asc, name asc) {
     _id,
     code,
     name,
     image,
+    image_url,
     color,
-    category->{
-      _id,
-      name,
-      slug
+    colors,
+    abet_order,
+    collection_names[]{
+      code,
+      name
     },
-    collectionName,
-    description,
-    tags,
-    featured,
-    order
+    collections,
+    surfaces,
+    finishes,
+    option_classes,
+    keywords,
+    interior,
+    exterior,
+    available,
+    is_new,
+    featured
   }`
   
   return await client.fetch(query)
@@ -27,22 +34,29 @@ export async function getAllDecors() {
 
 // Get decors by category
 export async function getDecorsByCategory(categorySlug: string) {
-  const query = `*[_type == "decor" && category->slug.current == $categorySlug] | order(featured desc, order asc, name asc) {
+  const query = `*[_type == "decor" && category->slug.current == $categorySlug] | order(featured desc, abet_order asc, name asc) {
     _id,
     code,
     name,
     image,
+    image_url,
     color,
-    category->{
-      _id,
-      name,
-      slug
+    colors,
+    abet_order,
+    collection_names[]{
+      code,
+      name
     },
-    collectionName,
-    description,
-    tags,
-    featured,
-    order
+    collections,
+    surfaces,
+    finishes,
+    option_classes,
+    keywords,
+    interior,
+    exterior,
+    available,
+    is_new,
+    featured
   }`
   
   return await client.fetch(query, { categorySlug })
@@ -50,47 +64,61 @@ export async function getDecorsByCategory(categorySlug: string) {
 
 // Get decors by product type (interior/exterior)
 export async function getDecorsByProductType(productType: 'interior' | 'exterior') {
-  const categoryName = productType === 'interior' ? 'Intérieur' : 'Extérieur'
+  const field = productType === 'interior' ? 'interior' : 'exterior'
   
-  const query = `*[_type == "decor" && category->name == $categoryName] | order(featured desc, order asc, name asc) {
+  const query = `*[_type == "decor" && ${field} == true] | order(featured desc, abet_order asc, name asc) {
     _id,
     code,
     name,
     image,
+    image_url,
     color,
-    category->{
-      _id,
-      name,
-      slug
+    colors,
+    abet_order,
+    collection_names[]{
+      code,
+      name
     },
-    collectionName,
-    description,
-    tags,
-    featured,
-    order
+    collections,
+    surfaces,
+    finishes,
+    option_classes,
+    keywords,
+    interior,
+    exterior,
+    available,
+    is_new,
+    featured
   }`
   
-  return await client.fetch(query, { categoryName })
+  return await client.fetch(query)
 }
 
 // Get random decors for inspiration page
 export async function getRandomDecors(limit: number = 20) {
-  const query = `*[_type == "decor"] | order(featured desc, order asc) [0...$limit] {
+  const query = `*[_type == "decor"] | order(featured desc, abet_order asc) [0...$limit] {
     _id,
     code,
     name,
     image,
+    image_url,
     color,
-    category->{
-      _id,
-      name,
-      slug
+    colors,
+    abet_order,
+    collection_names[]{
+      code,
+      name
     },
-    collectionName,
-    description,
-    tags,
-    featured,
-    order
+    collections,
+    surfaces,
+    finishes,
+    option_classes,
+    keywords,
+    interior,
+    exterior,
+    available,
+    is_new,
+    featured
   }`
   
   return await client.fetch(query, { limit })
@@ -98,71 +126,92 @@ export async function getRandomDecors(limit: number = 20) {
 
 // Get featured decors
 export async function getFeaturedDecors(limit: number = 10) {
-  const query = `*[_type == "decor" && featured == true] | order(order asc, name asc) [0...$limit] {
+  const query = `*[_type == "decor" && featured == true] | order(abet_order asc, name asc) [0...$limit] {
     _id,
     code,
     name,
     image,
+    image_url,
     color,
-    category->{
-      _id,
-      name,
-      slug
+    colors,
+    abet_order,
+    collection_names[]{
+      code,
+      name
     },
-    collectionName,
-    description,
-    tags,
-    featured,
-    order
+    collections,
+    surfaces,
+    finishes,
+    option_classes,
+    keywords,
+    interior,
+    exterior,
+    available,
+    is_new,
+    featured
   }`
   
   return await client.fetch(query, { limit })
 }
 
 // Get decors by collection
-export async function getDecorsByCollection(collectionName: string) {
-  const query = `*[_type == "decor" && collectionName == $collectionName] | order(featured desc, order asc, name asc) {
+export async function getDecorsByCollection(collectionCode: string) {
+  const query = `*[_type == "decor" && $collectionCode in collections] | order(featured desc, abet_order asc, name asc) {
     _id,
     code,
     name,
     image,
+    image_url,
     color,
-    category->{
-      _id,
-      name,
-      slug
+    colors,
+    abet_order,
+    collection_names[]{
+      code,
+      name
     },
-    collectionName,
-    description,
-    tags,
-    featured,
-    order
+    collections,
+    surfaces,
+    finishes,
+    option_classes,
+    keywords,
+    interior,
+    exterior,
+    available,
+    is_new,
+    featured
   }`
   
-  return await client.fetch(query, { collectionName })
+  return await client.fetch(query, { collectionCode })
 }
 
-// Get decors by tags
-export async function getDecorsByTags(tags: string[]) {
-  const query = `*[_type == "decor" && count(tags[@ in $tags]) > 0] | order(featured desc, order asc, name asc) {
+// Get decors by colors
+export async function getDecorsByColors(colors: string[]) {
+  const query = `*[_type == "decor" && count(colors[@ in $colors]) > 0] | order(featured desc, abet_order asc, name asc) {
     _id,
     code,
     name,
     image,
+    image_url,
     color,
-    category->{
-      _id,
-      name,
-      slug
+    colors,
+    abet_order,
+    collection_names[]{
+      code,
+      name
     },
-    collectionName,
-    description,
-    tags,
-    featured,
-    order
+    collections,
+    surfaces,
+    finishes,
+    option_classes,
+    keywords,
+    interior,
+    exterior,
+    available,
+    is_new,
+    featured
   }`
   
-  return await client.fetch(query, { tags })
+  return await client.fetch(query, { colors })
 }
 
 // Get decor by code
@@ -172,17 +221,24 @@ export async function getDecorByCode(code: string) {
     code,
     name,
     image,
+    image_url,
     color,
-    category->{
-      _id,
-      name,
-      slug
+    colors,
+    abet_order,
+    collection_names[]{
+      code,
+      name
     },
-    collectionName,
-    description,
-    tags,
-    featured,
-    order
+    collections,
+    surfaces,
+    finishes,
+    option_classes,
+    keywords,
+    interior,
+    exterior,
+    available,
+    is_new,
+    featured
   }`
   
   return await client.fetch(query, { code })
@@ -192,18 +248,10 @@ export async function getDecorByCode(code: string) {
 export async function getDecorStats() {
   const query = `{
     "total": count(*[_type == "decor"]),
-    "byCategory": *[_type == "decor"] {
-      "category": category->name
-    } | group(category) | {
-      "category": category,
-      "count": count()
-    },
-    "byCollection": *[_type == "decor"] {
-      "collection": collectionName
-    } | group(collection) | {
-      "collection": collection,
-      "count": count()
-    },
+    "available": count(*[_type == "decor" && available == true]),
+    "interior": count(*[_type == "decor" && interior == true]),
+    "exterior": count(*[_type == "decor" && exterior == true]),
+    "new": count(*[_type == "decor" && is_new == true]),
     "featured": count(*[_type == "decor" && featured == true])
   }`
   

@@ -139,20 +139,6 @@ export const interiorProduct = defineType({
       of: [{ type: 'string' }],
       description: 'List of key product features and benefits',
     }),
-    defineField({
-      name: 'availableFinishes',
-      title: 'Available Finishes/Decors',
-      type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'decor' }] }],
-      description: 'Decors available for this product',
-    }),
-    defineField({
-      name: 'totalFinishesCount',
-      title: 'Total Finishes Count',
-      type: 'number',
-      description: 'Total number of available finishes (auto-calculated or manual)',
-      initialValue: 0,
-    }),
     // Image sections (rich content blocks shown on product pages)
     defineField({
       name: 'imageSections',

@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
-import { urlFor } from '@/lib/sanity'
 import { getAllDecors } from '@/services/sanity'
+import { DecorsWithFilters } from '@/components/decors/decors-with-filters'
+import { Header } from '@/components/shared/header'
+import { Footer } from '@/components/shared/footer'
 import React from 'react'
 
 type Finish = {
@@ -8,13 +10,21 @@ type Finish = {
   code: string
   name: string
   image?: any
+  image_url?: string
   color?: string
-  collectionName?: string
-  category?: {
-    _id: string
-    name: string
-    slug: { current: string }
-  }
+  colors?: string[]
+  abet_order?: number
+  collection_names?: Array<{ code: string; name: string }>
+  collections?: string[]
+  surfaces?: string[]
+  finishes?: string[]
+  option_classes?: string[]
+  keywords?: string[]
+  interior?: boolean
+  exterior?: boolean
+  available?: boolean
+  is_new?: boolean
+  featured?: boolean
 }
 
 export const revalidate = 86400
@@ -32,9 +42,21 @@ async function getAllFinishes(): Promise<Finish[]> {
       code: decor.code,
       name: decor.name,
       image: decor.image,
+      image_url: decor.image_url,
       color: decor.color,
-      collectionName: decor.collectionName,
-      category: decor.category
+      colors: decor.colors,
+      abet_order: decor.abet_order,
+      collection_names: decor.collection_names,
+      collections: decor.collections,
+      surfaces: decor.surfaces,
+      finishes: decor.finishes,
+      option_classes: decor.option_classes,
+      keywords: decor.keywords,
+      interior: decor.interior,
+      exterior: decor.exterior,
+      available: decor.available,
+      is_new: decor.is_new,
+      featured: decor.featured
     }))
   } catch (error) {
     console.error('Error fetching decors:', error)
@@ -44,45 +66,25 @@ async function getAllFinishes(): Promise<Finish[]> {
 
 export default async function DecorsPage() {
   const finishes = await getAllFinishes()
+  const availableFinishes = finishes.filter(f => f.available !== false)
 
   return (
-    <main className="bg-white">
+    <main className="min-h-screen bg-white">
+      <Header />
       <section className="relative py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-6">
             <span className="h-[1px] w-8 bg-black/20" /> Tous les décors
           </div>
           <h1 className="text-3xl md:text-5xl font-light tracking-tight text-black mb-2">Décors disponibles</h1>
-          <p className="text-black/70 max-w-2xl">Parcourez l’ensemble des décors: marbres, bois, bétons, unis… Cliquez sur un décor pour l’agrandir.</p>
+          <p className="text-black/70 max-w-2xl">Parcourez l'ensemble des décors: marbres, bois, bétons, unis… Cliquez sur un décor pour l'agrandir.</p>
 
-          <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 md:gap-6">
-            {finishes.map((finish) => (
-              <article key={finish.code + finish.name} className="group border border-black/10 bg-white overflow-hidden">
-                <div className="aspect-[4/5] overflow-hidden bg-gray-50">
-                  {finish.image ? (
-                    <img
-                      src={urlFor(finish.image).width(480).height(600).quality(85).url()}
-                      alt={finish.name}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  ) : (
-                    <div className="h-full w-full" style={{ backgroundColor: finish.color || '#e5e7eb' }} />
-                  )}
-                </div>
-                <div className="p-3">
-                  <p className="text-xs font-medium text-black">{finish.code}</p>
-                  <p className="text-xs text-black/70 truncate">{finish.name}</p>
-                  {finish.collectionName && (
-                    <p className="mt-1 text-[11px] text-black/50">{finish.collectionName}</p>
-                  )}
-                </div>
-              </article>
-            ))}
+          <div className="mt-10">
+            <DecorsWithFilters finishes={finishes} />
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   )
 }

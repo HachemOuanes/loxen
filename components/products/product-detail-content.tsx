@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { urlFor } from "@/lib/sanity"
 import { ProductSpecifications } from "./product-specifications"
 import { RelatedProducts } from "./related-products"
 import { ProductImageSections } from "./product-image-sections"
 import { ProductTechDocs } from "./product-tech-docs"
+import { type Decor } from "@/components/shared/decors-carousel"
 
 interface Product {
     _id: string
@@ -31,13 +33,6 @@ interface Product {
         downloadText: string
     }>
     bimRequest?: boolean
-    availableFinishes?: Array<{
-        code: string
-        name: string
-        image: any
-        color?: string
-    }>
-    totalFinishesCount?: number
     collectionName?: string
     features?: string[]
     specifications?: Array<{ label: string; value: string }>
@@ -59,12 +54,18 @@ interface Product {
 
 interface ProductDetailContentProps {
     product: Product
+    decors?: Decor[]
 }
 
-export function ProductDetailContent({ product }: ProductDetailContentProps) {
+export function ProductDetailContent({ product, decors = [] }: ProductDetailContentProps) {
     const [selectedFinish, setSelectedFinish] = useState<number>(0)
     const [expandedCharacteristics, setExpandedCharacteristics] = useState(true)
     const [expandedApplications, setExpandedApplications] = useState(true)
+    
+    // Filter and sort available decors
+    const availableDecors = decors
+        .filter(d => d != null && d?._id && d?.code && (d?.available !== false))
+        .sort((a, b) => (a?.abet_order || 0) - (b?.abet_order || 0))
 
     return (
         <>
@@ -227,54 +228,104 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
                                             </div>
                                         )}
                                     </div>
-                                    {product.availableFinishes && product.availableFinishes.length > 0 && (
+                                    {availableDecors.length > 0 && (
                                         <div className="mt-4">
                                             <div className="px-4 py-3 border-b border-gray-200">
                                                 <div className="flex items-center justify-between">
                                                     <h3 className="text-sm font-medium text-black uppercase tracking-wide">
                                                         Décors disponibles
                                                     </h3>
-                                                    {product.totalFinishesCount && (
-                                                        <span className="text-xs text-gray-500">
-                                                            {product.totalFinishesCount} décors
-                                                        </span>
-                                                    )}
+                                                    <span className="text-xs text-gray-500">
+                                                        {availableDecors.length} décors
+                                                    </span>
                                                 </div>
                                             </div>
 
                                             <div className="p-4 space-y-3">
                                                 <div className="grid grid-cols-4 gap-3">
-                                                    {product.availableFinishes?.slice(0, 4).map((finish, index) => (
-                                                        <div key={index} className="group cursor-pointer" onClick={() => setSelectedFinish(index)}>
-                                                            <div className={`rounded-lg border transition-all duration-300 overflow-hidden ${selectedFinish === index
+                                                    {availableDecors.slice(0, 4).map((decor, index) => (
+                                                        <div key={decor?._id || decor?.code || index} className="group cursor-pointer" onClick={() => setSelectedFinish(index)}>
+                                                            <div className={`rounded-t-2xl border transition-all duration-300 overflow-hidden relative ${selectedFinish === index
                                                                 ? 'border-black shadow-sm'
                                                                 : 'border-gray-200 hover:border-gray-400'
                                                                 }`}>
-                                                                {finish.image ? (
-                                                                    <img
-                                                                        src={urlFor(finish.image).width(80).height(120).quality(90).url()}
-                                                                        alt={finish.name}
-                                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                                                    />
-                                                                ) : (
-                                                                    <div
-                                                                        className="w-full h-full"
-                                                                        style={{ backgroundColor: finish.color || '#f0f0f0' }}
-                                                                    />
-                                                                )}
+                                                                <div className="relative rounded-t-2xl overflow-hidden">
+                                                                    {decor?.image ? (
+                                                                        <img
+                                                                            src={urlFor(decor.image).width(80).height(120).quality(90).url()}
+                                                                            alt={decor?.name || decor?.code || 'Decor'}
+                                                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 rounded-t-2xl"
+                                                                            onError={(e) => {
+                                                                                if (decor?.image_url) {
+                                                                                    (e.target as HTMLImageElement).src = decor.image_url
+                                                                                }
+                                                                            }}
+                                                                        />
+                                                                    ) : decor?.image_url ? (
+                                                                        <img
+                                                                            src={decor.image_url}
+                                                                            alt={decor?.name || decor?.code || 'Decor'}
+                                                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 rounded-t-2xl"
+                                                                        />
+                                                                    ) : (
+                                                                        <div
+                                                                            className="w-full h-full min-h-[120px] flex items-center justify-center rounded-t-2xl"
+                                                                            style={{ backgroundColor: decor?.color || decor?.colors?.[0] || '#f0f0f0' }}
+                                                                        >
+                                                                            {decor?.code && (
+                                                                                <span className="text-xs text-gray-500">{decor.code}</span>
+                                                                            )}
+                                                                        </div>
+                                                                    )}
+                                                                    {decor?.is_new && (
+                                                                        <div className="absolute top-2 right-2 bg-black text-white text-[10px] px-2 py-1 uppercase tracking-wide rounded">
+                                                                            Nouveau
+                                                                        </div>
+                                                                    )}
+                                                                    {(decor?.interior || decor?.exterior) && (
+                                                                        <div className="absolute bottom-2 left-2 flex gap-1">
+                                                                            {decor?.interior && (
+                                                                                <span className="bg-white/90 text-black text-[9px] px-1.5 py-0.5 uppercase rounded">Int</span>
+                                                                            )}
+                                                                            {decor?.exterior && (
+                                                                                <span className="bg-white/90 text-black text-[9px] px-1.5 py-0.5 uppercase rounded">Ext</span>
+                                                                            )}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                             <div className="mt-2 text-center">
-                                                                <p className="text-xs font-medium text-black">{finish.code}</p>
-                                                                <p className="text-xs text-gray-600 font-light truncate">{finish.name}</p>
+                                                                <p className="text-xs font-medium text-black">{decor?.code}</p>
+                                                                <p className="text-xs text-gray-600 font-light truncate">{decor?.name}</p>
                                                             </div>
                                                         </div>
                                                     ))}
                                                 </div>
 
                                                 {product.collectionName && (
-                                                    <div className="bg-gray-50 p-3 border border-gray-200">
+                                                    <div className="bg-gray-50 mt-6 p-3 border border-gray-200">
                                                         <p className="text-xs text-gray-700 text-center">
-                                                            Collection <span className="font-medium">{product.collectionName}</span> • {product.totalFinishesCount} décors
+                                                            Collection <span className="font-medium">{product.collectionName}</span>
+                                                            {availableDecors.length > 0 && <span> • {availableDecors.length} décors</span>}
+                                                            {" "}
+                                                            <Link 
+                                                                href="/decors" 
+                                                                className="underline underline-offset-2 decoration-black/30 hover:decoration-black ml-1"
+                                                            >
+                                                                Voir tous
+                                                            </Link>
+                                                        </p>
+                                                    </div>
+                                                )}
+                                                {!product.collectionName && availableDecors.length > 0 && (
+                                                    <div className="bg-gray-50 mt-6 p-3 border border-gray-200">
+                                                        <p className="text-xs text-gray-700 text-center">
+                                                            <Link 
+                                                                href="/decors" 
+                                                                className="underline underline-offset-2 decoration-black/30 hover:decoration-black"
+                                                            >
+                                                                Voir tous les décors ({availableDecors.length}) →
+                                                            </Link>
                                                         </p>
                                                     </div>
                                                 )}
@@ -289,7 +340,7 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
             </section>
 
             {/* Detailed Specifications */}
-            <ProductSpecifications product={product} />
+            <ProductSpecifications product={product} decors={decors} />
 
             {/* Image/text alternating sections (from CMS if available) */}
             <ProductImageSections sections={product.imageSections} />

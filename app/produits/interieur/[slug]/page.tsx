@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getInteriorProductBySlug } from '@/services/sanity'
+import { getInteriorProductBySlug, getAllDecors } from '@/services/sanity'
 import { Header } from '@/components/shared/header'
 import { Footer } from '@/components/shared/footer'
 import { ProductDetailContent } from '@/components/products/product-detail-content'
@@ -9,7 +9,10 @@ export const revalidate = 10
 
 export default async function InteriorProductPage({ params }: { params: { slug: string } }) {
     try {
-        const product = await getInteriorProductBySlug(params.slug)
+        const [product, decors] = await Promise.all([
+            getInteriorProductBySlug(params.slug),
+            getAllDecors()
+        ])
 
         if (!product) {
             return notFound()
@@ -18,7 +21,7 @@ export default async function InteriorProductPage({ params }: { params: { slug: 
         return (
             <main className="min-h-screen bg-white">
                 <Header />
-                <ProductDetailContent product={product} />
+                <ProductDetailContent product={product} decors={decors} />
                 <Footer />
             </main>
         )

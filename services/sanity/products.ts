@@ -29,14 +29,6 @@ export async function getExteriorProducts() {
       downloadText
     },
     bimRequest,
-    availableFinishes[]->{
-      _id,
-      code,
-      name,
-      image,
-      color
-    },
-    totalFinishesCount,
     collectionName,
     features,
     specifications[]{
@@ -97,14 +89,6 @@ export async function getExteriorProductBySlug(slug: string) {
       downloadText
     },
     bimRequest,
-    availableFinishes[]->{
-      _id,
-      code,
-      name,
-      image,
-      color
-    },
-    totalFinishesCount,
     collectionName,
     features,
     specifications[]{
@@ -180,14 +164,6 @@ export async function getInteriorProducts() {
       downloadText
     },
     bimRequest,
-    availableFinishes[]->{
-      _id,
-      code,
-      name,
-      image,
-      color
-    },
-    totalFinishesCount,
     collectionName,
     features,
     specifications[]{
@@ -248,14 +224,6 @@ export async function getInteriorProductBySlug(slug: string) {
       downloadText
     },
     bimRequest,
-    availableFinishes[]->{
-      _id,
-      code,
-      name,
-      image,
-      color
-    },
-    totalFinishesCount,
     collectionName,
     features,
     specifications[]{
