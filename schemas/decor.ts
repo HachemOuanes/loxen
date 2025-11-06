@@ -70,10 +70,10 @@ export const decor = defineType({
       type: 'array',
       of: [
         {
-          type: 'string',
-          options: {
-            list: [
-              { title: 'Beige', value: 'beige' },
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Beige', value: 'beige' },
               { title: 'Blanc', value: 'blanc' },
               { title: 'Bleu', value: 'bleu' },
               { title: 'Gris', value: 'gris' },
@@ -84,8 +84,8 @@ export const decor = defineType({
               { title: 'Rouge', value: 'rouge' },
               { title: 'Vert', value: 'vert' },
               { title: 'Violet', value: 'violet' },
-            ],
-          },
+        ],
+      },
         },
       ],
       description: 'Color tags for this decor',

@@ -17,3 +17,6 @@ export * from './home'
 
 // SEO
 export * from './seo'
+
+// Catalogues
+export * from './catalogues'

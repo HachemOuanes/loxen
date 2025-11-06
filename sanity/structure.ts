@@ -120,6 +120,12 @@ export const structure: StructureResolver = (S) =>
         .icon(ComponentIcon)
         .child(S.documentTypeList('secteur').title('All Secteurs')),
 
+      // Catalogues Page Content
+      S.listItem()
+        .title('📚 Catalogues')
+        .icon(DocumentIcon)
+        .child(S.documentTypeList('catalogue').title('All Catalogues')),
+
       // SEO & Settings
       S.listItem()
         .title('⚙️ SEO & Settings')
@@ -151,9 +157,7 @@ export const structure: StructureResolver = (S) =>
           S.list()
             .title('All Documents')
             .items([
-              ...S.documentTypeListItems().filter(
-                (listItem) => !['seoSettings', 'heroSection', 'contactInfo', 'productsSection', 'inspirationSection', 'interiorSection', 'exteriorSection', 'partnersSection', 'finitionTypes', 'decorFinishes', 'decor', 'secteursIndex'].includes(listItem.getId() || '')
-              ),
+              ...S.documentTypeListItems(),
             ])
         ),
     ])

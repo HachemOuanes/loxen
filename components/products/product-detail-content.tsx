@@ -217,22 +217,22 @@ export function ProductDetailContent({ product, decors = [] }: ProductDetailCont
                                             // If 3 or fewer, display in single column
                                             if (totalFormats <= 3) {
                                                 return (
-                                                    <div className="space-y-2">
-                                                        <div className="px-4 py-3 border-b border-gray-200">
-                                                            <div className="flex items-center justify-between">
-                                                                <h3 className="text-sm font-medium text-black uppercase tracking-wide">
-                                                                    Formats disponibles
-                                                                </h3>
-                                                            </div>
-                                                        </div>
-                                                        <div className="grid grid-cols-1 gap-2">
-                                                            {formats.map((format, index) => (
-                                                                <div key={index} className="px-3 text-left">
-                                                                    <span className="text-sm text-black font-medium">{format} mm</span>
-                                                                </div>
-                                                            ))}
-                                                        </div>
+                                            <div className="space-y-2">
+                                                <div className="px-4 py-3 border-b border-gray-200">
+                                                    <div className="flex items-center justify-between">
+                                                        <h3 className="text-sm font-medium text-black uppercase tracking-wide">
+                                                            Formats disponibles
+                                                        </h3>
                                                     </div>
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-2">
+                                                            {formats.map((format, index) => (
+                                                        <div key={index} className="px-3 text-left">
+                                                            <span className="text-sm text-black font-medium">{format} mm</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
                                                 )
                                             }
                                             
@@ -295,9 +295,9 @@ export function ProductDetailContent({ product, decors = [] }: ProductDetailCont
                                                     <h3 className="text-sm font-medium text-black uppercase tracking-wide">
                                                         Finitions
                                                     </h3>
-                                                    <span className="text-xs text-gray-500">
+                                                        <span className="text-xs text-gray-500">
                                                         {availableFinishes.length} finitions
-                                                    </span>
+                                                        </span>
                                                 </div>
                                             </div>
 
@@ -308,8 +308,8 @@ export function ProductDetailContent({ product, decors = [] }: ProductDetailCont
                                                             <div className={`transition-all duration-300 relative ${selectedFinish === index ? 'shadow-sm' : ''}`}>
                                                                 <div className={`relative rounded-2xl overflow-hidden border transition-all duration-300 ${selectedFinish === index ? 'border-black' : 'border-gray-200 hover:border-gray-400'}`}>
                                                                     {finish?.image ? (
-                                                                        <img
-                                                                            src={urlFor(finish.image).width(80).height(120).quality(90).url()}
+                                                                    <img
+                                                                        src={urlFor(finish.image).width(80).height(120).quality(90).url()}
                                                                             alt={finish?.name || finish?.code || 'Finish'}
                                                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 rounded-2xl"
                                                                             onError={(e) => {
@@ -323,9 +323,9 @@ export function ProductDetailContent({ product, decors = [] }: ProductDetailCont
                                                                             src={finish.image_url}
                                                                             alt={finish?.name || finish?.code || 'Finish'}
                                                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 rounded-2xl"
-                                                                        />
-                                                                    ) : (
-                                                                        <div
+                                                                    />
+                                                                ) : (
+                                                                    <div
                                                                             className="w-full h-full min-h-[120px] flex items-center justify-center rounded-2xl"
                                                                             style={{ backgroundColor: finish?.color || '#f0f0f0' }}
                                                                         >
@@ -333,7 +333,7 @@ export function ProductDetailContent({ product, decors = [] }: ProductDetailCont
                                                                                 <span className="text-xs text-gray-500">{finish.code}</span>
                                                                             )}
                                                                         </div>
-                                                                    )}
+                                                                )}
                                                                 </div>
                                                             </div>
                                                             <div className="mt-2 text-center">

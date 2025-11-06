@@ -30,6 +30,9 @@ import { decor } from './decor'
 import { secteur } from './secteurs/secteur'
 import { secteursIndex } from './secteurs/secteursIndex'
 
+// Catalogues
+import { catalogue } from './catalogues/catalogue'
+
 export const schemaTypes = [
   // 🏠 Home Page Sections
   heroSection,
@@ -63,4 +66,7 @@ export const schemaTypes = [
   // 🏢 Secteurs
   secteur,
   secteursIndex,
+  
+  // 📚 Catalogues
+  catalogue,
 ]

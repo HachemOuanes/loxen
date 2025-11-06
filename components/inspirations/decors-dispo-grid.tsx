@@ -44,13 +44,13 @@ export function DecorsDispoGrid({ slug, shared }: DecorsDispoGridProps) {
   }, [slug, shared])
 
   if (loading) {
-    return (
-      <div>
-        <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-4">
-          <span className="h-[1px] w-8 bg-black/20" /> {shared?.finitionsDisponibles?.title || 'Finitions disponibles'}
-        </div>
-        <p className="text-black/60 text-sm">Chargement des finitions…</p>
+  return (
+    <div>
+      <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-4">
+        <span className="h-[1px] w-8 bg-black/20" /> {shared?.finitionsDisponibles?.title || 'Finitions disponibles'}
       </div>
+        <p className="text-black/60 text-sm">Chargement des finitions…</p>
+                </div>
     )
   }
 
@@ -59,7 +59,7 @@ export function DecorsDispoGrid({ slug, shared }: DecorsDispoGridProps) {
       <div>
         <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-4">
           <span className="h-[1px] w-8 bg-black/20" /> {shared?.finitionsDisponibles?.title || 'Finitions disponibles'}
-        </div>
+            </div>
         <p className="text-black/60 text-sm">Aucun décor disponible pour le moment.</p>
       </div>
     )

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { client, urlFor } from "@/lib/sanity"
 import { Menu, X } from "lucide-react"
-import { getSecteursForMegaMenu, getExteriorProductsForMegaMenu, getInteriorProductsForMegaMenu, getInspirationsForMegaMenu } from '@/services/sanity'
+import { getSecteursForMegaMenu, getExteriorProductsForMegaMenu, getInteriorProductsForMegaMenu, getInspirationsForMegaMenu, getCataloguesForMegaMenu } from '@/services/sanity'
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -40,6 +40,7 @@ export function Header() {
   const [interiorProducts, setInteriorProducts] = useState<MiniProduct[]>([])
   const [secteurs, setSecteurs] = useState<any[]>([])
   const [inspirations, setInspirations] = useState<any[]>([])
+  const [catalogues, setCatalogues] = useState<any[]>([])
 
   useEffect(() => {
     // Prefetch products for the mega menu
@@ -82,9 +83,20 @@ export function Header() {
       }
     }
 
+    // Fetch catalogues for the mega menu
+    const fetchCatalogues = async () => {
+      try {
+        const cataloguesData = await getCataloguesForMegaMenu()
+        setCatalogues(cataloguesData || [])
+      } catch (error) {
+        console.error('Error fetching catalogues:', error)
+      }
+    }
+
     fetchMini()
     fetchSecteurs()
     fetchInspirations()
+    fetchCatalogues()
   }, [])
 
   useEffect(() => {
@@ -523,19 +535,16 @@ export function Header() {
                     <a href="/catalogues" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Accéder</a>
                   </div>
                   <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
-                    {[
-                      { label: "Plaquettes produits", hash: "plaquettes-produits" },
-                      { label: "Nuanciers décors", hash: "nuanciers-decors" },
-                      { label: "Guides techniques", hash: "guides-techniques" },
-                      { label: "Fiches produits", hash: "fiches-produits" },
-                      { label: "Bibliothèque BIM", hash: "bibliotheque-bim" },
-                      { label: "Certifications et normes", hash: "certifications-et-normes" }
-                    ].map((c) => (
-                      <a key={c.hash} href={`/catalogues#${c.hash}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-4">
-                        <div className="text-sm text-white">{c.label}</div>
-                        <div className="mt-1 text-xs text-white/60">Voir le catalogue</div>
-                      </a>
-                    ))}
+                    {catalogues && catalogues.length > 0 ? (
+                      catalogues.map((catalogue) => (
+                        <a key={catalogue.id} href={`/catalogues#${catalogue.id}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-4">
+                          <div className="text-sm text-white">{catalogue.title}</div>
+                          <div className="mt-1 text-xs text-white/60">Voir le catalogue</div>
+                        </a>
+                      ))
+                    ) : (
+                      <div className="text-white/60 text-sm">Chargement...</div>
+                    )}
                   </div>
                 </>
               )}
