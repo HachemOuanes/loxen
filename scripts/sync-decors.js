@@ -22,72 +22,6 @@ const client = createClient({
 // Fixed lists for validation
 const validColors = ['beige', 'blanc', 'bleu', 'gris', 'jaune', 'noir', 'orange', 'rose', 'rouge', 'vert', 'violet']
 
-const validCollections = [
-  { code: 'c0A', name: 'WHIMSY' },
-  { code: 'c10', name: 'Decori minimi' },
-  { code: 'c2', name: 'Colours' },
-  { code: 'c22', name: 'Magnetico' },
-  { code: 'c24', name: 'Interni' },
-  { code: 'c25', name: 'Full colour' },
-  { code: 'c27', name: 'Labgrade' },
-  { code: 'c31', name: 'Metalli' },
-  { code: 'c37', name: 'MEG' },
-  { code: 'c38', name: 'Walkprint' },
-  { code: 'c42', name: 'Diafos' },
-  { code: 'c49', name: 'HR-LAQ' },
-  { code: 'c54', name: 'Labgrade Plus' },
-  { code: 'c6', name: 'Design Edition' },
-  { code: 'c71', name: 'PARADE' },
-  { code: 'c75', name: 'DIGITAL NATURE' },
-  { code: 'c78', name: 'Polaris' },
-  { code: 'c7A', name: '' },
-  { code: 'c7B', name: 'Polaris Contemporary' },
-  { code: 'c81', name: 'Fluo' },
-  { code: 'c84', name: 'Externa' },
-  { code: 'c89', name: 'FEBO' },
-  { code: 'c9', name: 'Rocks' },
-  { code: 'c93', name: 'Metal effect' },
-  { code: 'c94', name: 'Fabriek' },
-  { code: 'c95', name: 'DIGITAL CIRCUS' },
-  { code: 'c996', name: 'MEG-H' },
-  { code: 'c997', name: 'Work In Progress' },
-  { code: 'c998', name: 'Naval Deck' },
-  { code: 'c999', name: 'Mare Nostrum' },
-  { code: 'c9A', name: 'Legni light' },
-  { code: 'c9B', name: 'Legni dark' },
-  { code: 'cHA', name: 'Hachure' },
-]
-
-// Create a map for quick lookup
-const collectionMap = new Map(validCollections.map(c => [c.code, c]))
-
-// Helper function to validate and normalize collection_names
-function normalizeCollectionNames(collectionNames) {
-  if (!Array.isArray(collectionNames)) return []
-  
-  return collectionNames
-    .map(cn => {
-      const collection = collectionMap.get(cn.code)
-      if (collection) {
-        return {
-          code: collection.code,
-          name: collection.name || cn.name || '',
-        }
-      }
-      // If not found in fixed list, try to find by name
-      const foundByName = validCollections.find(c => c.name === cn.name)
-      if (foundByName) {
-        return {
-          code: foundByName.code,
-          name: foundByName.name,
-        }
-      }
-      // Return original if not found (will be filtered)
-      return null
-    })
-    .filter(Boolean)
-}
-
 // Helper function to validate and normalize colors
 function normalizeColors(colors) {
   if (!Array.isArray(colors)) return []
@@ -201,11 +135,6 @@ async function syncDecors() {
         name: decor.name,
         abet_order: decor.abet_order || null,
         image_url: decor.image_url || null,
-        collection_names: normalizeCollectionNames(decor.collection_names || []),
-        collections: decor.collections || [],
-        surfaces: decor.surfaces || [],
-        finishes: decor.finishes || [],
-        option_classes: decor.option_classes || [],
         keywords: decor.keywords || [],
         colors: normalizeColors(decor.colors || []),
         interior: decor.interior || false,
@@ -213,6 +142,7 @@ async function syncDecors() {
         available: decor.available !== undefined ? decor.available : true,
         is_new: decor.is_new || false,
         featured: false, // Default to false, can be set manually in Sanity
+        // products field will be set manually in Sanity Studio
       }
       
       // Add image asset if available

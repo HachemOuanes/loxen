@@ -1,6 +1,8 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { urlFor } from '@/lib/sanity'
+import { getProductById } from '@/services/sanity/products'
 import {
   Dialog,
   DialogContent,
@@ -17,11 +19,13 @@ type Finish = {
   color?: string
   colors?: string[]
   abet_order?: number
-  collection_names?: Array<{ code: string; name: string }>
-  collections?: string[]
-  surfaces?: string[]
-  finishes?: string[]
-  option_classes?: string[]
+  products?: Array<{
+    _id: string
+    _type: string
+    name: string
+    productId?: string
+    slug?: { current: string }
+  }>
   keywords?: string[]
   interior?: boolean
   exterior?: boolean
@@ -36,15 +40,105 @@ interface DecorDetailModalProps {
   onOpenChange: (open: boolean) => void
 }
 
+type ProductData = {
+  _id: string
+  name: string
+  productId?: string
+  slug?: { current: string }
+  panelFormats?: string[]
+  thickness?: string
+  finishes?: Array<{
+    name: string
+    code: string
+    image?: any
+    image_url?: string
+    color?: string
+    order?: number
+  }>
+}
+
 export function DecorDetailModal({ finish, open, onOpenChange }: DecorDetailModalProps) {
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
+  const [selectedProductType, setSelectedProductType] = useState<string | null>(null)
+  const [productData, setProductData] = useState<ProductData | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (open) {
+      // Save current scroll position
+      const scrollY = window.scrollY
+      const html = document.documentElement
+      const body = document.body
+
+      // Lock body scroll
+      body.style.position = 'fixed'
+      body.style.top = `-${scrollY}px`
+      body.style.width = '100%'
+      body.style.overflow = 'hidden'
+      html.style.overflow = 'hidden'
+
+      return () => {
+        // Restore scroll position when modal closes
+        body.style.position = ''
+        body.style.top = ''
+        body.style.width = ''
+        body.style.overflow = ''
+        html.style.overflow = ''
+        window.scrollTo(0, scrollY)
+      }
+    }
+  }, [open])
+
+  // Reset when modal closes or finish changes
+  useEffect(() => {
+    if (!open || !finish) {
+      setSelectedProductId(null)
+      setSelectedProductType(null)
+      setProductData(null)
+      return
+    }
+
+    // Auto-select first product when modal opens with a new finish
+    if (finish.products && finish.products.length > 0) {
+      const firstProduct = finish.products[0]
+      setSelectedProductId(firstProduct._id)
+      setSelectedProductType(firstProduct._type)
+    }
+  }, [open, finish])
+
+  // Fetch product data when selection changes
+  useEffect(() => {
+    if (selectedProductId && selectedProductType) {
+      setLoading(true)
+      getProductById(selectedProductId, selectedProductType)
+        .then((data: ProductData | null) => {
+          setProductData(data)
+          setLoading(false)
+        })
+        .catch((error: Error) => {
+          console.error('Error fetching product:', error)
+          setProductData(null)
+          setLoading(false)
+        })
+    }
+  }, [selectedProductId, selectedProductType])
+
   if (!finish) return null
+
+  const handleProductClick = (productId: string, productType: string) => {
+    setSelectedProductId(productId)
+    setSelectedProductType(productType)
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="!max-w-none !w-[60vw] sm:!w-[60vw] lg:!w-[60vw] max-h-[90vh] overflow-y-auto p-0 !top-auto !bottom-4 !left-[50%] !translate-x-[-50%] !translate-y-0 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom">
-        <div className="grid md:grid-cols-2 gap-0">
+      <DialogContent
+        className="!max-w-none !w-[60vw] sm:!w-[60vw] lg:!w-[60vw] p-0 !top-auto !bottom-4 !left-[50%] !translate-x-[-50%] !translate-y-0 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom overflow-hidden"
+      >
+        <div className="grid md:grid-cols-2 gap-0 overflow-hidden">
           {/* Image Section */}
-          <div className="relative aspect-[4/5] md:aspect-auto md:h-full bg-gray-50">
+          <div className="relative aspect-[4/5] md:aspect-auto bg-gray-50 flex-shrink-0 border-r border-black/10">
             {finish.image ? (
               <img
                 src={urlFor(finish.image).width(800).height(1000).quality(90).url()}
@@ -63,7 +157,7 @@ export function DecorDetailModal({ finish, open, onOpenChange }: DecorDetailModa
                 className="w-full h-full object-cover rounded-t-lg md:rounded-l-lg md:rounded-tr-none"
               />
             ) : (
-              <div 
+              <div
                 className="w-full h-full rounded-t-lg md:rounded-l-lg md:rounded-tr-none"
                 style={{ backgroundColor: finish.color || finish.colors?.[0] || '#e5e7eb' }}
               />
@@ -94,74 +188,104 @@ export function DecorDetailModal({ finish, open, onOpenChange }: DecorDetailModa
               <p className="text-sm text-black/60 uppercase tracking-wide">Code: {finish.code}</p>
             </DialogHeader>
 
-            <div className="mt-6 space-y-6 flex-1">
-              {/* Collections */}
-              {finish.collection_names && finish.collection_names.length > 0 && (
+            <div className="mt-6 space-y-6">
+              {/* Products */}
+              {finish.products && finish.products.length > 0 && (
                 <div>
-                  <h3 className="text-xs uppercase tracking-[0.18em] text-black/60 mb-3">Collections</h3>
+                  <h3 className="text-xs uppercase tracking-[0.18em] text-black/60 mb-3">Produits associés</h3>
                   <div className="flex flex-wrap gap-2">
-                    {finish.collection_names.map((collection, idx) => (
-                      <span
+                    {finish.products.map((product, idx) => (
+                      <button
                         key={idx}
-                        className="inline-block px-3 py-1.5 text-xs border border-black/20 text-black/70 rounded"
+                        onClick={() => handleProductClick(product._id, product._type)}
+                        className={`inline-block px-3 py-1.5 text-xs border rounded transition-all ${selectedProductId === product._id
+                            ? 'border-black bg-black text-white'
+                            : 'border-black/20 text-black/70 hover:border-black/40 hover:bg-black/5'
+                          }`}
                       >
-                        {collection.name}
-                      </span>
+                        {product.name}
+                      </button>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Colors */}
-              {finish.colors && finish.colors.length > 0 && (
-                <div>
-                  <h3 className="text-xs uppercase tracking-[0.18em] text-black/60 mb-3">Couleurs</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {finish.colors.map((color, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-block px-3 py-1.5 text-xs border border-black/20 text-black/70 capitalize rounded"
-                      >
-                        {color}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Product Details */}
+              {selectedProductId && (
+                <div className="border-t border-black/10 pt-6 space-y-4">
+                  {loading ? (
+                    <div className="text-sm text-black/50">Chargement...</div>
+                  ) : productData ? (
+                    <>
+                      {/* Panel Formats */}
+                      {productData.panelFormats && productData.panelFormats.length > 0 && (
+                        <div>
+                          <h3 className="text-xs uppercase tracking-[0.18em] text-black/60 mb-2">Format des panneaux</h3>
+                          <div className="flex flex-wrap gap-2">
+                            {productData.panelFormats.map((format, idx) => (
+                              <span
+                                key={idx}
+                                className="inline-block px-3 py-1.5 text-xs border border-black/20 text-black/70 rounded"
+                              >
+                                {format} mm
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
-              {/* Usage */}
-              <div>
-                <h3 className="text-xs uppercase tracking-[0.18em] text-black/60 mb-3">Usage</h3>
-                <div className="flex gap-2">
-                  {finish.interior && (
-                    <span className="px-3 py-1.5 text-xs border border-black/20 text-black/70 rounded">
-                      Intérieur
-                    </span>
-                  )}
-                  {finish.exterior && (
-                    <span className="px-3 py-1.5 text-xs border border-black/20 text-black/70 rounded">
-                      Extérieur
-                    </span>
-                  )}
-                  {!finish.interior && !finish.exterior && (
-                    <span className="text-xs text-black/50">Non spécifié</span>
-                  )}
-                </div>
-              </div>
+                      {/* Thickness */}
+                      {productData.thickness && (
+                        <div>
+                          <h3 className="text-xs uppercase tracking-[0.18em] text-black/60 mb-2">Épaisseur</h3>
+                          <p className="text-sm text-black/70">{productData.thickness}</p>
+                        </div>
+                      )}
 
-              {/* Surfaces */}
-              {finish.surfaces && finish.surfaces.length > 0 && (
-                <div>
-                  <h3 className="text-xs uppercase tracking-[0.18em] text-black/60 mb-3">Surfaces</h3>
-                  <p className="text-sm text-black/70">{finish.surfaces.join(', ')}</p>
-                </div>
-              )}
-
-              {/* Finishes */}
-              {finish.finishes && finish.finishes.length > 0 && (
-                <div>
-                  <h3 className="text-xs uppercase tracking-[0.18em] text-black/60 mb-3">Finitures</h3>
-                  <p className="text-sm text-black/70">{finish.finishes.join(', ')}</p>
+                      {/* Finishes */}
+                      {productData.finishes && productData.finishes.length > 0 && (
+                        <div>
+                          <h3 className="text-xs uppercase tracking-[0.18em] text-black/60 mb-2">Finitions</h3>
+                          <div className="grid grid-cols-4 gap-2">
+                            {productData.finishes.map((finishItem, idx) => (
+                              <div
+                                key={idx}
+                                className="flex flex-col items-center py-4 border border-black/10 rounded hover:border-black/20 transition-colors"
+                              >
+                                {finishItem.image ? (
+                                  <img
+                                    src={urlFor(finishItem.image).width(100).height(100).quality(85).url()}
+                                    alt={finishItem.name}
+                                    className="w-16 h-10 object-cover rounded mb-2"
+                                    onError={(e) => {
+                                      if (finishItem.image_url) {
+                                        (e.target as HTMLImageElement).src = finishItem.image_url
+                                      }
+                                    }}
+                                  />
+                                ) : finishItem.image_url ? (
+                                  <img
+                                    src={finishItem.image_url}
+                                    alt={finishItem.name}
+                                    className="w-16 h-16 object-cover rounded mb-2"
+                                  />
+                                ) : (
+                                  <div
+                                    className="w-16 h-16 rounded mb-2"
+                                    style={{ backgroundColor: finishItem.color || '#e5e7eb' }}
+                                  />
+                                )}
+                                <span className="text-[10px] text-black/70 text-center">{finishItem.code}</span>
+                                <span className="text-[10px] text-black/50 text-center truncate w-full">{finishItem.name}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-sm text-black/50">Aucune donnée disponible</div>
+                  )}
                 </div>
               )}
 
@@ -182,13 +306,6 @@ export function DecorDetailModal({ finish, open, onOpenChange }: DecorDetailModa
                 </div>
               )}
 
-              {/* Availability */}
-              <div>
-                <h3 className="text-xs uppercase tracking-[0.18em] text-black/60 mb-3">Disponibilité</h3>
-                <p className={`text-sm ${finish.available !== false ? 'text-black' : 'text-black/50'}`}>
-                  {finish.available !== false ? 'Disponible' : 'Non disponible'}
-                </p>
-              </div>
             </div>
           </div>
         </div>

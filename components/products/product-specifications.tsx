@@ -8,8 +8,16 @@ interface Product {
   collectionName?: string
   technicalDocuments?: Array<{
     title: string
-    file: any
-    downloadText: string
+    file?: {
+      asset?: {
+        _id?: string
+        url?: string
+        originalFilename?: string
+        size?: number
+        mimeType?: string
+      }
+    }
+    downloadText?: string
   }>
   bimRequest?: boolean
   specifications?: Array<{ label: string; value: string }>

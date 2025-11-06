@@ -12,6 +12,7 @@ import { urlFor } from '@/lib/sanity'
 type CmsSection = {
     _key?: string
     _type?: string
+    order?: number
     layout?: string
     title?: string
     subtitle?: string
@@ -19,6 +20,9 @@ type CmsSection = {
     features?: string[]
     image?: any
     imageUrl?: string
+    bannerLeft?: { title?: string; subtitle?: string; description?: string }
+    bannerRight?: { title?: string; subtitle?: string; description?: string }
+    // Legacy support for old heroLeft/heroRight
     heroLeft?: { title?: string; subtitle?: string; description?: string }
     heroRight?: { title?: string; subtitle?: string; description?: string }
 }
@@ -106,125 +110,140 @@ export function ProductImageSections({ sections }: ProductImageSectionsProps) {
     // render nothing — avoid any static fallback content in the component.
     if (!sections || !sections.length) return null
 
-    const first = sections[0]
-    // schema now defines a distinct object type for hero sections
-    const hasHero = first && (first as any)._type === 'productHeroSection'
-    const hero = hasHero ? first : null
-    const bodySections = hasHero ? sections.slice(1) : sections
+    // Only sort if ALL sections have explicit order values, otherwise maintain Sanity array order
+    const allHaveOrder = sections.every(s => s.order !== undefined && s.order !== null)
+    
+    const sortedSections = allHaveOrder
+        ? [...sections].sort((a, b) => (a.order || 0) - (b.order || 0))
+        : sections // Maintain original Sanity array order
 
     return (
         <section ref={sectionRef} className="relative bg-white py-16 md:py-24">
             <div className="max-w-7xl mx-auto px-4 md:px-6">
-                {/* Hero Section - big image + two text columns */}
-                {hero && (hero.image || (hero as any).imageUrl) && (
-                    <>
-                        <div className="mb-12 md:mb-16">
-                            <div className="js-reveal relative h-[60vh] md:h-[80vh] overflow-hidden border border-black/10">
-                                <Image
-                                    src={
-                                        (hero as any).imageUrl
-                                            ? (hero as any).imageUrl
-                                            : hero.image
-                                                ? typeof hero.image === 'string'
-                                                    ? hero.image
-                                                    : urlFor(hero.image).width(1920).height(1080).quality(90).url()
-                                                : ''
-                                    }
-                                    alt={hero.heroLeft?.title || hero.heroRight?.title || hero.subtitle || hero.title || ''}
-                                    className="js-hero-image h-full w-full object-cover"
-                                    width={1920}
-                                    height={1080}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 gap-12 md:gap-16 mb-16 md:mb-24">
-                            <div className="js-reveal">
-                                {hero.heroLeft?.subtitle && (
-                                    <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60">{hero.heroLeft.subtitle}</p>
-                                )}
-                                {hero.heroLeft?.title && (
-                                    <h3 className="mt-2 text-2xl md:text-3xl font-light tracking-tight text-black leading-tight">{hero.heroLeft.title}</h3>
-                                )}
-                                {hero.heroLeft?.description && (
-                                    <p className="text-base md:text-lg text-black/75 italic leading-snug mb-6">{hero.heroLeft.description}</p>
-                                )}
-                            </div>
-
-                            <div className="js-reveal text-right">
-                                {hero.heroRight?.subtitle && (
-                                    <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60">{hero.heroRight.subtitle}</p>
-                                )}
-                                {hero.heroRight?.title && (
-                                    <h3 className="mt-2 text-2xl md:text-3xl font-light tracking-tight text-black leading-tight">{hero.heroRight.title}</h3>
-                                )}
-                                {hero.heroRight?.description && (
-                                    <p className="text-base md:text-lg text-black/75 italic leading-snug mb-6">{hero.heroRight.description}</p>
-                                )}
-                            </div>
-                        </div>
-                    </>
-                )}
-
-                {/* Applications header (optional) */}
-                <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-8">
-                    <span className="h-[1px] w-8 bg-black/20" /> Applications
-                </div>
-
-                {/* Render body sections in alternating layout */}
-                {bodySections.map((feature, idx) => {
-                    const index = idx // index within bodySections
-                    const isFlexReverse = index % 2 === 1
-
-                    return (
-                        <div key={feature._key || index} className={`flex flex-col md:flex-row gap-8 items-center ${index < bodySections.length - 1 ? 'mb-12' : ''} ${isFlexReverse ? 'md:flex-row-reverse' : ''}`}>
-                            {/* Image section */}
-                            {(feature.image || (feature as any).imageUrl) && (
-                                <div className="w-full md:w-1/2">
-                                    <div className="js-reveal relative h-[50vh] md:h-[60vh] overflow-hidden border border-black/10">
+                {/* Render sections based on their type and order */}
+                {sortedSections.map((section, idx) => {
+                    const isBanner = section._type === 'productBannerSection'
+                    const isFeature = section._type === 'productImageSection'
+                    
+                    // Banner Section - big image + two text columns
+                    if (isBanner && (section.image || (section as any).imageUrl)) {
+                        const bannerLeft = section.bannerLeft || section.heroLeft // Support legacy heroLeft
+                        const bannerRight = section.bannerRight || section.heroRight // Support legacy heroRight
+                        
+                        return (
+                            <div key={section._key || idx} className={idx > 0 ? 'mt-16 md:mt-24' : ''}>
+                                <div className="mb-12 md:mb-16">
+                                    <div className="js-reveal relative h-[60vh] md:h-[80vh] overflow-hidden border border-black/10">
                                         <Image
                                             src={
-                                                (feature as any).imageUrl
-                                                    ? (feature as any).imageUrl
-                                                    : feature.image
-                                                        ? typeof feature.image === 'string'
-                                                            ? feature.image
-                                                            : urlFor(feature.image).width(1200).height(800).quality(90).url()
+                                                (section as any).imageUrl
+                                                    ? (section as any).imageUrl
+                                                    : section.image
+                                                        ? typeof section.image === 'string'
+                                                            ? section.image
+                                                            : urlFor(section.image).width(1920).height(1080).quality(90).url()
                                                         : ''
                                             }
-                                            alt={feature.subtitle || feature.title || ''}
-                                            className="js-parallax h-full w-full object-cover"
-                                            width={800}
-                                            height={600}
+                                            alt={bannerLeft?.title || bannerRight?.title || section.subtitle || section.title || ''}
+                                            className="js-hero-image h-full w-full object-cover"
+                                            width={1920}
+                                            height={1080}
                                         />
                                     </div>
                                 </div>
-                            )}
 
-                            {/* Text section */}
-                            <div className="w-full md:w-1/2">
-                                {feature.title && (
-                                    <p className="js-reveal mb-2 text-xs uppercase tracking-[0.18em] text-black/60">{feature.title}</p>
-                                )}
-                                {feature.subtitle && (
-                                    <h3 className="js-reveal text-2xl md:text-3xl font-light tracking-tight text-black">{feature.subtitle}</h3>
-                                )}
-                                {feature.description && (
-                                    <p className="js-reveal mt-4 text-black/70 leading-relaxed">{feature.description}</p>
-                                )}
-                                {(feature.features || []).length > 0 && (
-                                    <ul className="js-reveal mt-5 space-y-2 text-black/75">
-                                        {(feature.features || []).slice(0, 6).map((featureItem, featureIndex) => (
-                                            <li key={featureIndex} className="flex items-start gap-3">
-                                                <span className="h-1.5 w-1.5 rounded-full bg-black/60 mt-2 flex-shrink-0" />
-                                                <span>{featureItem}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                {(bannerLeft || bannerRight) && (
+                                    <div className="grid md:grid-cols-2 gap-12 md:gap-16 mb-16 md:mb-24">
+                                        {bannerLeft && (
+                                            <div className="js-reveal">
+                                                {bannerLeft.subtitle && (
+                                                    <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60">{bannerLeft.subtitle}</p>
+                                                )}
+                                                {bannerLeft.title && (
+                                                    <h3 className="mt-2 text-2xl md:text-3xl font-light tracking-tight text-black leading-tight">{bannerLeft.title}</h3>
+                                                )}
+                                                {bannerLeft.description && (
+                                                    <p className="text-base md:text-lg text-black/75 italic leading-snug mb-6">{bannerLeft.description}</p>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {bannerRight && (
+                                            <div className="js-reveal text-right">
+                                                {bannerRight.subtitle && (
+                                                    <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60">{bannerRight.subtitle}</p>
+                                                )}
+                                                {bannerRight.title && (
+                                                    <h3 className="mt-2 text-2xl md:text-3xl font-light tracking-tight text-black leading-tight">{bannerRight.title}</h3>
+                                                )}
+                                                {bannerRight.description && (
+                                                    <p className="text-base md:text-lg text-black/75 italic leading-snug mb-6">{bannerRight.description}</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                 )}
                             </div>
-                        </div>
-                    )
+                        )
+                    }
+                    
+                    // Feature Section - alternating image + text
+                    if (isFeature) {
+                        const featureIndex = sortedSections.filter((s, i) => i < idx && s._type === 'productImageSection').length
+                        const isFlexReverse = featureIndex % 2 === 1
+                        
+                        return (
+                            <div key={section._key || idx} className={`flex flex-col md:flex-row gap-8 items-center ${idx < sortedSections.length - 1 ? 'mb-12' : ''} ${isFlexReverse ? 'md:flex-row-reverse' : ''}`}>
+                                {/* Image section */}
+                                {(section.image || (section as any).imageUrl) && (
+                                    <div className="w-full md:w-1/2">
+                                        <div className="js-reveal relative h-[50vh] md:h-[60vh] overflow-hidden border border-black/10">
+                                            <Image
+                                                src={
+                                                    (section as any).imageUrl
+                                                        ? (section as any).imageUrl
+                                                        : section.image
+                                                            ? typeof section.image === 'string'
+                                                                ? section.image
+                                                                : urlFor(section.image).width(1200).height(800).quality(90).url()
+                                                            : ''
+                                                }
+                                                alt={section.subtitle || section.title || ''}
+                                                className="js-parallax h-full w-full object-cover"
+                                                width={800}
+                                                height={600}
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Text section */}
+                                <div className="w-full md:w-1/2">
+                                    {section.title && (
+                                        <p className="js-reveal mb-2 text-xs uppercase tracking-[0.18em] text-black/60">{section.title}</p>
+                                    )}
+                                    {section.subtitle && (
+                                        <h3 className="js-reveal text-2xl md:text-3xl font-light tracking-tight text-black">{section.subtitle}</h3>
+                                    )}
+                                    {section.description && (
+                                        <p className="js-reveal mt-4 text-black/70 leading-relaxed">{section.description}</p>
+                                    )}
+                                    {(section.features || []).length > 0 && (
+                                        <ul className="js-reveal mt-5 space-y-2 text-black/75">
+                                            {(section.features || []).slice(0, 6).map((featureItem, featureIndex) => (
+                                                <li key={featureIndex} className="flex items-start gap-3">
+                                                    <span className="h-1.5 w-1.5 rounded-full bg-black/60 mt-2 flex-shrink-0" />
+                                                    <span>{featureItem}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                            </div>
+                        )
+                    }
+                    
+                    return null
                 })}
 
             </div>

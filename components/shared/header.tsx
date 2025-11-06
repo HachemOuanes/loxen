@@ -119,7 +119,6 @@ export function Header() {
     { key: "produits", label: "Produits", href: "/" },
     { key: "inspirations", label: "Inspirations", href: "/" },
     { key: "catalogues", label: "Catalogues", href: "/catalogues" },
-    { key: "conseils", label: "Conseils", href: "/conseils" },
     { key: "contact", label: "Contact", href: "/contact" },
   ]
 
@@ -524,28 +523,17 @@ export function Header() {
                     <a href="/catalogues" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Accéder</a>
                   </div>
                   <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
-                    {["Plaquettes", "Nuanciers", "Guides techniques", "Fiches produits", "BIM", "Certifications"].map((c) => (
-                      <a key={c} href="/catalogues" className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-4">
-                        <div className="text-sm text-white">{c}</div>
-                        <div className="mt-1 text-xs text-white/60">Télécharger</div>
-                      </a>
-                    ))}
-                  </div>
-                </>
-              )}
-
-              {activeMega === "conseils" && (
-                <>
-                  <div className="md:col-span-4">
-                    <h3 className="text-2xl font-light">Conseils</h3>
-                    <p className="text-white/70 mt-2">Mise en œuvre, entretien et recommandations.</p>
-                    <a href="/conseils" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Lire les articles</a>
-                  </div>
-                  <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
-                    {["Pose & fixation", "Entretien", "Compatibilités", "FAQ", "Normes", "Contact expert"].map((c) => (
-                      <a key={c} href="/conseils" className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-4">
-                        <div className="text-sm text-white">{c}</div>
-                        <div className="mt-1 text-xs text-white/60">Découvrir</div>
+                    {[
+                      { label: "Plaquettes produits", hash: "plaquettes-produits" },
+                      { label: "Nuanciers décors", hash: "nuanciers-decors" },
+                      { label: "Guides techniques", hash: "guides-techniques" },
+                      { label: "Fiches produits", hash: "fiches-produits" },
+                      { label: "Bibliothèque BIM", hash: "bibliotheque-bim" },
+                      { label: "Certifications et normes", hash: "certifications-et-normes" }
+                    ].map((c) => (
+                      <a key={c.hash} href={`/catalogues#${c.hash}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-4">
+                        <div className="text-sm text-white">{c.label}</div>
+                        <div className="mt-1 text-xs text-white/60">Voir le catalogue</div>
                       </a>
                     ))}
                   </div>

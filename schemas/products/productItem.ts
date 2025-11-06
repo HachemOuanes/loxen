@@ -13,6 +13,27 @@ export const productItem = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'productId',
+      title: 'Product ID',
+      type: 'string',
+      description: 'Unique identifier for this product (e.g., PROD-001, ITEM-2024-001)',
+      validation: (Rule) => 
+        Rule.required()
+          .custom(async (value, context) => {
+            const { document, getClient } = context
+            if (!value) return true
+            
+            const client = getClient({ apiVersion: '2023-05-03' })
+            const id = document?._id.replace('drafts.', '')
+            const params = { productId: value, id }
+            
+            const query = `*[_type == "productItem" && productId == $productId && !(_id in path("drafts.**")) && _id != $id]`
+            const duplicates = await client.fetch(query, params)
+            
+            return duplicates.length === 0 || 'Product ID must be unique'
+          }),
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
@@ -133,13 +154,6 @@ export const productItem = defineType({
       description: 'Collection this product belongs to (e.g., "Abet")',
     }),
     defineField({
-      name: 'features',
-      title: 'Key Features',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'List of key product features and benefits',
-    }),
-    defineField({
       name: 'specifications',
       title: 'Technical Specifications',
       type: 'array',
@@ -211,8 +225,8 @@ export const productItem = defineType({
       name: 'imageSections',
       title: 'Image Sections',
       type: 'array',
-      of: [{ type: 'productHeroSection' }, { type: 'productImageSection' }],
-      description: 'Structured image sections: first can be a hero section followed by feature sections',
+      of: [{ type: 'productBannerSection' }, { type: 'productImageSection' }],
+      description: 'Structured image sections: define banner and feature sections in any order',
       initialValue: [
         {
           title: 'Résistance',

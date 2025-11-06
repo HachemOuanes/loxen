@@ -13,14 +13,13 @@ export async function getAllDecors() {
     color,
     colors,
     abet_order,
-    collection_names[]{
-      code,
-      name
+    products[]->{
+      _id,
+      _type,
+      name,
+      productId,
+      slug
     },
-    collections,
-    surfaces,
-    finishes,
-    option_classes,
     keywords,
     interior,
     exterior,
@@ -43,14 +42,13 @@ export async function getDecorsByCategory(categorySlug: string) {
     color,
     colors,
     abet_order,
-    collection_names[]{
-      code,
-      name
+    products[]->{
+      _id,
+      _type,
+      name,
+      productId,
+      slug
     },
-    collections,
-    surfaces,
-    finishes,
-    option_classes,
     keywords,
     interior,
     exterior,
@@ -75,14 +73,13 @@ export async function getDecorsByProductType(productType: 'interior' | 'exterior
     color,
     colors,
     abet_order,
-    collection_names[]{
-      code,
-      name
+    products[]->{
+      _id,
+      _type,
+      name,
+      productId,
+      slug
     },
-    collections,
-    surfaces,
-    finishes,
-    option_classes,
     keywords,
     interior,
     exterior,
@@ -105,14 +102,13 @@ export async function getRandomDecors(limit: number = 20) {
     color,
     colors,
     abet_order,
-    collection_names[]{
-      code,
-      name
+    products[]->{
+      _id,
+      _type,
+      name,
+      productId,
+      slug
     },
-    collections,
-    surfaces,
-    finishes,
-    option_classes,
     keywords,
     interior,
     exterior,
@@ -135,14 +131,13 @@ export async function getFeaturedDecors(limit: number = 10) {
     color,
     colors,
     abet_order,
-    collection_names[]{
-      code,
-      name
+    products[]->{
+      _id,
+      _type,
+      name,
+      productId,
+      slug
     },
-    collections,
-    surfaces,
-    finishes,
-    option_classes,
     keywords,
     interior,
     exterior,
@@ -165,14 +160,13 @@ export async function getDecorsByCollection(collectionCode: string) {
     color,
     colors,
     abet_order,
-    collection_names[]{
-      code,
-      name
+    products[]->{
+      _id,
+      _type,
+      name,
+      productId,
+      slug
     },
-    collections,
-    surfaces,
-    finishes,
-    option_classes,
     keywords,
     interior,
     exterior,
@@ -195,14 +189,13 @@ export async function getDecorsByColors(colors: string[]) {
     color,
     colors,
     abet_order,
-    collection_names[]{
-      code,
-      name
+    products[]->{
+      _id,
+      _type,
+      name,
+      productId,
+      slug
     },
-    collections,
-    surfaces,
-    finishes,
-    option_classes,
     keywords,
     interior,
     exterior,
@@ -225,14 +218,13 @@ export async function getDecorByCode(code: string) {
     color,
     colors,
     abet_order,
-    collection_names[]{
-      code,
-      name
+    products[]->{
+      _id,
+      _type,
+      name,
+      productId,
+      slug
     },
-    collections,
-    surfaces,
-    finishes,
-    option_classes,
     keywords,
     interior,
     exterior,

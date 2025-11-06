@@ -5,7 +5,19 @@ import { Plus } from 'lucide-react'
 
 interface Product {
   specifications?: Array<{ label: string; value: string }>
-  technicalDocuments?: Array<{ title: string; file: any; downloadText?: string }>
+  technicalDocuments?: Array<{ 
+    title: string
+    file?: {
+      asset?: {
+        _id?: string
+        url?: string
+        originalFilename?: string
+        size?: number
+        mimeType?: string
+      }
+    }
+    downloadText?: string 
+  }>
   bimRequest?: boolean
 }
 
@@ -95,14 +107,32 @@ export function ProductTechDocs({ product }: { product: Product }) {
                         </div>
                       </div>
                       {/* Download Button */}
-                      <button
-                        className="flex-shrink-0 w-8 h-8 border border-gray-300 group-hover:border-black group-hover:bg-black group-hover:text-white transition-all duration-300 flex items-center justify-center ml-3"
-                        aria-label="Télécharger"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                        </svg>
-                      </button>
+                      {doc.file?.asset?.url ? (
+                        <a
+                          href={`${doc.file.asset.url}?dl=${doc.file.asset.originalFilename || doc.title || 'document'}.pdf`}
+                          download
+                          className="flex-shrink-0 w-8 h-8 border border-gray-300 group-hover:border-black group-hover:bg-black group-hover:text-white transition-all duration-300 flex items-center justify-center ml-3"
+                          aria-label="Télécharger"
+                          onClick={(e) => {
+                            // Ensure download works
+                            e.stopPropagation()
+                          }}
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                          </svg>
+                        </a>
+                      ) : (
+                        <button
+                          className="flex-shrink-0 w-8 h-8 border border-gray-300 opacity-50 cursor-not-allowed flex items-center justify-center ml-3"
+                          aria-label="Fichier non disponible"
+                          disabled
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                          </svg>
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

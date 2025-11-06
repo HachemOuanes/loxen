@@ -92,6 +92,7 @@ export async function getDecorFinishes() {
 // Get product item by slug for decor finishes
 export async function getProductItemBySlug(slug: string) {
   const query = `*[_type == "productItem" && slug.current == $slug][0]{
+    productId,
     collectionName
   }`
   

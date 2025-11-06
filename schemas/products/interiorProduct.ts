@@ -13,6 +13,27 @@ export const interiorProduct = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'productId',
+      title: 'Product ID',
+      type: 'string',
+      description: 'Unique identifier for this product (e.g., PROD-001, INT-2024-001)',
+      validation: (Rule) => 
+        Rule.required()
+          .custom(async (value, context) => {
+            const { document, getClient } = context
+            if (!value) return true
+            
+            const client = getClient({ apiVersion: '2023-05-03' })
+            const id = document?._id.replace('drafts.', '')
+            const params = { productId: value, id }
+            
+            const query = `*[_type == "interiorProduct" && productId == $productId && !(_id in path("drafts.**")) && _id != $id]`
+            const duplicates = await client.fetch(query, params)
+            
+            return duplicates.length === 0 || 'Product ID must be unique'
+          }),
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
@@ -132,20 +153,13 @@ export const interiorProduct = defineType({
       type: 'string',
       description: 'Collection this product belongs to (e.g., "Abet")',
     }),
-    defineField({
-      name: 'features',
-      title: 'Key Features',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'List of key product features and benefits',
-    }),
     // Image sections (rich content blocks shown on product pages)
     defineField({
       name: 'imageSections',
       title: 'Image Sections',
       type: 'array',
-      of: [{ type: 'productHeroSection' }, { type: 'productImageSection' }],
-      description: 'Structured image sections: first can be a hero section followed by feature sections',
+      of: [{ type: 'productBannerSection' }, { type: 'productImageSection' }],
+      description: 'Structured image sections: define banner and feature sections in any order',
     }),
     defineField({
       name: 'specifications',
@@ -213,6 +227,65 @@ export const interiorProduct = defineType({
         layout: 'tags',
       },
       description: 'Tags for additional filtering and search',
+    }),
+    defineField({
+      name: 'finishes',
+      title: 'Finishes',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'name',
+              title: 'Finish Name',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'code',
+              title: 'Finish Code',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'image',
+              title: 'Finish Image',
+              type: 'image',
+              options: {
+                hotspot: true,
+              },
+            }),
+            defineField({
+              name: 'image_url',
+              title: 'Image URL (Fallback)',
+              type: 'url',
+              description: 'External image URL if not using Sanity image',
+            }),
+            defineField({
+              name: 'color',
+              title: 'Color',
+              type: 'string',
+              description: 'Primary color of the finish',
+            }),
+            defineField({
+              name: 'order',
+              title: 'Display Order',
+              type: 'number',
+              description: 'Order for sorting finishes (lower numbers appear first)',
+              initialValue: 0,
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'name',
+              subtitle: 'code',
+              media: 'image',
+            },
+          },
+        },
+      ],
+      description: 'Product-specific finishes available for this product',
     }),
   ],
   preview: {

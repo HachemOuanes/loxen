@@ -11,7 +11,7 @@ import { contactInfo } from './home/contactInfo'
 import { interiorProduct } from './products/interiorProduct'
 import { exteriorProduct } from './products/exteriorProduct'
 import { productItem } from './products/productItem'
-import { productImageSection, productHeroSection } from './products/productImageSection'
+import { productImageSection, productBannerSection } from './products/productImageSection'
 
 // SEO & Settings
 import { seoSettings } from './seo/seoSettings'
@@ -44,7 +44,7 @@ export const schemaTypes = [
   interiorProduct,
   exteriorProduct,
   productItem,
-  productHeroSection,
+  productBannerSection,
   productImageSection,
   productCategory,
   

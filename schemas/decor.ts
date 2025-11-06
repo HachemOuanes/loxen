@@ -42,97 +42,20 @@ export const decor = defineType({
       description: 'External image URL from Abet (e.g., "https://au.abetlaminati.com/CAMPIONI/410.jpg")',
     }),
     defineField({
-      name: 'collection_names',
-      title: 'Collection Names',
+      name: 'products',
+      title: 'Associated Products',
       type: 'array',
       of: [
         {
-          type: 'object',
-          fields: [
-            defineField({
-              name: 'code',
-              title: 'Collection Code',
-              type: 'string',
-              options: {
-                list: [
-                  { title: 'WHIMSY', value: 'c0A' },
-                  { title: 'Decori minimi', value: 'c10' },
-                  { title: 'Colours', value: 'c2' },
-                  { title: 'Magnetico', value: 'c22' },
-                  { title: 'Interni', value: 'c24' },
-                  { title: 'Full colour', value: 'c25' },
-                  { title: 'Labgrade', value: 'c27' },
-                  { title: 'Metalli', value: 'c31' },
-                  { title: 'MEG', value: 'c37' },
-                  { title: 'Walkprint', value: 'c38' },
-                  { title: 'Diafos', value: 'c42' },
-                  { title: 'HR-LAQ', value: 'c49' },
-                  { title: 'Labgrade Plus', value: 'c54' },
-                  { title: 'Design Edition', value: 'c6' },
-                  { title: 'PARADE', value: 'c71' },
-                  { title: 'DIGITAL NATURE', value: 'c75' },
-                  { title: 'Polaris', value: 'c78' },
-                  { title: 'Polaris Contemporary', value: 'c7B' },
-                  { title: 'Fluo', value: 'c81' },
-                  { title: 'Externa', value: 'c84' },
-                  { title: 'FEBO', value: 'c89' },
-                  { title: 'Rocks', value: 'c9' },
-                  { title: 'Metal effect', value: 'c93' },
-                  { title: 'Fabriek', value: 'c94' },
-                  { title: 'DIGITAL CIRCUS', value: 'c95' },
-                  { title: 'MEG-H', value: 'c996' },
-                  { title: 'Work In Progress', value: 'c997' },
-                  { title: 'Naval Deck', value: 'c998' },
-                  { title: 'Mare Nostrum', value: 'c999' },
-                  { title: 'Legni light', value: 'c9A' },
-                  { title: 'Legni dark', value: 'c9B' },
-                  { title: 'Hachure', value: 'cHA' },
-                ],
-              },
-            }),
-            defineField({
-              name: 'name',
-              title: 'Collection Name',
-              type: 'string',
-            }),
+          type: 'reference',
+          to: [
+            { type: 'interiorProduct' },
+            { type: 'exteriorProduct' },
+            { type: 'productItem' },
           ],
-          preview: {
-            select: {
-              title: 'name',
-              subtitle: 'code',
-            },
-          },
         },
       ],
-      description: 'Collection names with codes',
-    }),
-    defineField({
-      name: 'collections',
-      title: 'Collections',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'Collection codes (e.g., ["c27", "c49"])',
-    }),
-    defineField({
-      name: 'surfaces',
-      title: 'Surfaces',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'Available surfaces for this decor',
-    }),
-    defineField({
-      name: 'finishes',
-      title: 'Finishes',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'Available finishes for this decor',
-    }),
-    defineField({
-      name: 'option_classes',
-      title: 'Option Classes',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'Option classes for this decor',
+      description: 'Products associated with this decor',
     }),
     defineField({
       name: 'keywords',
@@ -208,18 +131,16 @@ export const decor = defineType({
       title: 'name',
       code: 'code',
       media: 'image',
-      collections: 'collections',
       interior: 'interior',
       exterior: 'exterior',
       featured: 'featured',
     },
-    prepare({ title, code, media, collections, interior, exterior, featured }) {
-      const collectionsText = collections?.slice(0, 2).join(', ') || ''
+    prepare({ title, code, media, interior, exterior, featured }) {
       const appType = [interior && 'Interior', exterior && 'Exterior'].filter(Boolean).join(' & ') || ''
       
       return {
         title: `${code} - ${title}${featured ? ' ⭐' : ''}`,
-        subtitle: `${appType}${collectionsText ? ` • ${collectionsText}` : ''}${collections?.length > 2 ? ` +${collections.length - 2}` : ''}`,
+        subtitle: appType || 'No type specified',
         media,
       }
     },

@@ -7,6 +7,7 @@ export async function getExteriorProducts() {
   const query = `*[_type == "exteriorProduct"] | order(featured desc, order asc) {
     _id,
     name,
+    productId,
     slug,
     description,
     longDescription,
@@ -25,12 +26,19 @@ export async function getExteriorProducts() {
     thickness,
     technicalDocuments[]{
       title,
-      file,
+      file{
+        asset->{
+          _id,
+          url,
+          originalFilename,
+          size,
+          mimeType
+        }
+      },
       downloadText
     },
     bimRequest,
     collectionName,
-    features,
     specifications[]{
       label,
       value
@@ -67,6 +75,7 @@ export async function getExteriorProductBySlug(slug: string) {
   const query = `*[_type == "exteriorProduct" && slug.current == $slug][0]{
     _id,
     name,
+    productId,
     slug,
     description,
     longDescription,
@@ -85,12 +94,19 @@ export async function getExteriorProductBySlug(slug: string) {
     thickness,
     technicalDocuments[]{
       title,
-      file,
+      file{
+        asset->{
+          _id,
+          url,
+          originalFilename,
+          size,
+          mimeType
+        }
+      },
       downloadText
     },
     bimRequest,
     collectionName,
-    features,
     specifications[]{
       label,
       value
@@ -101,11 +117,22 @@ export async function getExteriorProductBySlug(slug: string) {
     imageSections[]{
       _key,
       _type,
+      order,
       title,
       subtitle,
       description,
       features,
       image,
+      bannerLeft{
+        title,
+        subtitle,
+        description
+      },
+      bannerRight{
+        title,
+        subtitle,
+        description
+      },
       heroLeft{
         title,
         subtitle,
@@ -116,6 +143,14 @@ export async function getExteriorProductBySlug(slug: string) {
         subtitle,
         description
       }
+    },
+    finishes[]{
+      name,
+      code,
+      image,
+      image_url,
+      color,
+      order
     }
   }`
   
@@ -142,6 +177,7 @@ export async function getInteriorProducts() {
   const query = `*[_type == "interiorProduct"] | order(featured desc, order asc) {
     _id,
     name,
+    productId,
     slug,
     description,
     longDescription,
@@ -160,12 +196,19 @@ export async function getInteriorProducts() {
     thickness,
     technicalDocuments[]{
       title,
-      file,
+      file{
+        asset->{
+          _id,
+          url,
+          originalFilename,
+          size,
+          mimeType
+        }
+      },
       downloadText
     },
     bimRequest,
     collectionName,
-    features,
     specifications[]{
       label,
       value
@@ -176,11 +219,22 @@ export async function getInteriorProducts() {
     imageSections[]{
       _key,
       _type,
+      order,
       title,
       subtitle,
       description,
       features,
       image,
+      bannerLeft{
+        title,
+        subtitle,
+        description
+      },
+      bannerRight{
+        title,
+        subtitle,
+        description
+      },
       heroLeft{
         title,
         subtitle,
@@ -191,6 +245,14 @@ export async function getInteriorProducts() {
         subtitle,
         description
       }
+    },
+    finishes[]{
+      name,
+      code,
+      image,
+      image_url,
+      color,
+      order
     }
   }`
   
@@ -202,6 +264,7 @@ export async function getInteriorProductBySlug(slug: string) {
   const query = `*[_type == "interiorProduct" && slug.current == $slug][0]{
     _id,
     name,
+    productId,
     slug,
     description,
     longDescription,
@@ -220,12 +283,19 @@ export async function getInteriorProductBySlug(slug: string) {
     thickness,
     technicalDocuments[]{
       title,
-      file,
+      file{
+        asset->{
+          _id,
+          url,
+          originalFilename,
+          size,
+          mimeType
+        }
+      },
       downloadText
     },
     bimRequest,
     collectionName,
-    features,
     specifications[]{
       label,
       value
@@ -236,11 +306,22 @@ export async function getInteriorProductBySlug(slug: string) {
     imageSections[]{
       _key,
       _type,
+      order,
       title,
       subtitle,
       description,
       features,
       image,
+      bannerLeft{
+        title,
+        subtitle,
+        description
+      },
+      bannerRight{
+        title,
+        subtitle,
+        description
+      },
       heroLeft{
         title,
         subtitle,
@@ -251,6 +332,14 @@ export async function getInteriorProductBySlug(slug: string) {
         subtitle,
         description
       }
+    },
+    finishes[]{
+      name,
+      code,
+      image,
+      image_url,
+      color,
+      order
     }
   }`
   
@@ -284,6 +373,28 @@ export async function getRelatedProducts(productType: string, currentProductId: 
   }`
   
   return await client.fetch(query, { productType, currentProductId })
+}
+
+// Get product by ID (works for all product types)
+export async function getProductById(productId: string, productType: string) {
+  const query = `*[_type == $productType && _id == $productId][0]{
+    _id,
+    name,
+    productId,
+    slug,
+    panelFormats,
+    thickness,
+    finishes[]{
+      name,
+      code,
+      image,
+      image_url,
+      color,
+      order
+    }
+  }`
+  
+  return await client.fetch(query, { productId, productType })
 }
 
 // ===== PRODUCT SLUGS =====

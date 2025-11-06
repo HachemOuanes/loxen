@@ -24,7 +24,8 @@
     "fetch:migrate": "node scripts/fetch-and-migrate-products.js",
     "cleanup:old": "node scripts/cleanup-old-products.js",
     "test:mega": "node scripts/test-mega-menu.js",
-    "sync:decors": "node scripts/sync-decors.js"
+    "sync:decors": "node scripts/sync-decors.js",
+    "seed:finishes": "node scripts/seed-finishes.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

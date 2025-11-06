@@ -16,11 +16,13 @@ type Finish = {
   color?: string
   colors?: string[]
   abet_order?: number
-  collection_names?: Array<{ code: string; name: string }>
-  collections?: string[]
-  surfaces?: string[]
-  finishes?: string[]
-  option_classes?: string[]
+  products?: Array<{
+    _id: string
+    _type: string
+    name: string
+    productId?: string
+    slug?: { current: string }
+  }>
   keywords?: string[]
   interior?: boolean
   exterior?: boolean
@@ -36,7 +38,7 @@ interface DecorsWithFiltersProps {
 export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedColors, setSelectedColors] = useState<string[]>([])
-  const [selectedCollections, setSelectedCollections] = useState<string[]>([])
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
   const [interiorFilter, setInteriorFilter] = useState<boolean | null>(null)
   const [exteriorFilter, setExteriorFilter] = useState<boolean | null>(null)
   const [isNewFilter, setIsNewFilter] = useState<boolean | null>(null)
@@ -54,14 +56,16 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
     return Array.from(colorSet).sort()
   }, [finishes])
 
-  const allCollections = useMemo(() => {
-    const collectionSet = new Set<string>()
+  const allProducts = useMemo(() => {
+    const productSet = new Set<string>()
     finishes.forEach(f => {
-      if (f.collection_names) {
-        f.collection_names.forEach(c => collectionSet.add(c.name))
+      if (f.products) {
+        f.products.forEach(p => {
+          if (p.name) productSet.add(p.name)
+        })
       }
     })
-    return Array.from(collectionSet).sort()
+    return Array.from(productSet).sort()
   }, [finishes])
 
   // Filter decors based on search and filters
@@ -73,7 +77,7 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
         const matchesSearch =
           finish.name?.toLowerCase().includes(query) ||
           finish.code?.toLowerCase().includes(query) ||
-          (finish.collection_names && finish.collection_names.some(c => c.name?.toLowerCase().includes(query))) ||
+          (finish.products && finish.products.some(p => p.name?.toLowerCase().includes(query))) ||
           (finish.keywords && finish.keywords.some(k => k?.toLowerCase().includes(query)))
         
         if (!matchesSearch) return false
@@ -88,13 +92,14 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
         if (!hasColor) return false
       }
 
-      // Collection filter - must match at least one selected collection
-      if (selectedCollections.length > 0) {
-        const hasCollection = selectedCollections.some(collection =>
-          finish.collection_names?.some(c => c.name === collection)
+      // Product filter - must match at least one selected product
+      if (selectedProducts.length > 0) {
+        const hasProduct = selectedProducts.some(productName =>
+          finish.products && finish.products.some(p => p.name === productName)
         )
-        if (!hasCollection) return false
+        if (!hasProduct) return false
       }
+
 
       // Interior/Exterior filter
       // If both filters are checked, show decors that are interior OR exterior (union)
@@ -125,7 +130,7 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
 
       return true
     })
-  }, [finishes, searchQuery, selectedColors, selectedCollections, interiorFilter, exteriorFilter, isNewFilter])
+  }, [finishes, searchQuery, selectedColors, selectedProducts, interiorFilter, exteriorFilter, isNewFilter])
 
   const availableFinishes = filteredFinishes.filter(f => f.available !== false)
 
@@ -135,22 +140,22 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
     )
   }
 
-  const toggleCollection = (collection: string) => {
-    setSelectedCollections(prev =>
-      prev.includes(collection) ? prev.filter(c => c !== collection) : [...prev, collection]
+  const toggleProduct = (productName: string) => {
+    setSelectedProducts(prev =>
+      prev.includes(productName) ? prev.filter(p => p !== productName) : [...prev, productName]
     )
   }
 
   const clearFilters = () => {
     setSearchQuery('')
     setSelectedColors([])
-    setSelectedCollections([])
+    setSelectedProducts([])
     setInteriorFilter(null)
     setExteriorFilter(null)
     setIsNewFilter(null)
   }
 
-  const hasActiveFilters = searchQuery || selectedColors.length > 0 || selectedCollections.length > 0 || interiorFilter !== null || exteriorFilter !== null || isNewFilter !== null
+  const hasActiveFilters = searchQuery || selectedColors.length > 0 || selectedProducts.length > 0 || interiorFilter !== null || exteriorFilter !== null || isNewFilter !== null
 
   // Reusable filter content component
   const FilterContent = () => (
@@ -171,7 +176,7 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
       {allColors.length > 0 && (
         <div>
           <h3 className="text-xs font-medium text-black mb-3 uppercase tracking-wide">Couleurs</h3>
-          <div className="space-y-2">
+          <div className="space-y-2 max-h-48 overflow-y-auto">
             {allColors.map(color => (
               <label key={color} className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -187,20 +192,20 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
         </div>
       )}
 
-      {/* Collections Filter */}
-      {allCollections.length > 0 && (
+      {/* Products Filter */}
+      {allProducts.length > 0 && (
         <div>
-          <h3 className="text-xs font-medium text-black mb-3 uppercase tracking-wide">Collections</h3>
+          <h3 className="text-xs font-medium text-black mb-3 uppercase tracking-wide">Produits</h3>
           <div className="space-y-2 max-h-64 overflow-y-auto">
-            {allCollections.map(collection => (
-              <label key={collection} className="flex items-center gap-2 cursor-pointer">
+            {allProducts.map(productName => (
+              <label key={productName} className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={selectedCollections.includes(collection)}
-                  onChange={() => toggleCollection(collection)}
+                  checked={selectedProducts.includes(productName)}
+                  onChange={() => toggleProduct(productName)}
                   className="w-4 h-4 border border-black/20 rounded focus:ring-black/20 focus:ring-2"
                 />
-                <span className="text-xs text-black/70">{collection}</span>
+                <span className="text-xs text-black/70">{productName}</span>
               </label>
             ))}
           </div>
@@ -282,7 +287,7 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
             <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-black/40" />
             <Input
               type="text"
-              placeholder="Rechercher par nom, code, collection..."
+              placeholder="Rechercher par nom, code, produit..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 border-black/20 focus:border-black/40 rounded-none"

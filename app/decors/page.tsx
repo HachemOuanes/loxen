@@ -14,11 +14,13 @@ type Finish = {
   color?: string
   colors?: string[]
   abet_order?: number
-  collection_names?: Array<{ code: string; name: string }>
-  collections?: string[]
-  surfaces?: string[]
-  finishes?: string[]
-  option_classes?: string[]
+  products?: Array<{
+    _id: string
+    _type: string
+    name: string
+    productId?: string
+    slug?: { current: string }
+  }>
   keywords?: string[]
   interior?: boolean
   exterior?: boolean
@@ -46,11 +48,7 @@ async function getAllFinishes(): Promise<Finish[]> {
       color: decor.color,
       colors: decor.colors,
       abet_order: decor.abet_order,
-      collection_names: decor.collection_names,
-      collections: decor.collections,
-      surfaces: decor.surfaces,
-      finishes: decor.finishes,
-      option_classes: decor.option_classes,
+      products: decor.products,
       keywords: decor.keywords,
       interior: decor.interior,
       exterior: decor.exterior,

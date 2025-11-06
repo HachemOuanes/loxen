@@ -14,8 +14,13 @@ export type Decor = {
   color?: string
   colors?: string[]
   abet_order?: number
-  collection_names?: Array<{ code: string; name: string }>
-  collections?: string[]
+  products?: Array<{
+    _id: string
+    _type: string
+    name: string
+    productId?: string
+    slug?: { current: string }
+  }>
   interior?: boolean
   exterior?: boolean
   available?: boolean
@@ -156,14 +161,14 @@ export function DecorsCarousel({
               {renderItems.map((finish, idx) => (
                 <article
                   key={(finish.code + finish.name) + '-' + idx}
-                  className="js-decor-card basis-1/2 shrink-0 group border border-black/10 bg-white overflow-hidden box-border lg:basis-[calc((100%_-_1.5rem_*_4)/5)] rounded-t-2xl"
+                  className="js-decor-card basis-1/2 shrink-0 group bg-white box-border lg:basis-[calc((100%_-_1.5rem_*_4)/5)]"
                 >
-                  <div className="aspect-[4/5] overflow-hidden bg-gray-50 relative rounded-t-2xl">
+                  <div className="aspect-[4/5] overflow-hidden bg-gray-50 relative rounded-2xl border border-black/10">
                     {finish.image ? (
                       <img
                         src={urlFor(finish.image).width(320).height(400).quality(85).url()}
                         alt={finish.name || finish.code || 'Decor'}
-                        className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110 rounded-t-2xl"
+                        className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110 rounded-2xl"
                         loading="lazy"
                         decoding="async"
                         onError={(e) => {
@@ -176,12 +181,12 @@ export function DecorsCarousel({
                       <img
                         src={finish.image_url}
                         alt={finish.name || finish.code || 'Decor'}
-                        className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110 rounded-t-2xl"
+                        className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110 rounded-2xl"
                         loading="lazy"
                         decoding="async"
                       />
                     ) : (
-                      <div className="h-full w-full rounded-t-2xl" style={{ backgroundColor: finish.color || finish.colors?.[0] || '#e5e7eb' }} />
+                      <div className="h-full w-full rounded-2xl" style={{ backgroundColor: finish.color || finish.colors?.[0] || '#e5e7eb' }} />
                     )}
                     {finish.is_new && (
                       <div className="absolute top-2 right-2 bg-black text-white text-[10px] px-2 py-1 uppercase tracking-wide">
@@ -202,10 +207,10 @@ export function DecorsCarousel({
                   <div className="p-3">
                     <p className="text-xs font-medium text-black">{finish.code}</p>
                     <p className="text-xs text-black/70 truncate">{finish.name}</p>
-                    {finish.collection_names && finish.collection_names.length > 0 && (
+                    {finish.products && finish.products.length > 0 && (
                       <p className="mt-1 text-[11px] text-black/50 truncate">
-                        {finish.collection_names.slice(0, 2).map(c => c.name).join(', ')}
-                        {finish.collection_names.length > 2 && ` +${finish.collection_names.length - 2}`}
+                        {finish.products.slice(0, 2).map(p => p.name).join(', ')}
+                        {finish.products.length > 2 && ` +${finish.products.length - 2}`}
                       </p>
                     )}
                   </div>

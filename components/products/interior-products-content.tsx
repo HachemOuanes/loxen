@@ -14,7 +14,6 @@ interface Product {
   longDescription?: string
   image: any
   specifications?: Array<{ label: string; value: string }>
-  features?: string[]
   price?: string
   featured: boolean
   order: number
