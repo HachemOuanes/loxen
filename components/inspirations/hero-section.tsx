@@ -58,16 +58,19 @@ export function HeroSection({ title, description, heroImage, contactLink, contac
         });
 
         const width = text ? text.offsetWidth : 0;
+        const innerPadding = 30;
         const innerWidth = window.innerWidth;
         const xPixels = (innerWidth - width);
         const figureWidth = figure.offsetWidth;
+        
+        const shrinkFactor = width / (innerWidth + innerPadding);
 
-        gsap.set(figure, { transformOrigin: `${innerWidth - xPixels - 210}px center` });
+        gsap.set(figure, { transformOrigin: `center center` });
         // Move image to the right while scaling down
         tl.fromTo(
           figure,
           { scaleY: 1.0, scaleX: 1.0, x: 0, xPercent: 0, yPercent: 0, immediateRender: false },
-          { scaleY: 0.7, scaleX: 0.7, x: 0, xPercent: 0.2, yPercent: maxYPercent, ease: 'none' }
+          { scaleY: shrinkFactor, scaleX: shrinkFactor, x: 0, xPercent: 0, yPercent: maxYPercent, ease: 'none' }
         )
 
         return () => tl.scrollTrigger?.kill()
@@ -78,7 +81,7 @@ export function HeroSection({ title, description, heroImage, contactLink, contac
   return (
     <section className="relative bg-white">
       {/* Full-viewport overlay image that animates to the right */}
-      <div ref={stickyHeroRef} className='h-[200vh]'>
+      <div ref={stickyHeroRef} className='h-[210vh]'>
         <img 
           src={heroImage ? urlFor(heroImage).width(1920).height(1080).quality(90).url() : '/salle-de-bain/solid-top-piano-hpl-bagni-02.jpg'} 
           alt={`Plan ${title} effet bois`} 
@@ -88,8 +91,8 @@ export function HeroSection({ title, description, heroImage, contactLink, contac
           fetchPriority="high" 
         />
 
-        <div className="relative h-screen max-w-7xl mx-auto px-4 md:px-6 py-16 gap-6 js-hero-text flex flex-col justify-center">
-          <div className='bg-white/20 backdrop-blur-sm w-fit py-6 px-6'>
+        <div className="relative h-[110vh] max-w-7xl mx-auto px-4 md:px-6 py-20 gap-6 js-hero-text flex flex-col justify-end items-center">
+          <div className='bg-white/80 backdrop-blur-sm  w-full py-6 px-6'>
             <div className=''>
               <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-3">
                 <span className="h-[1px] w-8 bg-black/30" /> Inspirations
@@ -97,7 +100,7 @@ export function HeroSection({ title, description, heroImage, contactLink, contac
               <h1 className="text-3xl md:text-6xl font-light tracking-tight text-black mb-4 ">{title}</h1>
             </div>
             <div className="">
-              <p className="text-base md:text-lg text-black/70 leading-relaxed max-w-2xl">{description}</p>
+              <p className="text-base md:text-lg text-black/70 leading-relaxed">{description}</p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <a href="#examples" className="border border-black/20 px-5 py-2.5 text-sm tracking-[0.14em] uppercase hover:bg-black hover:text-white transition-colors">Voir les exemples</a>
                 <a href={contactLink} className="border border-black/20 px-5 py-2.5 text-sm tracking-[0.14em] uppercase hover:bg-black hover:text-white transition-colors">{contactCta}</a>
