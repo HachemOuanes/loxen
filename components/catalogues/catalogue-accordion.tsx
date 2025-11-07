@@ -121,9 +121,9 @@ export function CatalogueAccordion({ catalogue, index, isLast, id }: CatalogueAc
                 {/* Left Column - Overview */}
                 <div className="py-6 md:py-8 pr-6 md:pr-8 border-r border-black/10">
                   {/* Section Header */}
-                  <div className="flex items-center gap-2 mb-5">
-                    <span className="w-2 h-2 rounded-full bg-black"></span>
-                    <span className="text-xs tracking-[0.18em] uppercase text-black/60 font-light">
+                  <div className="inline-flex items-center gap-2 mb-5">
+                    <span className="h-[1px] w-8 bg-black/30" />
+                    <span className="text-xs tracking-[0.18em] uppercase text-black/70 font-light">
                       Overview
                     </span>
                   </div>

@@ -15,6 +15,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ title, description, heroImage, contactLink, contactCta }: HeroSectionProps) {
   const stickyHeroRef = useRef<HTMLDivElement | null>(null)
+  const arrowRef = useRef<HTMLDivElement | null>(null)
 
   // Sticky hero: image scales down and moves right, text reveals on the left
   useEffect(() => {
@@ -24,6 +25,28 @@ export function HeroSection({ title, description, heroImage, contactLink, contac
     const figure = hero.querySelector('.js-hero-figure') as HTMLElement | null
     const text = hero.querySelector('.js-hero-text') as HTMLElement | null
     if (!figure) return
+
+    // Animate arrow indicator
+    if (arrowRef.current) {
+      gsap.to(arrowRef.current, {
+        y: 10,
+        duration: 1.5,
+        repeat: -1,
+        yoyo: true,
+        ease: "power2.inOut"
+      });
+
+      // Fade out arrow when scrolling
+      gsap.to(arrowRef.current, {
+        opacity: 0,
+        scrollTrigger: {
+          trigger: hero,
+          start: "top top",
+          end: "20% top", // Fade out in first 20% of scroll
+          scrub: true,
+        }
+      });
+    }
 
     // Performance hints
     gsap.set([figure], { willChange: 'transform', force3D: true })
@@ -106,6 +129,34 @@ export function HeroSection({ title, description, heroImage, contactLink, contac
                 <a href={contactLink} className="border border-black/20 px-5 py-2.5 text-sm tracking-[0.14em] uppercase hover:bg-black hover:text-white transition-colors">{contactCta}</a>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Scroll indicator arrow */}
+        <div 
+          ref={arrowRef}
+          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none"
+        >
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-white/90 text-xs tracking-[0.15em] uppercase font-light drop-shadow-lg">
+              Découvrez les inspirations
+            </p>
+            <svg 
+              width="32" 
+              height="32" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+              className="text-white drop-shadow-2xl"
+            >
+              <path 
+                d="M7 10L12 15L17 10" 
+                stroke="currentColor" 
+                strokeWidth="2.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+            </svg>
           </div>
         </div>
       </div>

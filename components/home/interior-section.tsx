@@ -71,31 +71,57 @@ export function InteriorSection() {
   if (!categories.length) return null
 
   return (
-    <section id="interieur" className="py-6 px-4 bg-white relative z-10">
-      <div className="text-center mb-12">
-        {/* <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extralight text-black mb-6 sm:mb-8 tracking-[-0.02em]">
-          {sectionContent?.title || 'Intérieur'}
-        </h2> */}
-        {/* <div className="w-16 sm:w-20 lg:w-24 h-px bg-black/20 mx-auto mb-6 sm:mb-8"></div>
-        <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-light px-4">
-          {sectionContent?.description}
-        </p> */}
+    <section id="interieur" className="w-full relative z-10 m-0 p-0 bg-white">
+      {/* Title Section */}
+      <div className="w-full bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-12">
+          {/* Section Indicator */}
+          <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-4">
+            <span className="h-[1px] w-8 bg-black/30" /> Intérieur
+          </div>
+
+          {/* Main Title */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-black mb-3 tracking-[-0.02em]">
+            {sectionContent?.title || 'Intérieur'}
+          </h1>
+
+          {/* Sub-headline */}
+          {sectionContent?.description && (
+            <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-light text-black/70 mb-6 tracking-[-0.02em]">
+              {sectionContent.description}
+            </h2>
+          )}
+
+          {/* Decorative Element */}
+          <div className="flex items-center gap-2">
+            <svg width="60" height="2" className="text-black/20">
+              <line x1="0" y1="1" x2="60" y2="1" stroke="currentColor" strokeWidth="0.5" />
+            </svg>
+            <div className="w-1.5 h-1.5 rounded-full bg-black/30"></div>
+            <svg width="60" height="2" className="text-black/20">
+              <line x1="0" y1="1" x2="60" y2="1" stroke="currentColor" strokeWidth="0.5" />
+            </svg>
+          </div>
+        </div>
       </div>
 
-      <div className="w-full">
-        <div className="grid grid-cols-1 sm:grid-cols-3 h-full gap-0.5">
-          {categories.map((category, index) => (
-            <div key={category._id} className="relative group overflow-hidden h-[50vh]">
-              <img
-                src={category.image ? urlFor(category.image).quality(100).url() : "/placeholder.svg"}
-                alt={category.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-3 sm:p-4 lg:p-6">
-                <h3 className="text-white font-light text-sm sm:text-base lg:text-lg tracking-wide">{category.name}</h3>
+      {/* Images Grid */}
+      <div className="h-screen w-full overflow-hidden relative m-0 p-0">
+        <div className="w-full h-full m-0 p-0">
+          <div className="grid grid-cols-1 sm:grid-cols-3 h-full w-full gap-0 m-0 p-0">
+            {categories.map((category, index) => (
+              <div key={category._id} className="relative group overflow-hidden h-full w-full m-0 p-0">
+                <img
+                  src={category.image ? urlFor(category.image).quality(100).url() : "/placeholder.svg"}
+                  alt={category.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 m-0 p-0"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-3 sm:p-4 lg:p-6">
+                  <h3 className="text-white font-light text-sm sm:text-base lg:text-lg tracking-wide">{category.name}</h3>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

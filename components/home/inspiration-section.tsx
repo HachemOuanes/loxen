@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import Link from "next/link"
+import { ArrowUpRight } from "lucide-react"
 import { client, urlFor } from "@/lib/sanity"
 import { InspirationSkeleton } from "@/components/home/skeletons/inspiration-skeleton"
 
@@ -12,6 +12,8 @@ interface Inspiration {
   location: string
   image: any
   order: number
+  description?: string
+  category?: string
 }
 
 interface SectionContent {
@@ -23,7 +25,6 @@ interface SectionContent {
 export function InspirationSection() {
   const [inspirations, setInspirations] = useState<Inspiration[]>([])
   const [sectionContent, setSectionContent] = useState<SectionContent | null>(null)
-  const [currentSlide, setCurrentSlide] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -38,7 +39,8 @@ export function InspirationSection() {
             description,
             image,
             location,
-            order
+            order,
+            category
           },
           showSection
         }`
@@ -49,6 +51,8 @@ export function InspirationSection() {
             _id: `inspiration-${index}`,
             title: project.title,
             location: project.location || '',
+            description: project.description || '',
+            category: project.category || '',
             image: project.image,
             order: project.order || index
           })).sort((a: any, b: any) => a.order - b.order)
@@ -71,128 +75,160 @@ export function InspirationSection() {
     fetchData()
   }, [])
 
-  useEffect(() => {
-    if (inspirations.length > 0) {
-      const interval = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % inspirations.length)
-      }, 3000)
-
-      return () => clearInterval(interval)
-    }
-  }, [inspirations.length])
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % inspirations.length)
-  }
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + inspirations.length) % inspirations.length)
-  }
-
-  const extendedProjects = [...inspirations, ...inspirations, ...inspirations]
-  const getVisibleSlides = () => {
-    if (typeof window !== "undefined") {
-      if (window.innerWidth < 640) return 1
-      if (window.innerWidth < 1024) return 2
-      return 3
-    }
-    return 3
-  }
-
-  const [visibleSlides, setVisibleSlides] = useState(3)
-
-  useEffect(() => {
-    const handleResize = () => {
-      setVisibleSlides(getVisibleSlides())
-    }
-
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
-
   if (loading) {
     return <InspirationSkeleton />
   }
 
   if (!inspirations.length) return null
 
+  // Split inspirations: first one goes in top right, rest go in grid below
+  const firstInspiration = inspirations[0]
+  const remainingInspirations = inspirations.slice(1)
+
   return (
-    <section id="inspirations" className="py-16 px-4 bg-gradient-to-b from-gray-100 to-white relative z-10">
-      {/* <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-        <h2 className="text-3xl sm:text-4xl lg:text-4xl mb-6 sm:mb-8 tracking-[-0.02em]">
-          {sectionContent?.title || 'Inspiration'}
-        </h2>
-        <div className="w-16 sm:w-20 lg:w-24 h-px bg-black/20 mx-auto mb-6 sm:mb-8"></div>
-        <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-light px-4">
-          {sectionContent?.description}
-        </p>
-      </div> */}
-
-      <div className="relative">
-        <div className="overflow-hidden rounded-none">
-          <div
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${currentSlide * (100 / visibleSlides)}%)` }}
-          >
-            {extendedProjects.map((project, index) => (
-              <div
-                key={index}
-                className={`flex-shrink-0 px-2 sm:px-4 ${visibleSlides === 1 ? "w-full" : visibleSlides === 2 ? "w-1/2" : "w-1/3"
-                  }`}
-              >
-                <div className="relative h-[300px] sm:h-[400px] lg:h-[500px] bg-gray-100">
-                  <img
-                    src={project.image ? urlFor(project.image).quality(100).url() : "/placeholder.svg"}
-                    alt={`${project.title} - ${project.location}`}
-                    className="w-full h-full object-cover transition-all duration-700 scale-105"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/95 p-3 sm:p-4 lg:p-6">
-                    <h3 className="text-base sm:text-lg lg:text-xl font-light text-white mb-1 tracking-wide">
-                      {project.title}
-                    </h3>
-                    <p className="text-white/90 font-light tracking-wider text-xs uppercase">{project.location}</p>
-                  </div>
-                </div>
+    <section id="inspirations" className="w-full relative z-10 m-0 p-0 bg-gray-100">
+      <div className="relative w-full m-0 p-0">
+        {/* Flexbox Layout with Staggered/Shifted Pattern */}
+        <div className="flex flex-wrap w-full">
+          {/* Title Section - Left, takes up space */}
+          <div className="w-full lg:w-1/2 flex-shrink-0 px-8 sm:px-12 lg:px-16 xl:px-24 py-16 lg:py-24">
+            <div className="max-w-xl">
+              {/* Section Indicator */}
+              <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-6">
+                <span className="h-[1px] w-8 bg-black/30" /> Nos Inspirations
               </div>
-            ))}
+
+              {/* Main Headline */}
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-black mb-4 tracking-[-0.02em]">
+                {sectionContent?.title || 'Explore our project portfolio'}
+              </h1>
+
+              {/* Sub-headline */}
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-black mb-8 tracking-[-0.02em]">
+                {sectionContent?.description || 'Découvrez une sélection de projets qui incarnent l\'excellence architecturale.'}
+              </h2>
+
+              {/* Decorative Element */}
+              <div className="mt-8 flex items-center gap-2">
+                <svg width="60" height="2" className="text-black/20">
+                  <line x1="0" y1="1" x2="60" y2="1" stroke="currentColor" strokeWidth="0.5" />
+                </svg>
+                <div className="w-1.5 h-1.5 rounded-full bg-black/30"></div>
+                <svg width="60" height="2" className="text-black/20">
+                  <line x1="0" y1="1" x2="60" y2="1" stroke="currentColor" strokeWidth="0.5" />
+                </svg>
+              </div>
+            </div>
           </div>
+
+          {/* First Inspiration Image - Right, shifted down */}
+          {firstInspiration && (
+            <div className="w-full lg:w-1/2 flex-shrink-0 lg:mt-16 px-4 sm:px-6 lg:px-8">
+              <Link
+                href={`/inspirations/${firstInspiration._id}`}
+                className="group hover:opacity-95 transition-opacity block"
+              >
+                <div className="relative w-full overflow-hidden aspect-[4/3] lg:aspect-[5/3]">
+                  {firstInspiration.image ? (
+                    <img
+                      src={urlFor(firstInspiration.image).width(1200).height(720).quality(90).url()}
+                      alt={firstInspiration.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-800"></div>
+                  )}
+                  
+                  {/* Tag Overlay */}
+                  {firstInspiration.location && (
+                    <div className="absolute top-4 left-4 bg-black text-white px-3 py-1.5 rounded-full text-xs font-light">
+                      {firstInspiration.location}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Text Below Image */}
+                <div className="px-4 py-4 bg-gray-100">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-xl sm:text-2xl font-light text-black group-hover:opacity-80 transition-opacity">
+                      {firstInspiration.title}
+                      {firstInspiration.location && (
+                        <span className="block text-base sm:text-lg font-light text-black/90 mt-1">
+                          {firstInspiration.location}
+                        </span>
+                      )}
+                    </h3>
+                    <ArrowUpRight className="w-4 h-4 text-black/60 group-hover:text-black group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                  </div>
+                  {firstInspiration.category && (
+                    <p className="text-xs tracking-[0.15em] uppercase text-black/70 font-light">
+                      {firstInspiration.category}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            </div>
+          )}
+
+          {/* Remaining Inspirations - Staggered Pattern */}
+          {remainingInspirations.map((inspiration, index) => {
+            // Alternate between left and right, creating staggered effect
+            const isLeft = index % 2 === 0
+            const isRight = index % 2 === 1
+            
+            return (
+              <div
+                key={inspiration._id}
+                className={`w-full lg:w-1/2 flex-shrink-0 px-4 sm:px-6 lg:px-8 ${isLeft ? 'lg:mt-0' : 'lg:mt-16'}`}
+              >
+                <Link
+                  href={`/inspirations/${inspiration._id}`}
+                  className="group hover:opacity-95 transition-opacity block"
+                >
+                  <div className="relative w-full overflow-hidden aspect-[4/3] lg:aspect-[5/3]">
+                    {inspiration.image ? (
+                      <img
+                        src={urlFor(inspiration.image).width(1200).height(720).quality(90).url()}
+                        alt={inspiration.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-800"></div>
+                    )}
+                    
+                    {/* Tag Overlay */}
+                    {inspiration.location && (
+                      <div className="absolute top-4 left-4 bg-black text-white px-3 py-1.5 rounded-full text-xs font-light">
+                        {inspiration.location}
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Text Below Image */}
+                  <div className="px-4 py-4 bg-gray-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-xl sm:text-2xl font-light text-black group-hover:opacity-80 transition-opacity">
+                        {inspiration.title}
+                        {inspiration.location && (
+                          <span className="block text-base sm:text-lg font-light text-black/90 mt-1">
+                            {inspiration.location}
+                          </span>
+                        )}
+                      </h3>
+                      <ArrowUpRight className="w-4 h-4 text-black/60 group-hover:text-black group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                    </div>
+                    {inspiration.category && (
+                      <p className="text-xs tracking-[0.15em] uppercase text-black/70 font-light">
+                        {inspiration.category}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              </div>
+            )
+          })}
         </div>
-
-        <button
-          onClick={prevSlide}
-          className="absolute left-2 sm:left-4 lg:left-8 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-black p-2 sm:p-3 transition-all duration-300 backdrop-blur-sm hidden sm:block"
-        >
-          <ChevronLeft size={20} className="sm:w-6 sm:h-6" />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-2 sm:right-4 lg:right-8 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-black p-2 sm:p-3 transition-all duration-300 backdrop-blur-sm hidden sm:block"
-        >
-          <ChevronRight size={20} className="sm:w-6 sm:h-6" />
-        </button>
-
-        {/* <div className="flex justify-center mt-8 sm:mt-12 space-x-2 sm:space-x-3">
-          {inspirations.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${index === currentSlide ? "bg-black" : "bg-gray-300 hover:bg-gray-400"
-                }`}
-            />
-          ))}
-        </div> */}
       </div>
-
-      {/* <div className="text-center mt-12 sm:mt-16">
-        <Button
-          variant="outline"
-          size="lg"
-          className="text-sm sm:text-base px-8 sm:px-12 py-3 sm:py-4 bg-transparent border-2 border-black/20 text-black hover:bg-black hover:text-white font-light tracking-wider rounded-none transition-all duration-300"
-        >
-          {sectionContent?.buttonText || 'Explorer Plus de Réalisations'}
-        </Button>
-      </div> */}
     </section>
   )
 }

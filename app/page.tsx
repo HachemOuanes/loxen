@@ -2,6 +2,7 @@ import { Header } from "@/components/shared/header"
 import { HeroSection } from "@/components/home/hero-section"
 import { InspirationSection } from "@/components/home/inspiration-section"
 import { ProductsSection } from "@/components/home/products-section"
+import { WhyLoxenSection } from "@/components/home/why-loxen-section"
 import { InteriorSection } from "@/components/home/interior-section"
 import { ExteriorSection } from "@/components/home/exterior-section"
 import { PartnersSection } from "@/components/home/partners-section"
@@ -48,11 +49,12 @@ export default async function HomePage() {
         />
       )}
       
-      <main className="min-h-screen">
+      <main className="w-full">
         <Header />
         <HeroSection heroData={heroData} />
         <InspirationSection />
         <ProductsSection />
+        <WhyLoxenSection />
         <ExteriorSection />
         <InteriorSection />
         <PartnersSection />
