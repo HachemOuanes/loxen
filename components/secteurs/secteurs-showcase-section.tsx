@@ -22,10 +22,10 @@ interface SecteursShowcaseSectionProps {
   }[]
 }
 
-export function SecteursShowcaseSection({ 
-  heroImage, 
-  leftText, 
-  rightText, 
+export function SecteursShowcaseSection({
+  heroImage,
+  leftText,
+  rightText,
   images
 }: SecteursShowcaseSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null)
@@ -66,12 +66,12 @@ export function SecteursShowcaseSection({
       <div className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="js-parallax relative overflow-hidden rounded-sm border border-black/10" data-speed="0.3">
-            <img 
-              src={heroImage} 
-              alt="Secteurs showcase" 
-              className="w-full h-[600px] object-cover" 
-              loading="lazy" 
-              decoding="async" 
+            <img
+              src={heroImage}
+              alt="Secteurs showcase"
+              className="w-full h-[600px] object-cover"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </div>
@@ -99,14 +99,14 @@ export function SecteursShowcaseSection({
           {/* Two Images - same height as inspiration collage images with gap */}
           <div className="grid grid-cols-2 gap-8">
             {images?.map((image, imageIndex) => (
-              <div 
-                key={imageIndex} 
-                className="js-parallax relative overflow-hidden rounded-sm border border-black/10 h-[400px]" 
+              <div
+                key={imageIndex}
+                className="js-parallax relative overflow-hidden rounded-sm border border-black/10 h-[400px]"
               >
-                <img 
-                  src={image.src} 
-                  alt={image.alt} 
-                  className="h-full w-full object-cover" 
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="h-full w-full object-cover"
                 />
               </div>
             ))}

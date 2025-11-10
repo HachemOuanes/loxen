@@ -26,6 +26,20 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         contactCta={shared?.contact?.cta || 'Nous contacter'}
       />
 
+
+      {/* Showcase Section */}
+      {specific?.showcaseSection && (
+        <SecteursShowcaseSection
+          heroImage={urlFor(specific.showcaseSection.heroImage).width(1200).height(600).url()}
+          leftText={specific.showcaseSection.leftText}
+          rightText={specific.showcaseSection.rightText}
+          images={specific.showcaseSection.images.map((img: any) => ({
+            src: urlFor(img.src).width(600).height(400).url(),
+            alt: img.alt
+          }))}
+        />
+      )}
+
       {/* Dynamic sections based on data */}
       {specific?.sections?.map((section: any, sectionIndex: number) => {
         if (section.type === 'applications') {
@@ -44,18 +58,6 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         return null
       })}
 
-      {/* Showcase Section */}
-      {specific?.showcaseSection && (
-        <SecteursShowcaseSection
-          heroImage={urlFor(specific.showcaseSection.heroImage).width(1200).height(600).url()}
-          leftText={specific.showcaseSection.leftText}
-          rightText={specific.showcaseSection.rightText}
-          images={specific.showcaseSection.images.map((img: any) => ({
-            src: urlFor(img.src).width(600).height(400).url(),
-            alt: img.alt
-          }))}
-        />
-      )}
 
       {/* Contact Section */}
       <CtaSection

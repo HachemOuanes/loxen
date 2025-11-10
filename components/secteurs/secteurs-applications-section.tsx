@@ -115,15 +115,15 @@ export function SecteursApplicationsSection({ title, items }: SecteursApplicatio
     }, [items])
 
     return (
-        <section ref={sectionRef} className="relative bg-white pb-2">
-            <div className="max-w-7xl mx-auto px-4 md:px-6">
-                <div ref={stickyTitleRef} className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-6 w-[20rem]">
+        <section ref={sectionRef} className="relative bg-white">
+            <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
+                <div ref={stickyTitleRef} className="js-reveal items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 hidden w-[20rem]">
                 </div>
 
                 <div className="grid grid-cols-2 gap-16">
                     {/* GSAP Pinned Image - Right Side */}
                     <div className="relative">
-                        <div ref={stickyImageRef} className="h-[92vh] overflow-hidden">
+                        <div ref={stickyImageRef} className="h-[96vh] overflow-hidden">
                             {items?.map((item, index) => (
                                 <img
                                     key={index}
