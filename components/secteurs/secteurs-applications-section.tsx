@@ -8,6 +8,10 @@ interface ApplicationItem {
     title: string
     subtitle: string
     description: string
+    textSection?: {
+        mainText?: string
+        description?: string
+    }
     features: string[]
     image: string
 }
@@ -120,7 +124,7 @@ export function SecteursApplicationsSection({ title, items }: SecteursApplicatio
                 <div ref={stickyTitleRef} className="js-reveal items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 hidden w-[20rem]">
                 </div>
 
-                <div className="grid grid-cols-2 gap-16">
+                <div className="grid grid-cols-2 gap-8">
                     {/* GSAP Pinned Image - Right Side */}
                     <div className="relative">
                         <div ref={stickyImageRef} className="h-[96vh] overflow-hidden">
@@ -137,26 +141,54 @@ export function SecteursApplicationsSection({ title, items }: SecteursApplicatio
                         </div>
                     </div>
                     {/* Text Content - Left Side */}
-                    <div className="space-y-64 pb-16">
+                    <div className="space-y-64 py-24">
                         {items?.map((item: ApplicationItem, itemIndex: number) => (
-                            <div key={itemIndex} className="js-reveal min-h-[70vh] flex flex-col justify-center">
-                                <p className="mb-2 text-xs uppercase tracking-[0.18em] text-black/60">{item.title}</p>
-                                <h3 className="text-2xl md:text-3xl font-light tracking-tight text-black">{item.subtitle}</h3>
-                                <p className="mt-4 text-black/70 leading-relaxed">{item.description}</p>
-                                <div className="mt-5 space-y-2">
-                                    {item.features?.map((feature: string, featureIndex: number) => (
-                                        <div key={featureIndex} className="group cursor-pointer">
-                                            <div className="bg-white border border-black/10 hover:border-black/20 hover:shadow-sm transition-all duration-200 p-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-2 h-2 bg-black/30 group-hover:bg-black/60 transition-colors duration-200" />
-                                                    <span className="text-sm text-black/75 group-hover:text-black/90 transition-colors duration-200 leading-relaxed">
-                                                        {feature}
-                                                    </span>
+                            <div key={itemIndex} className="js-reveal min-h-[70vh] flex flex-col justify-center space-y-6">
+                                {/* Title and Subtitle */}
+                                <div className="space-y-2">
+                                    <p className="text-xs uppercase tracking-[0.18em] text-black/60">{item.title}</p>
+                                    <h3 className="text-3xl md:text-5xl font-light tracking-tight text-black">{item.subtitle}</h3>
+                                </div>
+
+                                {/* First text section - Large main text + italic description */}
+                                {item.textSection && (
+                                    <div className="space-y-2 py-4">
+                                        {item.textSection.mainText && (
+                                            <p className="text-xl md:text-2xl font-light text-black leading-tight">
+                                                {item.textSection.mainText}
+                                            </p>
+                                        )}
+                                        {item.textSection.description && (
+                                            <p className="text-sm md:text-base text-black/60 italic leading-relaxed max-w-xl">
+                                                {item.textSection.description}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+
+
+                                {/* Original description */}
+                                {item.description && (
+                                    <p className="mt-4 text-black/70 leading-relaxed">{item.description}</p>
+                                )}
+
+                                {/* Features list */}
+                                {item.features && item.features.length > 0 && (
+                                    <div className="mt-5 space-y-2">
+                                        {item.features.map((feature: string, featureIndex: number) => (
+                                            <div key={featureIndex} className="group cursor-pointer">
+                                                <div className="bg-white border border-black/10 hover:border-black/20 hover:shadow-sm transition-all duration-200 p-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-2 h-2 bg-black/30 group-hover:bg-black/60 transition-colors duration-200" />
+                                                        <span className="text-sm text-black/75 group-hover:text-black/90 transition-colors duration-200 leading-relaxed">
+                                                            {feature}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>

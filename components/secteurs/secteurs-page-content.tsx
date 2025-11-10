@@ -20,8 +20,8 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
       {/* Hero Section */}
       <SecteursHeroSection
         title={specific?.title || 'Secteurs'}
-        description={specific?.description || ''}
-        heroImage={urlFor(specific?.heroImage).width(1200).height(600).url()}
+        heroTextSections={specific?.heroTextSections}
+        heroImage={urlFor(specific?.heroImage).quality(100).url()}
         contactLink={shared?.contact?.link || '/contact'}
         contactCta={shared?.contact?.cta || 'Nous contacter'}
       />
@@ -30,11 +30,11 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
       {/* Showcase Section */}
       {specific?.showcaseSection && (
         <SecteursShowcaseSection
-          heroImage={urlFor(specific.showcaseSection.heroImage).width(1200).height(600).url()}
+          heroImage={urlFor(specific.showcaseSection.heroImage).width(2560).height(1440).quality(95).url()}
           leftText={specific.showcaseSection.leftText}
           rightText={specific.showcaseSection.rightText}
           images={specific.showcaseSection.images.map((img: any) => ({
-            src: urlFor(img.src).width(600).height(400).url(),
+            src: urlFor(img.src).width(1920).height(2560).quality(95).url(),
             alt: img.alt
           }))}
         />
@@ -49,7 +49,7 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
               title={section.title}
               items={section.items.map((item: any) => ({
                 ...item,
-                image: urlFor(item.image).width(800).height(600).url()
+                image: urlFor(item.image).width(1920).height(2560).quality(95).url()
               }))}
             />
           )

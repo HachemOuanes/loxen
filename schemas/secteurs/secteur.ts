@@ -21,9 +21,72 @@ export const secteur = defineType({
     }),
     defineField({
       name: 'description',
-      title: 'Description',
+      title: 'Description (Legacy)',
       type: 'text',
       rows: 3,
+      description: 'Deprecated - use heroTextSections instead',
+    }),
+    defineField({
+      name: 'heroTextSections',
+      title: 'Hero Text Sections',
+      type: 'object',
+      description: 'Three text sections for the hero area',
+      fields: [
+        defineField({
+          name: 'section1',
+          title: 'First Text Section',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'mainText',
+              title: 'Main Text',
+              type: 'string',
+              description: 'Large text displayed prominently',
+            }),
+            defineField({
+              name: 'description',
+              title: 'Description',
+              type: 'text',
+              rows: 2,
+              description: 'Smaller italic text below main text',
+            }),
+          ],
+        }),
+        defineField({
+          name: 'section2',
+          title: 'Second Text Section',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'mainText',
+              title: 'Main Text',
+              type: 'string',
+              description: 'Large text displayed prominently',
+            }),
+            defineField({
+              name: 'description',
+              title: 'Description',
+              type: 'text',
+              rows: 2,
+              description: 'Smaller italic text below main text',
+            }),
+          ],
+        }),
+        defineField({
+          name: 'section3',
+          title: 'Third Text Section',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'description',
+              title: 'Description',
+              type: 'text',
+              rows: 2,
+              description: 'Small italic text (no main text for this section)',
+            }),
+          ],
+        }),
+      ],
     }),
     defineField({
       name: 'heroImage',
@@ -78,6 +141,27 @@ export const secteur = defineType({
                       title: 'Description',
                       type: 'text',
                       rows: 3,
+                    }),
+                    defineField({
+                      name: 'textSection',
+                      title: 'Text Section',
+                      type: 'object',
+                      description: 'Large main text with italic description',
+                      fields: [
+                        defineField({
+                          name: 'mainText',
+                          title: 'Main Text',
+                          type: 'string',
+                          description: 'Large text displayed prominently',
+                        }),
+                        defineField({
+                          name: 'description',
+                          title: 'Description',
+                          type: 'text',
+                          rows: 2,
+                          description: 'Smaller italic text below main text',
+                        }),
+                      ],
                     }),
                     defineField({
                       name: 'features',

@@ -63,13 +63,13 @@ export function SecteursShowcaseSection({
   return (
     <section ref={sectionRef} className="relative bg-white">
       {/* Big Hero Image - moved to top, same height as products page hero image */}
-      <div className="py-16 md:py-24">
+      <div className="pt-16 md:pt-24">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="js-parallax relative overflow-hidden rounded-sm border border-black/10" data-speed="0.3">
+          <div className="js-parallax relative overflow-hidden" data-speed="0.3">
             <img
               src={heroImage}
               alt="Secteurs showcase"
-              className="w-full h-[600px] object-cover"
+              className="w-full h-[95vh] object-cover"
               loading="lazy"
               decoding="async"
             />
@@ -78,7 +78,7 @@ export function SecteursShowcaseSection({
       </div>
 
       {/* Two Aligned Texts - exact same styling as inspiration collage */}
-      <div className="py-16 md:py-24">
+      <div className="pb-4 md:pb-4">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="grid grid-cols-2 gap-4 py-12">
             {/* Left Text */}
@@ -101,7 +101,7 @@ export function SecteursShowcaseSection({
             {images?.map((image, imageIndex) => (
               <div
                 key={imageIndex}
-                className="js-parallax relative overflow-hidden rounded-sm border border-black/10 h-[400px]"
+                className="js-parallax relative overflow-hidden h-[95vh]"
               >
                 <img
                   src={image.src}

@@ -6,6 +6,19 @@ export async function getSecteurBySlug(slug: string) {
     title,
     description,
     heroImage,
+    heroTextSections{
+      section1{
+        mainText,
+        description
+      },
+      section2{
+        mainText,
+        description
+      },
+      section3{
+        description
+      }
+    },
     sections[]{
       type,
       title,
@@ -13,6 +26,10 @@ export async function getSecteurBySlug(slug: string) {
         title,
         subtitle,
         description,
+        textSection{
+          mainText,
+          description
+        },
         features,
         image
       }

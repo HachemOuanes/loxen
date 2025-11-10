@@ -26,7 +26,9 @@
     "test:mega": "node scripts/test-mega-menu.js",
     "sync:decors": "node scripts/sync-decors.js",
     "seed:finishes": "node scripts/seed-finishes.js",
-    "seed:catalogues": "node scripts/seed-catalogues.js"
+    "seed:catalogues": "node scripts/seed-catalogues.js",
+    "seed:secteurs-hero-text": "node scripts/seed-secteurs-hero-text.js",
+    "seed:secteurs-applications-text": "node scripts/seed-secteurs-applications-text.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
