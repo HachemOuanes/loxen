@@ -101,56 +101,6 @@ export const catalogue = defineType({
       description: 'List of downloadable documents for this catalogue',
     }),
     defineField({
-      name: 'content',
-      title: 'Content',
-      type: 'object',
-      fields: [
-        defineField({
-          name: 'text',
-          title: 'Text Content',
-          type: 'array',
-          of: [{ type: 'text' }],
-          description: 'Paragraphs of text content',
-        }),
-        defineField({
-          name: 'sections',
-          title: 'Content Sections',
-          type: 'array',
-          of: [
-            {
-              type: 'object',
-              fields: [
-                defineField({
-                  name: 'title',
-                  title: 'Section Title',
-                  type: 'string',
-                }),
-                defineField({
-                  name: 'text',
-                  title: 'Section Text',
-                  type: 'text',
-                }),
-                defineField({
-                  name: 'image',
-                  title: 'Section Image',
-                  type: 'image',
-                  options: {
-                    hotspot: true,
-                  },
-                }),
-                defineField({
-                  name: 'imageAlt',
-                  title: 'Image Alt Text',
-                  type: 'string',
-                }),
-              ],
-            },
-          ],
-        }),
-      ],
-      description: 'Optional content sections (used when documents are not available)',
-    }),
-    defineField({
       name: 'order',
       title: 'Order',
       type: 'number',

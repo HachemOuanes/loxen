@@ -18,15 +18,6 @@ export async function getAllCatalogues() {
       fileType,
       downloadText
     },
-    content{
-      text,
-      sections[]{
-        title,
-        text,
-        image,
-        imageAlt
-      }
-    },
     order
   }`
   
@@ -48,15 +39,6 @@ export async function getCatalogueById(id: string) {
       fileUrl,
       fileType,
       downloadText
-    },
-    content{
-      text,
-      sections[]{
-        title,
-        text,
-        image,
-        imageAlt
-      }
     },
     order
   }`

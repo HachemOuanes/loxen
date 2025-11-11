@@ -19,15 +19,6 @@ interface CatalogueData {
   image?: string
   imageAlt?: string
   documents?: CatalogueDocument[]
-  content?: {
-    text?: string[]
-    sections?: Array<{
-      title?: string
-      text?: string
-      image?: string
-      imageAlt?: string
-    }>
-  }
 }
 
 interface CatalogueAccordionProps {
@@ -116,7 +107,7 @@ export function CatalogueAccordion({ catalogue, index, isLast, id }: CatalogueAc
         >
           <div className="pb-8 md:pb-12 pt-6 md:pt-8">
             {/* Two Column Layout: Overview + Documents */}
-            {(catalogue.overview || catalogue.description || catalogue.content?.text) && catalogue.documents && catalogue.documents.length > 0 ? (
+            {(catalogue.overview || catalogue.description) && catalogue.documents && catalogue.documents.length > 0 ? (
               <div className="grid md:grid-cols-2 gap-0">
                 {/* Left Column - Overview */}
                 <div className="py-6 md:py-8 pr-6 md:pr-8 border-r border-black/10">
@@ -134,18 +125,11 @@ export function CatalogueAccordion({ catalogue, index, isLast, id }: CatalogueAc
                   </h3>
 
                   {/* Description */}
-                  {(catalogue.description || catalogue.content?.text) && (
+                  {catalogue.description && (
                     <div className="space-y-3">
-                      {catalogue.description && (
-                        <p className="text-base md:text-lg text-black/70 leading-relaxed font-light">
-                          {catalogue.description}
-                        </p>
-                      )}
-                      {catalogue.content?.text && catalogue.content.text.map((paragraph, textIndex) => (
-                        <p key={textIndex} className="text-base md:text-lg text-black/70 leading-relaxed font-light">
-                          {paragraph}
-                        </p>
-                      ))}
+                      <p className="text-base md:text-lg text-black/70 leading-relaxed font-light">
+                        {catalogue.description}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -242,52 +226,6 @@ export function CatalogueAccordion({ catalogue, index, isLast, id }: CatalogueAc
                   </div>
                 )}
 
-                {/* Content Sections */}
-                {catalogue.content?.sections && catalogue.content.sections.length > 0 && (
-                  <div className="space-y-8 md:space-y-12">
-                    {catalogue.content.sections.map((section, sectionIndex) => (
-                      <div key={sectionIndex} className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-                        <div className={`${sectionIndex % 2 === 0 ? 'md:order-1' : 'md:order-2'}`}>
-                          {section.title && (
-                            <h3 className="text-xl md:text-2xl font-light tracking-tight text-black mb-4">
-                              {section.title}
-                            </h3>
-                          )}
-                          {section.text && (
-                            <p className="text-base md:text-lg text-black/75 leading-relaxed font-light">
-                              {section.text}
-                            </p>
-                          )}
-                        </div>
-                        {section.image && (
-                          <div className={`relative overflow-hidden rounded-sm border border-black/10 ${sectionIndex % 2 === 0 ? 'md:order-2' : 'md:order-1'}`}>
-                            <div className="relative w-full h-[300px] md:h-[400px] bg-black/5">
-                              <img
-                                src={typeof section.image === 'string' ? section.image : urlFor(section.image).width(800).height(600).quality(90).url()}
-                                alt={section.imageAlt || section.title || ''}
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).style.display = 'none'
-                                }}
-                              />
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Text Content Only */}
-                {catalogue.content?.text && catalogue.content.text.length > 0 && (
-                  <div className="space-y-4">
-                    {catalogue.content.text.map((paragraph, textIndex) => (
-                      <p key={textIndex} className="text-base md:text-lg text-black/75 leading-relaxed font-light max-w-3xl">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                )}
               </div>
             )}
           </div>

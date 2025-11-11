@@ -19,15 +19,6 @@ interface CatalogueData {
   image?: string
   imageAlt?: string
   documents?: CatalogueDocument[]
-  content?: {
-    text?: string[]
-    sections?: Array<{
-      title?: string
-      text?: string
-      image?: string
-      imageAlt?: string
-    }>
-  }
 }
 
 interface CataloguesPageClientProps {
