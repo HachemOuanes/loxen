@@ -22,7 +22,14 @@ export function SecteursFeaturesSection({ features }: SecteursFeaturesSectionPro
     return null
   }
 
+  // Maximum visible features at once
+  const maxVisible = 4
+  const visibleCount = Math.min(features.length, maxVisible)
+
   useEffect(() => {
+    // Only auto-slide if there are more features than visible count
+    if (features.length <= visibleCount) return
+
     const interval = setInterval(() => {
       setCurrentIndex((prev) => {
         const next = prev + 1
@@ -49,17 +56,18 @@ export function SecteursFeaturesSection({ features }: SecteursFeaturesSectionPro
     }, 2000)
 
     return () => clearInterval(interval)
-  }, [features.length])
+  }, [features.length, visibleCount])
 
   useEffect(() => {
     if (!containerRef.current || !wrapperRef.current || isResettingRef.current) return
 
     const wrapper = wrapperRef.current
-    const featureWidth = wrapper.offsetWidth / features.length
+    // Calculate width based on visible count (6 features)
+    const featureWidth = wrapper.offsetWidth / visibleCount
     const translateX = -currentIndex * featureWidth
 
     containerRef.current.style.transform = `translateX(${translateX}px)`
-  }, [currentIndex, features.length])
+  }, [currentIndex, visibleCount])
 
   // Duplicate features for seamless infinite loop
   const duplicatedFeatures = [...features, ...features]
@@ -72,37 +80,44 @@ export function SecteursFeaturesSection({ features }: SecteursFeaturesSectionPro
             ref={containerRef}
             className="flex"
             style={{ 
-              width: `${duplicatedFeatures.length * (100 / features.length)}%`,
+              width: `${duplicatedFeatures.length * (100 / visibleCount)}%`,
               transition: 'transform 0.6s ease-in-out'
             }}
           >
-            {duplicatedFeatures.map((feature, index) => (
+            {duplicatedFeatures.map((feature, index) => {
+              // Check if this is the leftmost visible element
+              // The leftmost element is always at position currentIndex in the original array
+              const originalIndex = index % features.length
+              const isLeftmost = originalIndex === currentIndex
+              return (
               <div
                 key={index}
-                className="flex items-center justify-center flex-col px-8 py-6 relative flex-shrink-0"
+                className="flex items-center justify-center flex-col px-8 py-16 relative flex-shrink-0"
                 style={{ width: `${100 / duplicatedFeatures.length}%` }}
               >
-                {/* Vertical divider */}
-                {index < duplicatedFeatures.length - 1 && (
-                  <div className="absolute right-0 top-0 bottom-0 w-px bg-black/20" />
+                {/* Vertical dividers */}
+                {isLeftmost && (
+                  <div className="absolute left-0 top-0 bottom-0 w-px bg-black/20" />
                 )}
+                <div className="absolute right-0 top-0 bottom-0 w-px bg-black/20" />
                 <div className="flex items-center justify-center mb-4 text-black">
                   {feature.icon ? (
                     <img 
                       src={feature.icon} 
                       alt={feature.label}
-                      className="w-10 h-10 object-contain"
+                      className="w-14 h-14 object-contain"
                       loading="lazy"
                     />
                   ) : (
                     <div className="w-10 h-10 bg-black/10" />
                   )}
                 </div>
-                <p className="text-xs md:text-sm uppercase tracking-[0.1em] text-black text-center font-medium">
+                <p className="text-xs md:text-sm uppercase tracking-[0.1em] text-gray-800 text-center font-medium">
                   {feature.label}
                 </p>
               </div>
-            ))}
+            )
+            })}
           </div>
         </div>
       </div>

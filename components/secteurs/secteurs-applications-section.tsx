@@ -119,7 +119,7 @@ export function SecteursApplicationsSection({ title, items }: SecteursApplicatio
     }, [items])
 
     return (
-        <section ref={sectionRef} className="relative bg-white">
+        <section id="applications" ref={sectionRef} className="relative bg-white">
             <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
                 <div ref={stickyTitleRef} className="js-reveal items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 hidden w-[20rem]">
                 </div>

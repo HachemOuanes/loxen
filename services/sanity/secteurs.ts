@@ -25,6 +25,35 @@ export async function getSecteurBySlug(slug: string) {
         label
       }
     },
+    customizationSection{
+      title,
+      mainText,
+      secondaryText,
+      ctaText,
+      ctaLink,
+      image
+    },
+    productsSection{
+      title,
+      subtitle,
+      description,
+      products[]{
+        productType,
+        product->{
+          _id,
+          _type,
+          name,
+          slug,
+          description,
+          image,
+          category->{
+            name,
+            slug,
+            color
+          }
+        }
+      }
+    },
     sections[]{
       type,
       title,
@@ -59,7 +88,9 @@ export async function getSecteurBySlug(slug: string) {
     },
     contactSection{
       title,
-      description
+      description,
+      ctaText,
+      ctaLink
     }
   }`
   

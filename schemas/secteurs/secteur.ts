@@ -333,6 +333,130 @@ export const secteur = defineType({
       ],
     }),
     defineField({
+      name: 'customizationSection',
+      title: 'Customization Section',
+      type: 'object',
+      description: 'Customization section with Abet Digital information',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Title',
+          type: 'string',
+          description: 'Main title (e.g., "Conceptions personnalisées avec Abet Digital")',
+        }),
+        defineField({
+          name: 'mainText',
+          title: 'Main Text',
+          type: 'text',
+          rows: 3,
+          description: 'Primary description text',
+        }),
+        defineField({
+          name: 'secondaryText',
+          title: 'Secondary Text',
+          type: 'text',
+          rows: 3,
+          description: 'Secondary description text',
+        }),
+        defineField({
+          name: 'ctaText',
+          title: 'CTA Button Text',
+          type: 'string',
+          description: 'Call to action button text',
+        }),
+        defineField({
+          name: 'ctaLink',
+          title: 'CTA Link',
+          type: 'string',
+          description: 'Call to action button link',
+        }),
+        defineField({
+          name: 'image',
+          title: 'Image',
+          type: 'image',
+          options: {
+            hotspot: true,
+          },
+          description: 'Right side image for the customization section',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'productsSection',
+      title: 'Products Section',
+      type: 'object',
+      description: 'Products section displayed at the end of the page',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Section Title',
+          type: 'string',
+          initialValue: 'Produits',
+        }),
+        defineField({
+          name: 'subtitle',
+          title: 'Subtitle',
+          type: 'string',
+          description: 'Small uppercase text above the title',
+        }),
+        defineField({
+          name: 'description',
+          title: 'Description',
+          type: 'text',
+          rows: 2,
+          description: 'Description text displayed on the right side',
+        }),
+        defineField({
+          name: 'products',
+          title: 'Selected Products',
+          type: 'array',
+          description: 'Select specific products to display (max 6)',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({
+                  name: 'productType',
+                  title: 'Product Type',
+                  type: 'string',
+                  options: {
+                    list: [
+                      { title: 'Interior', value: 'interior' },
+                      { title: 'Exterior', value: 'exterior' },
+                    ],
+                  },
+                  validation: (Rule) => Rule.required(),
+                }),
+                defineField({
+                  name: 'product',
+                  title: 'Product',
+                  type: 'reference',
+                  to: [
+                    { type: 'interiorProduct' },
+                    { type: 'exteriorProduct' },
+                  ],
+                  validation: (Rule) => Rule.required(),
+                }),
+              ],
+              preview: {
+                select: {
+                  productType: 'productType',
+                  productName: 'product.name',
+                },
+                prepare({ productType, productName }) {
+                  return {
+                    title: productName || 'Product',
+                    subtitle: productType === 'interior' ? 'Interior' : 'Exterior',
+                  }
+                },
+              },
+            },
+          ],
+          validation: (Rule) => Rule.max(6),
+        }),
+      ],
+    }),
+    defineField({
       name: 'contactSection',
       title: 'Contact Section',
       type: 'object',
@@ -341,12 +465,28 @@ export const secteur = defineType({
           name: 'title',
           title: 'Contact Title',
           type: 'string',
+          description: 'Title text (e.g., "projet", "vision")',
         }),
         defineField({
           name: 'description',
           title: 'Contact Description',
           type: 'text',
           rows: 3,
+          description: 'Description text for the CTA section',
+        }),
+        defineField({
+          name: 'ctaText',
+          title: 'CTA Button Text',
+          type: 'string',
+          description: 'Text displayed on the call-to-action button',
+          initialValue: 'Nous contacter',
+        }),
+        defineField({
+          name: 'ctaLink',
+          title: 'CTA Link',
+          type: 'string',
+          description: 'URL for the call-to-action button',
+          initialValue: '/contact',
         }),
       ],
     }),

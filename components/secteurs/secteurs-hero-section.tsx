@@ -109,7 +109,19 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
               )}
 
               <div className="flex flex-wrap gap-3 pt-6">
-                <a href="#examples" className="border border-black/20 px-5 py-2.5 text-sm tracking-[0.14em] uppercase hover:bg-black hover:text-white transition-colors">Voir Applications</a>
+                <a 
+                  href="#applications" 
+                  onClick={(e) => {
+                    e.preventDefault()
+                    const element = document.getElementById('applications')
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    }
+                  }}
+                  className="border border-black/20 px-5 py-2.5 text-sm tracking-[0.14em] uppercase hover:bg-black hover:text-white transition-colors"
+                >
+                  Voir Applications
+                </a>
               </div>
             </div>
           </div>

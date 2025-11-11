@@ -4,8 +4,10 @@ import { SecteursHeroSection } from '@/components/secteurs/secteurs-hero-section
 import { SecteursFeaturesSection } from '@/components/secteurs/secteurs-features-section'
 import { SecteursApplicationsSection } from '@/components/secteurs/secteurs-applications-section'
 import { SecteursShowcaseSection } from '@/components/secteurs/secteurs-showcase-section'
+import { SecteursCustomizationSection } from '@/components/secteurs/secteurs-customization-section'
+import { SecteursProductsSection } from '@/components/secteurs/secteurs-products-section'
 import { useAnimations } from '@/components/inspirations/use-animations'
-import { CtaSection } from '@/components/shared/cta-section'
+import { ArtisticCtaSection } from '@/components/shared/artistic-cta-section'
 import { urlFor } from '@/lib/sanity'
 
 interface SecteursPageContentProps {
@@ -68,13 +70,41 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         return null
       })}
 
+      {/* Customization Section */}
+      {specific?.customizationSection && (
+        <SecteursCustomizationSection
+          title={specific.customizationSection.title || "Conceptions personnalisées avec Abet Digital"}
+          mainText={specific.customizationSection.mainText || ""}
+          secondaryText={specific.customizationSection.secondaryText || ""}
+          ctaText={specific.customizationSection.ctaText || "Découvrez Abet Digital"}
+          ctaLink={specific.customizationSection.ctaLink || "/produits"}
+          image={specific.customizationSection.image ? urlFor(specific.customizationSection.image).width(1920).height(2560).quality(95).url() : "/modern-architectural-facade-panels-meg-system-high.jpg"}
+        />
+      )}
+
+      {/* Products Section */}
+      {specific?.productsSection && (
+        <SecteursProductsSection
+          title={specific.productsSection.title || "Produits"}
+          description={specific.productsSection.description}
+          products={specific.productsSection.products?.map((item: any) => ({
+            _id: item.product?._id || '',
+            name: item.product?.name || '',
+            slug: item.product?.slug || { current: '' },
+            description: item.product?.description || '',
+            image: item.product?.image,
+            _productType: item.productType === 'interior' ? 'interior' : 'exterior',
+            category: item.product?.category
+          })) || []}
+        />
+      )}
 
       {/* Contact Section */}
-      <CtaSection
+      <ArtisticCtaSection
         title={specific?.contactSection?.title || specific?.title || 'projet'}
         description={specific?.contactSection?.description || "Besoin d'un conseil personnalisé pour votre projet ? Nos équipes vous accompagnent dans le choix des matériaux et la mise en œuvre."}
-        contactLink={shared?.contact?.link || '/contact'}
-        contactCta={shared?.contact?.cta || 'Nous contacter'}
+        contactLink={specific?.contactSection?.ctaLink || shared?.contact?.link || '/contact'}
+        contactCta={specific?.contactSection?.ctaText || shared?.contact?.cta || 'Nous contacter'}
       />
     </div>
   )
