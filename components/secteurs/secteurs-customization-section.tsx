@@ -75,7 +75,7 @@ export function SecteursCustomizationSection({
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative bg-white py-16 md:py-24">
+    <section ref={sectionRef} className="relative py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="grid grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left Column - Text */}

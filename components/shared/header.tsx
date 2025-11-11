@@ -13,7 +13,6 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [currentSection, setCurrentSection] = useState("")
   // Mega menu state
   const [megaOpen, setMegaOpen] = useState(false)
   const [activeMega, setActiveMega] = useState<string | null>(null)
@@ -102,24 +101,6 @@ export function Header() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100)
-
-      // Detect current section
-      const sections = ["interieur", "exterieur", "produits", "inspirations", "contact", "footer"]
-      const scrollPosition = window.scrollY + window.innerHeight / 2
-
-      for (const sectionId of sections) {
-        const element = document.getElementById(sectionId)
-        if (element) {
-          const rect = element.getBoundingClientRect()
-          const elementTop = rect.top + window.scrollY
-          const elementBottom = elementTop + rect.height
-
-          if (scrollPosition >= elementTop && scrollPosition <= elementBottom) {
-            setCurrentSection(sectionId)
-            break
-          }
-        }
-      }
     }
 
     window.addEventListener("scroll", handleScroll)
@@ -134,17 +115,6 @@ export function Header() {
     { key: "contact", label: "Contact", href: "/contact" },
   ]
 
-  const getSectionDisplayName = (sectionId: string) => {
-    switch (sectionId) {
-      case "interieur": return "INTÉRIEUR"
-      case "exterieur": return "EXTÉRIEUR"
-      case "produits": return "PRODUITS"
-      case "inspirations": return "INSPIRATIONS"
-      case "contact": return "CONTACT"
-      case "footer": return "LOXEN"
-      default: return ""
-    }
-  }
 
   const handleMouseEnter = () => {
     if (isScrolled) {
@@ -293,38 +263,31 @@ export function Header() {
       <header
         ref={headerRef}
         className={`fixed z-50 transition-all duration-500 ease-out ${isScrolled
-          ? `w-44 h-12 bg-white backdrop-blur-sm border-2 border-gray-200 shadow-sm ${isSidebarOpen ? "-translate-x-full" : "left-4"
+          ? `h-44 w-12 bg-white backdrop-blur-sm border-2 border-gray-200 shadow-sm ${isSidebarOpen ? "-translate-x-full" : "left-4"
           } top-4`
           : "w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black backdrop-blur-sm left-4 top-4"
           }`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="h-full flex items-center px-4">
+        <div className={`h-full transition-all duration-500 ${isScrolled ? "flex flex-col items-center justify-center py-4" : "flex items-center px-4"}`}>
           <a
             href="/"
-            className={`absolute transition-all duration-500 font-light tracking-[-0.02em] cursor-pointer hover:opacity-80 ${isScrolled
-              ? "text-xl text-black flex items-center gap-2 "
-              : "left-4 text-2xl sm:text-4xl text-white drop-shadow-lg"
+            className={`transition-all duration-500 font-light tracking-[-0.02em] cursor-pointer hover:opacity-80 ${isScrolled
+              ? "text-xl text-black flex flex-col items-center justify-center gap-3"
+              : "absolute left-4 text-2xl sm:text-4xl text-white drop-shadow-lg"
               }`}
           >
-            {isScrolled && (
-              <div>
-                <Menu size={16} className="text-black/60 sm:w-5 sm:h-5" />
-              </div>
-            )}
-            <div>
-              {isScrolled && currentSection ? (
-                currentSection === "footer" ? (
-                  <>
-                    L<span className="font-extralight opacity-60">O</span>X
-                    <span className="font-extralight opacity-60">E</span>N
-                  </>
-                ) : (
-                  <span className="text-lg font-light uppercase">
-                    {getSectionDisplayName(currentSection)}
-                  </span>
-                )
+         
+            <div className={isScrolled ? "flex flex-col items-center pt-4" : ""}>
+              {isScrolled ? (
+                <div className="flex flex-col items-center gap-0.5">
+                  <span>L</span>
+                  <span className="font-extralight opacity-60">O</span>
+                  <span>X</span>
+                  <span className="font-extralight opacity-60">E</span>
+                  <span>N</span>
+                </div>
               ) : (
                 <>
                   L<span className="font-extralight opacity-60">O</span>X
