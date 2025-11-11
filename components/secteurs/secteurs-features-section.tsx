@@ -74,7 +74,7 @@ export function SecteursFeaturesSection({ features }: SecteursFeaturesSectionPro
 
   return (
     <section className="relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
         <div ref={wrapperRef} className="relative overflow-hidden">
           <div
             ref={containerRef}

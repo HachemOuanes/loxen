@@ -63,7 +63,7 @@ export function SecteursShowcaseSection({
   return (
     <section ref={sectionRef} className="relative bg-white space-y-24">
       {/* Big Hero Image - moved to top, same height as products page hero image */}
-      <div className="max-w-7xl mx-auto pt-16 md:pt-24">
+      <div className="max-w-7xl mx-auto">
         <div className="px-4 md:px-6">
           <div className="js-parallax relative overflow-hidden" data-speed="0.3">
             <img

@@ -11,15 +11,22 @@ export const revalidate = 10
 export async function generateStaticParams() {
     try {
         const slugs = await getInspirationSlugs()
+        // getInspirationSlugs already filters and validates, so we can use directly
         return slugs.map((slug: string) => ({ slug }))
     } catch (error) {
         console.error('Error generating static params for inspirations:', error)
+        // Return empty array to prevent build failure
         return []
     }
 }
 
 export default async function InspirationPage({ params }: { params: { slug: string } }) {
     try {
+        // Ensure params.slug exists and is valid
+        if (!params?.slug) {
+            return notFound()
+        }
+
         // Fetch inspiration document
         const inspiration = await getInspirationBySlug(params.slug)
 
@@ -29,8 +36,8 @@ export default async function InspirationPage({ params }: { params: { slug: stri
 
         // Fetch shared data (finition types and random decors)
         const [finitionTypes, randomDecors] = await Promise.all([
-            getFinitionTypes(),
-            getRandomDecors(20)
+            getFinitionTypes().catch(() => ({ title: '', items: [] })),
+            getRandomDecors(20).catch(() => [])
         ])
 
         const shared = {

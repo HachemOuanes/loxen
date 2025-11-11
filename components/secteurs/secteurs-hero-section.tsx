@@ -55,13 +55,13 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative bg-white">
+    <section ref={sectionRef} className="relative">
       {/* Hero Image Section - 2/3 screen height */}
       <div className="relative max-w-7xl mx-auto px-4 md:px-6 pt-12 md:pt-24 grid grid-cols-2 gap-8 overflow-hidden">
         {/* Background image */}
         {/* Title overlay on image */}
         <div className="flex flex-col justify-center">
-          <div className='bg-white/20 backdrop-blur-sm w-fit'>
+          <div className='w-fit'>
             <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-3">
               <span className="h-[1px] w-8 bg-black/30" /> Secteurs
             </div>

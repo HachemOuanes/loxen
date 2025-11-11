@@ -4,43 +4,62 @@ import { client } from '@/lib/sanity'
 
 // Get inspiration by slug
 export async function getInspirationBySlug(slug: string) {
-  const query = `*[_type == "inspiration" && slug.current == $slug][0]{
-    _id,
-    title,
-    description,
-    heroImage,
-    sections[]{
-      type,
-      title,
-      items[]{
-        title,
-        subtitle,
-        description,
-        features,
-        image
-      },
-      images[],
-      tiles[]{
-        title,
-        subtitle,
-        description
-      }
-    },
-    contactSection{
+  try {
+    if (!slug || typeof slug !== 'string') {
+      return null
+    }
+
+    const query = `*[_type == "inspiration" && slug.current == $slug][0]{
+      _id,
       title,
       description,
-      contactLink,
-      contactCta
-    }
-  }`
-  
-  return await client.fetch(query, { slug })
+      heroImage,
+      sections[]{
+        type,
+        title,
+        items[]{
+          title,
+          subtitle,
+          description,
+          features,
+          image
+        },
+        images[],
+        tiles[]{
+          title,
+          subtitle,
+          description
+        }
+      },
+      contactSection{
+        title,
+        description,
+        contactLink,
+        contactCta
+      }
+    }`
+    
+    const result = await client.fetch(query, { slug })
+    return result || null
+  } catch (error) {
+    console.error('Error fetching inspiration by slug:', error)
+    return null
+  }
 }
 
 // Get all inspiration slugs for static generation
 export async function getInspirationSlugs() {
-  const query = `*[_type == "inspiration"].slug.current`
-  return await client.fetch(query)
+  try {
+    const query = `*[_type == "inspiration" && defined(slug.current)].slug.current`
+    const slugs = await client.fetch(query)
+    // Ensure we return an array of strings, filtering out any null/undefined values
+    return (slugs || []).filter((slug: any): slug is string => 
+      typeof slug === 'string' && slug.length > 0
+    )
+  } catch (error) {
+    console.error('Error fetching inspiration slugs:', error)
+    return []
+  }
 }
 
 // Get inspirations for mega menu
