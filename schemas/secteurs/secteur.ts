@@ -97,6 +97,49 @@ export const secteur = defineType({
       },
     }),
     defineField({
+      name: 'featuresSection',
+      title: 'Features Section',
+      type: 'object',
+      description: 'Features section displayed below the hero section',
+      fields: [
+        defineField({
+          name: 'features',
+          title: 'Features',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({
+                  name: 'icon',
+                  title: 'Icon Image',
+                  type: 'image',
+                  options: {
+                    hotspot: true,
+                  },
+                  description: 'Upload an icon image for this feature',
+                }),
+                defineField({
+                  name: 'label',
+                  title: 'Label',
+                  type: 'string',
+                  description: 'Feature label (e.g., "STONE AESTHETICS")',
+                  validation: (Rule) => Rule.required(),
+                }),
+              ],
+              preview: {
+                select: {
+                  title: 'label',
+                  media: 'icon',
+                },
+              },
+            },
+          ],
+          validation: (Rule) => Rule.min(1).max(10),
+        }),
+      ],
+    }),
+    defineField({
       name: 'sections',
       title: 'Sections',
       type: 'array',

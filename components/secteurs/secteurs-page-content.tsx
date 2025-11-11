@@ -1,6 +1,7 @@
 "use client"
 
 import { SecteursHeroSection } from '@/components/secteurs/secteurs-hero-section'
+import { SecteursFeaturesSection } from '@/components/secteurs/secteurs-features-section'
 import { SecteursApplicationsSection } from '@/components/secteurs/secteurs-applications-section'
 import { SecteursShowcaseSection } from '@/components/secteurs/secteurs-showcase-section'
 import { useAnimations } from '@/components/inspirations/use-animations'
@@ -26,6 +27,15 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         contactCta={shared?.contact?.cta || 'Nous contacter'}
       />
 
+      {/* Features Section */}
+      {specific?.featuresSection?.features && (
+        <SecteursFeaturesSection
+          features={specific.featuresSection.features.map((feature: any) => ({
+            icon: feature.icon ? urlFor(feature.icon).width(80).height(80).quality(90).url() : null,
+            label: feature.label || ''
+          }))}
+        />
+      )}
 
       {/* Showcase Section */}
       {specific?.showcaseSection && (

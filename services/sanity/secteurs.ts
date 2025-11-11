@@ -19,6 +19,12 @@ export async function getSecteurBySlug(slug: string) {
         description
       }
     },
+    featuresSection{
+      features[]{
+        icon,
+        label
+      }
+    },
     sections[]{
       type,
       title,
