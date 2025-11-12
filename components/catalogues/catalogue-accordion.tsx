@@ -127,9 +127,9 @@ export function CatalogueAccordion({ catalogue, index, isLast, id }: CatalogueAc
                   {/* Description */}
                   {catalogue.description && (
                     <div className="space-y-3">
-                      <p className="text-base md:text-lg text-black/70 leading-relaxed font-light">
-                        {catalogue.description}
-                      </p>
+                        <p className="text-base md:text-lg text-black/70 leading-relaxed font-light">
+                          {catalogue.description}
+                        </p>
                     </div>
                   )}
                 </div>

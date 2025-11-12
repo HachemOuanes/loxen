@@ -10,7 +10,6 @@ export const finitionTypes = defineType({
       title: 'Title',
       type: 'string',
       initialValue: 'Les types de finitions',
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
@@ -21,7 +20,6 @@ export const finitionTypes = defineType({
         maxLength: 96,
       },
       initialValue: { current: 'finition-types' },
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'items',
@@ -35,26 +33,22 @@ export const finitionTypes = defineType({
               name: 'key',
               title: 'Key',
               type: 'string',
-              validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'title',
               title: 'Title',
               type: 'string',
-              validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'subtitle',
               title: 'Subtitle',
               type: 'string',
-              validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'description',
               title: 'Description',
               type: 'text',
               rows: 3,
-              validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'image',
@@ -63,7 +57,6 @@ export const finitionTypes = defineType({
               options: {
                 hotspot: true,
               },
-              validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'schema',
@@ -83,7 +76,6 @@ export const finitionTypes = defineType({
           },
         },
       ],
-      validation: (Rule) => Rule.required().min(1),
     }),
   ],
   preview: {

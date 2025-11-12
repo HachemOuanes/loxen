@@ -57,7 +57,7 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
   return (
     <section ref={sectionRef} className="relative">
       {/* Hero Image Section - 2/3 screen height */}
-      <div className="relative max-w-7xl mx-auto px-4 md:px-6 pt-12 md:pt-24 grid grid-cols-2 gap-8 overflow-hidden">
+      <div className="relative max-w-7xl mx-auto px-4 md:px-6 pt-12 md:pt-24 grid grid-cols-2 gap-8 overflow-hidden pb-8 md:pb-12">
         {/* Background image */}
         {/* Title overlay on image */}
         <div className="flex flex-col justify-center">
@@ -109,8 +109,8 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
               )}
 
               <div className="flex flex-wrap gap-3 pt-6">
-                <a 
-                  href="#applications" 
+                <a
+                  href="#applications"
                   onClick={(e) => {
                     e.preventDefault()
                     const element = document.getElementById('applications')
@@ -126,20 +126,19 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
             </div>
           </div>
         </div>
-        <div ref={imageRef} className="">
-          <img
-            src={heroImage || '/contemporary-cultural-center-glass-facade-paris.png'}
-            alt={`Secteur ${title}`}
-            className="object-cover"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-          />
+        <div className="relative overflow-hidden h-full min-h-[60vh]">
+          <div ref={imageRef} className="h-full w-full">
+            <img
+              src={heroImage || '/contemporary-cultural-center-glass-facade-paris.png'}
+              alt={`Secteur ${title}`}
+              className="h-full w-full object-cover"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+            />
+          </div>
         </div>
       </div>
-
-      {/* Content Section - Below the image */}
-
     </section>
   )
 }

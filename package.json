@@ -28,7 +28,9 @@
     "seed:finishes": "node scripts/seed-finishes.js",
     "seed:catalogues": "node scripts/seed-catalogues.js",
     "seed:secteurs-hero-text": "node scripts/seed-secteurs-hero-text.js",
-    "seed:secteurs-applications-text": "node scripts/seed-secteurs-applications-text.js"
+    "seed:secteurs-applications-text": "node scripts/seed-secteurs-applications-text.js",
+    "migrate:inspirations-sections": "node scripts/migrate-inspirations-sections.js",
+    "seed:inspirations-split-grid": "node scripts/seed-inspirations-split-grid-sections.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

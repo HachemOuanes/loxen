@@ -47,7 +47,7 @@ export function RelatedProducts({ currentProductId, categoryId, categoryName }: 
 
   if (loading) {
     return (
-      <section className="py-16 bg-gray-50">
+      <section className="py-8 md:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-2xl sm:text-3xl font-extralight text-black mb-6 tracking-[-0.02em]">

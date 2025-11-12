@@ -61,21 +61,21 @@ export function SecteursShowcaseSection({
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative bg-white space-y-24">
-      {/* Big Hero Image - moved to top, same height as products page hero image */}
-      <div className="max-w-7xl mx-auto">
-        <div className="px-4 md:px-6">
-          <div className="js-parallax relative overflow-hidden" data-speed="0.3">
-            <img
-              src={heroImage}
-              alt="Secteurs showcase"
-              className="w-full h-[95vh] object-cover"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
+    <section ref={sectionRef} className="relative bg-white py-8 md:py-12">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        {/* Big Hero Image - moved to top, same height as products page hero image */}
+        <div className="js-parallax relative overflow-hidden mb-8 md:mb-12" data-speed="0.3">
+          <img
+            src={heroImage}
+            alt="Secteurs showcase"
+            className="w-full h-[95vh] object-cover"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
-        <div className="grid grid-cols-2 gap-4 py-12">
+        
+        {/* Two Text Columns */}
+        <div className="grid grid-cols-2 gap-4 mb-8 md:mb-12">
           {/* Left Text */}
           <div className="js-reveal px-4 md:px-6 text-left max-w-[50ch]">
             <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60">{leftText.subtitle}</p>
@@ -90,13 +90,9 @@ export function SecteursShowcaseSection({
             <p className="mt-2 text-base md:text-lg text-black/75 italic leading-snug">{rightText.description}</p>
           </div>
         </div>
-      </div>
-
-      {/* Two Aligned Texts - exact same styling as inspiration collage */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
 
         {/* Two Images - same height as inspiration collage images with gap */}
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-2 gap-4">
           {images?.map((image, imageIndex) => (
             <div
               key={imageIndex}
@@ -111,7 +107,6 @@ export function SecteursShowcaseSection({
           ))}
         </div>
       </div>
-
     </section>
   )
 }

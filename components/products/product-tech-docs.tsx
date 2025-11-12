@@ -26,7 +26,7 @@ export function ProductTechDocs({ product }: { product: Product }) {
   const [expandedResources, setExpandedResources] = useState(false)
 
   return (
-    <section className="py-8 bg-white">
+    <section className="py-8 md:py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4">
         {/* Technical Specifications - Clean Table */}
         {product.specifications && product.specifications.length > 0 && (

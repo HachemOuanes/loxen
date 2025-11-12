@@ -13,20 +13,17 @@ export const inspiration = defineType({
         source: 'title',
         maxLength: 96,
       },
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'description',
       title: 'Description',
       type: 'text',
       rows: 3,
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'heroImage',
@@ -35,167 +32,277 @@ export const inspiration = defineType({
       options: {
         hotspot: true,
       },
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'sections',
-      title: 'Sections',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          name: 'applicationsSection',
-          title: 'Applications Section',
-          fields: [
-            defineField({
-              name: 'type',
-              title: 'Type',
-              type: 'string',
-              initialValue: 'applications',
-              readOnly: true,
-            }),
-            defineField({
-              name: 'title',
-              title: 'Section Title',
-              type: 'string',
-              validation: (Rule) => Rule.required(),
-            }),
-            defineField({
-              name: 'items',
-              title: 'Application Items',
-              type: 'array',
-              of: [
-                {
-                  type: 'object',
-                  fields: [
-                    defineField({
-                      name: 'title',
-                      title: 'Item Title',
-                      type: 'string',
-                      validation: (Rule) => Rule.required(),
-                    }),
-                    defineField({
-                      name: 'subtitle',
-                      title: 'Subtitle',
-                      type: 'string',
-                      validation: (Rule) => Rule.required(),
-                    }),
-                    defineField({
-                      name: 'description',
-                      title: 'Description',
-                      type: 'text',
-                      rows: 3,
-                      validation: (Rule) => Rule.required(),
-                    }),
-                    defineField({
-                      name: 'features',
-                      title: 'Features',
-                      type: 'array',
-                      of: [{ type: 'string' }],
-                      validation: (Rule) => Rule.required().min(1),
-                    }),
-                    defineField({
-                      name: 'image',
-                      title: 'Image',
-                      type: 'image',
-                      options: {
-                        hotspot: true,
-                      },
-                      validation: (Rule) => Rule.required(),
-                    }),
-                  ],
-                  preview: {
-                    select: {
-                      title: 'title',
-                      subtitle: 'subtitle',
-                      media: 'image',
-                    },
-                  },
-                },
-              ],
-              validation: (Rule) => Rule.required().min(1),
-            }),
-          ],
-          preview: {
-            select: {
-              title: 'title',
-            },
-            prepare({ title }) {
-              return {
-                title: `Applications: ${title}`,
-              }
-            },
-          },
-        },
-        {
-          type: 'object',
-          name: 'collageSection',
-          title: 'Collage Section',
-          fields: [
-            defineField({
-              name: 'type',
-              title: 'Type',
-              type: 'string',
-              initialValue: 'collage',
-              readOnly: true,
-            }),
-            defineField({
-              name: 'images',
-              title: 'Collage Images',
-              type: 'array',
-              of: [
-                {
+      name: 'applicationsSection',
+      title: 'Applications Section',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Section Title',
+          type: 'string',
+          description: 'Optional title displayed above the section',
+        }),
+        defineField({
+          name: 'items',
+          title: 'Application Items',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({
+                  name: 'title',
+                  title: 'Item Title',
+                  type: 'string',
+                }),
+                defineField({
+                  name: 'subtitle',
+                  title: 'Subtitle',
+                  type: 'string',
+                }),
+                defineField({
+                  name: 'description',
+                  title: 'Description',
+                  type: 'text',
+                  rows: 3,
+                }),
+                defineField({
+                  name: 'features',
+                  title: 'Features',
+                  type: 'array',
+                  of: [{ type: 'string' }],
+                }),
+                defineField({
+                  name: 'image',
+                  title: 'Image',
                   type: 'image',
                   options: {
                     hotspot: true,
                   },
-                },
+                }),
               ],
-              validation: (Rule) => Rule.required().min(2).max(2),
+              preview: {
+                select: {
+                  title: 'title',
+                  subtitle: 'subtitle',
+                  media: 'image',
+                },
+              },
+            },
+          ],
+        }),
+      ],
+      preview: {
+        select: {
+          title: 'title',
+        },
+        prepare({ title }) {
+          return {
+            title: `Applications: ${title || 'Untitled'}`,
+          }
+        },
+      },
+    }),
+    defineField({
+      name: 'collageSection',
+      title: 'Collage Section',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Section Title',
+          type: 'string',
+          description: 'Optional title displayed above the section',
+        }),
+        defineField({
+          name: 'images',
+          title: 'Collage Images',
+          type: 'array',
+          of: [
+            {
+              type: 'image',
+              options: {
+                hotspot: true,
+              },
+            },
+          ],
+        }),
+        defineField({
+          name: 'tiles',
+          title: 'Text Tiles',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({
+                  name: 'title',
+                  title: 'Title',
+                  type: 'string',
+                }),
+                defineField({
+                  name: 'subtitle',
+                  title: 'Subtitle',
+                  type: 'string',
+                }),
+                defineField({
+                  name: 'description',
+                  title: 'Description',
+                  type: 'text',
+                  rows: 3,
+                }),
+              ],
+            },
+          ],
+        }),
+      ],
+      preview: {
+        prepare() {
+          return {
+            title: 'Collage Section',
+          }
+        },
+      },
+    }),
+    defineField({
+      name: 'bigImage',
+      title: 'Big Image (Below Collage)',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Section Title',
+          type: 'string',
+          description: 'Optional title displayed above the section',
+        }),
+        defineField({
+          name: 'image',
+          title: 'Image',
+          type: 'image',
+          options: {
+            hotspot: true,
+          },
+        }),
+      ],
+      description: 'Large image displayed below the collage section, matching the secteurs showcase style',
+    }),
+    defineField({
+      name: 'splitSection',
+      title: 'Split Section (Below Big Image)',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Section Title',
+          type: 'string',
+          description: 'Optional title displayed above the section',
+        }),
+        defineField({
+          name: 'topImage',
+          title: 'Top Left Image',
+          type: 'image',
+          options: {
+            hotspot: true,
+          },
+        }),
+        defineField({
+          name: 'topText',
+          title: 'Top Right Text',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'title',
+              title: 'Title',
+              type: 'string',
             }),
             defineField({
-              name: 'tiles',
-              title: 'Text Tiles',
-              type: 'array',
-              of: [
-                {
-                  type: 'object',
-                  fields: [
-                    defineField({
-                      name: 'title',
-                      title: 'Title',
-                      type: 'string',
-                      validation: (Rule) => Rule.required(),
-                    }),
-                    defineField({
-                      name: 'subtitle',
-                      title: 'Subtitle',
-                      type: 'string',
-                      validation: (Rule) => Rule.required(),
-                    }),
-                    defineField({
-                      name: 'description',
-                      title: 'Description',
-                      type: 'text',
-                      rows: 3,
-                      validation: (Rule) => Rule.required(),
-                    }),
-                  ],
-                },
-              ],
-              validation: (Rule) => Rule.required().min(2).max(2),
+              name: 'subtitle',
+              title: 'Subtitle',
+              type: 'string',
+            }),
+            defineField({
+              name: 'description',
+              title: 'Description',
+              type: 'text',
+              rows: 3,
             }),
           ],
-          preview: {
-            prepare() {
-              return {
-                title: 'Collage Section',
-              }
-            },
+        }),
+        defineField({
+          name: 'bottomImage',
+          title: 'Bottom Full Width Image',
+          type: 'image',
+          options: {
+            hotspot: true,
           },
-        },
+        }),
       ],
-      validation: (Rule) => Rule.required().min(1),
+      preview: {
+        prepare() {
+          return {
+            title: 'Split Section',
+          }
+        },
+      },
+    }),
+    defineField({
+      name: 'gridSection',
+      title: 'Grid Section (4 Boxes)',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Section Title',
+          type: 'string',
+          description: 'Optional title displayed above the section',
+        }),
+        defineField({
+          name: 'text',
+          title: 'Top Left Text',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'title',
+              title: 'Title',
+              type: 'string',
+            }),
+            defineField({
+              name: 'subtitle',
+              title: 'Subtitle',
+              type: 'string',
+            }),
+            defineField({
+              name: 'description',
+              title: 'Description',
+              type: 'text',
+              rows: 3,
+            }),
+          ],
+        }),
+        defineField({
+          name: 'images',
+          title: 'Images (3 images for other boxes)',
+          type: 'array',
+          of: [
+            {
+              type: 'image',
+              options: {
+                hotspot: true,
+              },
+            },
+          ],
+          validation: (Rule) => Rule.min(3).max(3),
+        }),
+      ],
+      preview: {
+        prepare() {
+          return {
+            title: 'Grid Section',
+          }
+        },
+      },
     }),
     defineField({
       name: 'contactSection',
@@ -206,14 +313,12 @@ export const inspiration = defineType({
           name: 'title',
           title: 'Contact Title',
           type: 'string',
-          validation: (Rule) => Rule.required(),
         }),
         defineField({
           name: 'description',
           title: 'Contact Description',
           type: 'text',
           rows: 3,
-          validation: (Rule) => Rule.required(),
         }),
         defineField({
           name: 'contactLink',

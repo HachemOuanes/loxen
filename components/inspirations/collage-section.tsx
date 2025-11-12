@@ -14,7 +14,7 @@ interface CollageTile {
 interface CollageSectionProps {
   images: any[]
   tiles: CollageTile[]
-  title: string
+  title?: string
 }
 
 export function CollageSection({ images, tiles, title }: CollageSectionProps) {
@@ -53,21 +53,26 @@ export function CollageSection({ images, tiles, title }: CollageSectionProps) {
     return () => ctx.revert()
   }, [])
   return (
-    <section ref={sectionRef} className="relative bg-white py-16 md:py-24">
+    <section ref={sectionRef} className="relative bg-white py-8 md:py-12">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
+        {title && (
+          <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-6">
+            <span className="h-[1px] w-8 bg-black/20" /> {title}
+          </div>
+        )}
         <div className="grid grid-cols-2 gap-4">
           {/* Top row: two parallax images */}
           {images?.map((image: any, imageIndex: number) => (
-            <div key={imageIndex} className="js-parallax relative overflow-hidden rounded-sm border border-black/10" data-speed={imageIndex === 0 ? "0.35" : "0.2"}>
+            <div key={imageIndex} className="js-parallax relative overflow-hidden h-[95vh]" data-speed={imageIndex === 0 ? "0.35" : "0.2"}>
               <img 
-                src={image ? urlFor(image).width(800).height(600).quality(85).url() : '/placeholder.jpg'} 
+                src={image ? urlFor(image).quality(90).url() : '/placeholder.jpg'} 
                 alt={`Détail ${title}`} 
                 className="h-full w-full object-cover" 
               />
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-2 gap-4 py-12">
+        <div className="grid grid-cols-2 gap-4 py-8 md:py-12">
           {/* Bottom row: two text tiles with contrasting styles */}
           {tiles?.map((tile: CollageTile, tileIndex: number) => (
             <div key={tileIndex} className={`js-reveal px-4 md:px-6 ${tileIndex === 0 ? 'text-left max-w-[50ch]' : 'relative overflow-hidden flex items-center justify-end bg-white'}`}>

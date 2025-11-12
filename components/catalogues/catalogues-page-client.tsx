@@ -14,6 +14,7 @@ interface CatalogueDocument {
 interface CatalogueData {
   id?: string
   title: string
+  category?: string
   description?: string
   overview?: string
   image?: string
@@ -29,11 +30,22 @@ export function CataloguesPageClient({ catalogues }: CataloguesPageClientProps) 
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
+  // Extract unique categories from catalogues
+  const categories = useMemo(() => {
+    const uniqueCategories = new Set<string>()
+    catalogues.forEach(catalogue => {
+      if (catalogue.category) {
+        uniqueCategories.add(catalogue.category)
+      }
+    })
+    return ['All', ...Array.from(uniqueCategories).sort()]
+  }, [catalogues])
+
   // Filter catalogues based on search and category
   const filteredCatalogues = useMemo(() => {
     return catalogues.filter(catalogue => {
       // Category filter
-      if (selectedCategory !== 'All' && catalogue.title !== selectedCategory) {
+      if (selectedCategory !== 'All' && catalogue.category !== selectedCategory) {
         return false
       }
 
@@ -60,6 +72,7 @@ export function CataloguesPageClient({ catalogues }: CataloguesPageClientProps) 
         onSearchChange={setSearchQuery}
         onCategoryFilter={setSelectedCategory}
         selectedCategory={selectedCategory}
+        categories={categories}
       />
 
       {/* Catalogues Accordion List */}

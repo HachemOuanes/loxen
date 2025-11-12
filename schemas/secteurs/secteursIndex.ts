@@ -10,7 +10,6 @@ export const secteursIndex = defineType({
       title: 'Page Title',
       type: 'string',
       initialValue: 'Solutions pour l\'éducation, la santé et les espaces tertiaires',
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'description',
@@ -18,7 +17,6 @@ export const secteursIndex = defineType({
       type: 'text',
       rows: 3,
       initialValue: 'Des systèmes MEG, Easy MEG et HPL adaptés aux exigences des établissements scolaires, de santé et des bureaux, alliant durabilité, sécurité et esthétique.',
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'heroImage',
@@ -27,7 +25,6 @@ export const secteursIndex = defineType({
       options: {
         hotspot: true,
       },
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'secteurs',
@@ -39,7 +36,6 @@ export const secteursIndex = defineType({
           to: [{ type: 'secteur' }],
         },
       ],
-      validation: (Rule) => Rule.required().min(1),
     }),
   ],
   preview: {

@@ -9,7 +9,6 @@ export const menuSettings = defineType({
       name: 'title',
       title: 'Menu Title',
       type: 'string',
-      validation: Rule => Rule.required(),
     }),
     defineField({
       name: 'description',
@@ -24,7 +23,6 @@ export const menuSettings = defineType({
       of: [
         { type: 'reference', to: [{ type: 'inspiration' }] }
       ],
-      validation: Rule => Rule.required().min(1),
     }),
   ],
 })

@@ -7,19 +7,10 @@ interface CatalogueHeroProps {
   onSearchChange: (query: string) => void
   onCategoryFilter: (category: string) => void
   selectedCategory: string
+  categories: string[]
 }
 
-const categories = [
-  'All',
-  'Plaquettes produits',
-  'Nuanciers décors',
-  'Guides techniques',
-  'Fiches produits',
-  'Bibliothèque BIM',
-  'Certifications et normes'
-]
-
-export function CatalogueHero({ onSearchChange, onCategoryFilter, selectedCategory }: CatalogueHeroProps) {
+export function CatalogueHero({ onSearchChange, onCategoryFilter, selectedCategory, categories }: CatalogueHeroProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [isCategoryOpen, setIsCategoryOpen] = useState(false)
 

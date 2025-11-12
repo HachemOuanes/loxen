@@ -14,8 +14,11 @@ export async function getInspirationBySlug(slug: string) {
       title,
       description,
       heroImage,
-      sections[]{
-        type,
+      bigImage{
+        title,
+        image
+      },
+      applicationsSection{
         title,
         items[]{
           title,
@@ -23,13 +26,35 @@ export async function getInspirationBySlug(slug: string) {
           description,
           features,
           image
-        },
+        }
+      },
+      collageSection{
+        title,
         images[],
         tiles[]{
           title,
           subtitle,
           description
         }
+      },
+      splitSection{
+        title,
+        topImage,
+        topText{
+          title,
+          subtitle,
+          description
+        },
+        bottomImage
+      },
+      gridSection{
+        title,
+        text{
+          title,
+          subtitle,
+          description
+        },
+        images[]
       },
       contactSection{
         title,

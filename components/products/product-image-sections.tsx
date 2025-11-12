@@ -118,7 +118,7 @@ export function ProductImageSections({ sections }: ProductImageSectionsProps) {
         : sections // Maintain original Sanity array order
 
     return (
-        <section ref={sectionRef} className="relative bg-white py-16 md:py-24">
+        <section ref={sectionRef} className="relative bg-white py-8 md:py-12">
             <div className="max-w-7xl mx-auto px-4 md:px-6">
                 {/* Render sections based on their type and order */}
                 {sortedSections.map((section, idx) => {
@@ -131,8 +131,8 @@ export function ProductImageSections({ sections }: ProductImageSectionsProps) {
                         const bannerRight = section.bannerRight || section.heroRight // Support legacy heroRight
                         
                         return (
-                            <div key={section._key || idx} className={idx > 0 ? 'mt-16 md:mt-24' : ''}>
-                                <div className="mb-12 md:mb-16">
+                            <div key={section._key || idx} className={idx > 0 ? 'mt-8 md:mt-12' : ''}>
+                                <div className="mb-8 md:mb-12">
                                     <div className="js-reveal relative h-[60vh] md:h-[80vh] overflow-hidden border border-black/10">
                                         <Image
                                             src={
@@ -153,7 +153,7 @@ export function ProductImageSections({ sections }: ProductImageSectionsProps) {
                                 </div>
 
                                 {(bannerLeft || bannerRight) && (
-                                    <div className="grid md:grid-cols-2 gap-12 md:gap-16 mb-16 md:mb-24">
+                                    <div className="grid md:grid-cols-2 gap-12 md:gap-16 mb-8 md:mb-12">
                                         {bannerLeft && (
                                             <div className="js-reveal">
                                                 {bannerLeft.subtitle && (
@@ -193,7 +193,7 @@ export function ProductImageSections({ sections }: ProductImageSectionsProps) {
                         const isFlexReverse = featureIndex % 2 === 1
                         
                         return (
-                            <div key={section._key || idx} className={`flex flex-col md:flex-row gap-8 items-center ${idx < sortedSections.length - 1 ? 'mb-12' : ''} ${isFlexReverse ? 'md:flex-row-reverse' : ''}`}>
+                            <div key={section._key || idx} className={`flex flex-col md:flex-row gap-8 items-center ${idx < sortedSections.length - 1 ? 'mb-8 md:mb-12' : ''} ${isFlexReverse ? 'md:flex-row-reverse' : ''}`}>
                                 {/* Image section */}
                                 {(section.image || (section as any).imageUrl) && (
                                     <div className="w-full md:w-1/2">

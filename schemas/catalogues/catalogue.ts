@@ -21,6 +21,13 @@ export const catalogue = defineType({
       description: 'Catalogue title (e.g., "Plaquettes produits")',
     }),
     defineField({
+      name: 'category',
+      title: 'Category',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+      description: 'Category for filtering catalogues (e.g., "Plaquettes produits", "Nuanciers décors")',
+    }),
+    defineField({
       name: 'description',
       title: 'Description',
       type: 'text',

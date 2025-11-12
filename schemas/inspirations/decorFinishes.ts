@@ -10,7 +10,6 @@ export const decorFinishes = defineType({
       title: 'Title',
       type: 'string',
       initialValue: 'Finitions disponibles',
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
@@ -21,7 +20,6 @@ export const decorFinishes = defineType({
         maxLength: 96,
       },
       initialValue: { current: 'decor-finishes' },
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'description',
@@ -35,7 +33,6 @@ export const decorFinishes = defineType({
       type: 'string',
       description: 'The slug of the product to fetch finishes from (e.g., "meg-standard")',
       initialValue: 'meg-standard',
-      validation: (Rule) => Rule.required(),
     }),
   ],
   preview: {

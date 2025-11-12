@@ -124,7 +124,6 @@ export const secteur = defineType({
                   title: 'Label',
                   type: 'string',
                   description: 'Feature label (e.g., "STONE AESTHETICS")',
-                  validation: (Rule) => Rule.required(),
                 }),
               ],
               preview: {
@@ -135,7 +134,6 @@ export const secteur = defineType({
               },
             },
           ],
-          validation: (Rule) => Rule.min(1).max(10),
         }),
       ],
     }),
@@ -257,7 +255,6 @@ export const secteur = defineType({
           options: {
             hotspot: true,
           },
-          validation: (Rule) => Rule.required(),
         }),
         defineField({
           name: 'leftText',
@@ -425,7 +422,6 @@ export const secteur = defineType({
                       { title: 'Exterior', value: 'exterior' },
                     ],
                   },
-                  validation: (Rule) => Rule.required(),
                 }),
                 defineField({
                   name: 'product',
@@ -435,7 +431,6 @@ export const secteur = defineType({
                     { type: 'interiorProduct' },
                     { type: 'exteriorProduct' },
                   ],
-                  validation: (Rule) => Rule.required(),
                 }),
               ],
               preview: {
@@ -452,7 +447,6 @@ export const secteur = defineType({
               },
             },
           ],
-          validation: (Rule) => Rule.max(6),
         }),
       ],
     }),

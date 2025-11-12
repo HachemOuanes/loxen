@@ -106,7 +106,7 @@ export function HeroSection({ title, description, heroImage, contactLink, contac
       {/* Full-viewport overlay image that animates to the right */}
       <div ref={stickyHeroRef} className='h-[210vh]'>
         <img
-          src={heroImage ? urlFor(heroImage).width(1920).height(1080).quality(90).url() : '/salle-de-bain/solid-top-piano-hpl-bagni-02.jpg'}
+          src={heroImage ? urlFor(heroImage).quality(90).url() : '/salle-de-bain/solid-top-piano-hpl-bagni-02.jpg'}
           alt={`Plan ${title} effet bois`}
           className="js-hero-figure h-screen w-full object-cover"
           loading="eager"

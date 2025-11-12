@@ -38,7 +38,7 @@ export function FinitionsSection({ title, items }: FinitionsSectionProps) {
   const slideStyle = { width: `${CARD_WIDTH}px`, marginRight: `${GAP}px` }
 
   return (
-    <section className="relative bg-white py-16 md:py-24">
+    <section className="relative bg-white py-8 md:py-12">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-6">
           <span className="h-[1px] w-8 bg-black/20" /> {title}
@@ -57,7 +57,7 @@ export function FinitionsSection({ title, items }: FinitionsSectionProps) {
                   <article className="group border border-black/10 bg-white overflow-hidden pb-4">
                     <div className="aspect-[4/3] overflow-hidden">
                       <img 
-                        src={f.image ? urlFor(f.image).width(400).height(300).quality(85).url() : '/placeholder.jpg'} 
+                        src={f.image ? urlFor(f.image).quality(90).url() : '/placeholder.jpg'} 
                         alt={f.title + ' — ' + f.subtitle} 
                         className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110" 
                       />
@@ -69,7 +69,7 @@ export function FinitionsSection({ title, items }: FinitionsSectionProps) {
                     </div>
                     {f.schema && (
                       <img 
-                        src={urlFor(f.schema).width(500).height(200).quality(85).url()} 
+                        src={urlFor(f.schema).quality(90).url()} 
                         alt={f.title + ' schema'} 
                         className="mx-auto h-auto w-2/3 object-contain" 
                       />
