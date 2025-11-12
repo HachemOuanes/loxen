@@ -100,11 +100,6 @@ export const structure: StructureResolver = (S) =>
                 .title('Finition Types')
                 .icon(CircleIcon)
                 .child(S.document().schemaType('finitionTypes').documentId('finition-types')),
-
-              S.listItem()
-                .title('Decor Finishes')
-                .icon(TagIcon)
-                .child(S.document().schemaType('decorFinishes').documentId('decor-finishes')),
             ])
         ),
 

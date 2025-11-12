@@ -93,6 +93,13 @@ export const inspiration = defineType({
             },
           ],
         }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Section',
+          type: 'boolean',
+          description: 'Toggle to display/hide this section on the inspiration page',
+          initialValue: true,
+        }),
       ],
       preview: {
         select: {
@@ -157,6 +164,13 @@ export const inspiration = defineType({
             },
           ],
         }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Section',
+          type: 'boolean',
+          description: 'Toggle to display/hide this section on the inspiration page',
+          initialValue: true,
+        }),
       ],
       preview: {
         prepare() {
@@ -167,8 +181,8 @@ export const inspiration = defineType({
       },
     }),
     defineField({
-      name: 'bigImage',
-      title: 'Big Image (Below Collage)',
+      name: 'bigImages',
+      title: 'Big Images (Below Collage)',
       type: 'object',
       fields: [
         defineField({
@@ -178,15 +192,92 @@ export const inspiration = defineType({
           description: 'Optional title displayed above the section',
         }),
         defineField({
-          name: 'image',
-          title: 'Image',
-          type: 'image',
-          options: {
-            hotspot: true,
-          },
+          name: 'images',
+          title: 'Big Images',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({
+                  name: 'image',
+                  title: 'Image',
+                  type: 'image',
+                  options: {
+                    hotspot: true,
+                  },
+                  validation: (Rule) => Rule.required(),
+                }),
+                defineField({
+                  name: 'leftText',
+                  title: 'Left Text (Optional)',
+                  type: 'object',
+                  fields: [
+                    defineField({
+                      name: 'title',
+                      title: 'Title',
+                      type: 'string',
+                    }),
+                    defineField({
+                      name: 'subtitle',
+                      title: 'Subtitle',
+                      type: 'string',
+                    }),
+                    defineField({
+                      name: 'description',
+                      title: 'Description',
+                      type: 'text',
+                      rows: 3,
+                    }),
+                  ],
+                }),
+                defineField({
+                  name: 'rightText',
+                  title: 'Right Text (Optional)',
+                  type: 'object',
+                  fields: [
+                    defineField({
+                      name: 'title',
+                      title: 'Title',
+                      type: 'string',
+                    }),
+                    defineField({
+                      name: 'subtitle',
+                      title: 'Subtitle',
+                      type: 'string',
+                    }),
+                    defineField({
+                      name: 'description',
+                      title: 'Description',
+                      type: 'text',
+                      rows: 3,
+                    }),
+                  ],
+                }),
+              ],
+              preview: {
+                select: {
+                  media: 'image',
+                },
+                prepare({ media }) {
+                  return {
+                    title: 'Big Image',
+                    media: media,
+                  }
+                },
+              },
+            },
+          ],
+        }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Section',
+          type: 'boolean',
+          description: 'Toggle to display/hide this section on the inspiration page',
+          initialValue: true,
         }),
       ],
-      description: 'Large image displayed below the collage section, matching the secteurs showcase style',
+      description: 'List of large images displayed below the collage section. Each image can have optional left and right text.',
     }),
     defineField({
       name: 'splitSection',
@@ -237,6 +328,13 @@ export const inspiration = defineType({
           options: {
             hotspot: true,
           },
+        }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Section',
+          type: 'boolean',
+          description: 'Toggle to display/hide this section on the inspiration page',
+          initialValue: true,
         }),
       ],
       preview: {
@@ -295,6 +393,13 @@ export const inspiration = defineType({
           ],
           validation: (Rule) => Rule.min(3).max(3),
         }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Section',
+          type: 'boolean',
+          description: 'Toggle to display/hide this section on the inspiration page',
+          initialValue: true,
+        }),
       ],
       preview: {
         prepare() {
@@ -303,6 +408,20 @@ export const inspiration = defineType({
           }
         },
       },
+    }),
+    defineField({
+      name: 'showFinitions',
+      title: 'Show Finitions Section',
+      type: 'boolean',
+      description: 'Toggle to display/hide the Finitions section on this inspiration page',
+      initialValue: true,
+    }),
+    defineField({
+      name: 'showDecors',
+      title: 'Show Decors Section',
+      type: 'boolean',
+      description: 'Toggle to display/hide the Decors section on this inspiration page',
+      initialValue: true,
     }),
     defineField({
       name: 'contactSection',
@@ -331,6 +450,13 @@ export const inspiration = defineType({
           title: 'Contact CTA Text',
           type: 'string',
           initialValue: 'Nous contacter',
+        }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Section',
+          type: 'boolean',
+          description: 'Toggle to display/hide this section on the inspiration page',
+          initialValue: true,
         }),
       ],
     }),

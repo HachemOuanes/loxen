@@ -14,12 +14,25 @@ export async function getInspirationBySlug(slug: string) {
       title,
       description,
       heroImage,
-      bigImage{
+      bigImages{
         title,
-        image
+        images[]{
+          image,
+          leftText{
+            title,
+            subtitle,
+            description
+          },
+          rightText{
+            title,
+            subtitle,
+            description
+          }
+        }
       },
       applicationsSection{
         title,
+        enabled,
         items[]{
           title,
           subtitle,
@@ -30,6 +43,7 @@ export async function getInspirationBySlug(slug: string) {
       },
       collageSection{
         title,
+        enabled,
         images[],
         tiles[]{
           title,
@@ -37,8 +51,26 @@ export async function getInspirationBySlug(slug: string) {
           description
         }
       },
+      bigImages{
+        title,
+        enabled,
+        images[]{
+          image,
+          leftText{
+            title,
+            subtitle,
+            description
+          },
+          rightText{
+            title,
+            subtitle,
+            description
+          }
+        }
+      },
       splitSection{
         title,
+        enabled,
         topImage,
         topText{
           title,
@@ -49,6 +81,7 @@ export async function getInspirationBySlug(slug: string) {
       },
       gridSection{
         title,
+        enabled,
         text{
           title,
           subtitle,
@@ -58,10 +91,13 @@ export async function getInspirationBySlug(slug: string) {
       },
       contactSection{
         title,
+        enabled,
         description,
         contactLink,
         contactCta
-      }
+      },
+      showFinitions,
+      showDecors
     }`
     
     const result = await client.fetch(query, { slug })

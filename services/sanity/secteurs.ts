@@ -20,6 +20,7 @@ export async function getSecteurBySlug(slug: string) {
       }
     },
     featuresSection{
+      enabled,
       features[]{
         icon,
         label
@@ -27,6 +28,7 @@ export async function getSecteurBySlug(slug: string) {
     },
     customizationSection{
       title,
+      enabled,
       mainText,
       secondaryText,
       ctaText,
@@ -35,6 +37,7 @@ export async function getSecteurBySlug(slug: string) {
     },
     productsSection{
       title,
+      enabled,
       subtitle,
       description,
       products[]{
@@ -70,6 +73,7 @@ export async function getSecteurBySlug(slug: string) {
       }
     },
     showcaseSection{
+      enabled,
       heroImage,
       leftText{
         title,
@@ -88,6 +92,7 @@ export async function getSecteurBySlug(slug: string) {
     },
     contactSection{
       title,
+      enabled,
       description,
       ctaText,
       ctaLink

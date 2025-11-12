@@ -29,8 +29,8 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         contactCta={shared?.contact?.cta || 'Nous contacter'}
       />
 
-      {/* Features Section */}
-      {specific?.featuresSection?.features && (
+      {/* Features Section - Conditionally rendered */}
+      {specific?.featuresSection?.enabled !== false && specific?.featuresSection?.features && (
         <SecteursFeaturesSection
           features={specific.featuresSection.features.map((feature: any) => ({
             icon: feature.icon ? urlFor(feature.icon).width(80).height(80).quality(90).url() : null,
@@ -39,8 +39,8 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         />
       )}
 
-      {/* Showcase Section */}
-      {specific?.showcaseSection && (
+      {/* Showcase Section - Conditionally rendered */}
+      {specific?.showcaseSection?.enabled !== false && specific?.showcaseSection && (
         <SecteursShowcaseSection
           heroImage={urlFor(specific.showcaseSection.heroImage).width(2560).height(1440).quality(95).url()}
           leftText={specific.showcaseSection.leftText}
@@ -52,7 +52,7 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         />
       )}
 
-      {/* Dynamic sections based on data */}
+      {/* Dynamic sections based on data - Conditionally rendered */}
       {specific?.sections?.map((section: any, sectionIndex: number) => {
         if (section.type === 'applications') {
           return (
@@ -70,8 +70,8 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         return null
       })}
 
-      {/* Customization Section */}
-      {specific?.customizationSection && (
+      {/* Customization Section - Conditionally rendered */}
+      {specific?.customizationSection?.enabled !== false && specific?.customizationSection && (
         <SecteursCustomizationSection
           title={specific.customizationSection.title || "Conceptions personnalisées avec Abet Digital"}
           mainText={specific.customizationSection.mainText || ""}
@@ -82,8 +82,8 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         />
       )}
 
-      {/* Products Section */}
-      {specific?.productsSection && (
+      {/* Products Section - Conditionally rendered */}
+      {specific?.productsSection?.enabled !== false && specific?.productsSection && (
         <SecteursProductsSection
           title={specific.productsSection.title || "Produits"}
           description={specific.productsSection.description}
@@ -99,13 +99,15 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         />
       )}
 
-      {/* Contact Section */}
-      <ArtisticCtaSection
-        title={specific?.contactSection?.title || specific?.title || 'projet'}
-        description={specific?.contactSection?.description || "Besoin d'un conseil personnalisé pour votre projet ? Nos équipes vous accompagnent dans le choix des matériaux et la mise en œuvre."}
-        contactLink={specific?.contactSection?.ctaLink || shared?.contact?.link || '/contact'}
-        contactCta={specific?.contactSection?.ctaText || shared?.contact?.cta || 'Nous contacter'}
-      />
+      {/* Contact Section - Conditionally rendered */}
+      {specific?.contactSection?.enabled !== false && (
+        <ArtisticCtaSection
+          title={specific?.contactSection?.title || specific?.title || 'projet'}
+          description={specific?.contactSection?.description || "Besoin d'un conseil personnalisé pour votre projet ? Nos équipes vous accompagnent dans le choix des matériaux et la mise en œuvre."}
+          contactLink={specific?.contactSection?.ctaLink || shared?.contact?.link || '/contact'}
+          contactCta={specific?.contactSection?.ctaText || shared?.contact?.cta || 'Nous contacter'}
+        />
+      )}
     </div>
   )
 }
