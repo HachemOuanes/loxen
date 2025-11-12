@@ -4,11 +4,11 @@ import { urlFor } from '@/lib/sanity'
 
 interface SplitSectionProps {
   topImage: any
-  topText: {
-    title: string
-    subtitle: string
-    description: string
-  }
+  topText?: {
+    title?: string
+    subtitle?: string
+    description?: string
+  } | null
   bottomImage: any
   title?: string
 }
@@ -29,7 +29,7 @@ export function SplitSection({ topImage, topText, bottomImage, title }: SplitSec
           <div className="relative overflow-hidden h-[47.5vh]">
             <img
               src={topImage ? urlFor(topImage).quality(100).url() : '/placeholder.jpg'}
-              alt={topText.title}
+              alt={topText?.title || 'Detail'}
               className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-110"
               loading="lazy"
               decoding="async"
@@ -37,19 +37,27 @@ export function SplitSection({ topImage, topText, bottomImage, title }: SplitSec
           </div>
 
           {/* Right: Text */}
-          <div className="flex items-center px-4 md:px-6">
-            <div>
-              <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60 mb-2">
-                {topText.subtitle}
-              </p>
-              <h4 className="text-2xl md:text-3xl font-light tracking-tight text-black leading-tight mb-4">
-                {topText.title}
-              </h4>
-              <p className="text-base md:text-lg text-black/75 italic leading-snug">
-                {topText.description}
-              </p>
+          {topText && (
+            <div className="flex items-center px-4 md:px-6">
+              <div>
+                {topText.subtitle && (
+                  <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60 mb-2">
+                    {topText.subtitle}
+                  </p>
+                )}
+                {topText.title && (
+                  <h4 className="text-2xl md:text-3xl font-light tracking-tight text-black leading-tight mb-4">
+                    {topText.title}
+                  </h4>
+                )}
+                {topText.description && (
+                  <p className="text-base md:text-lg text-black/75 italic leading-snug">
+                    {topText.description}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Bottom half: Full width image */}
