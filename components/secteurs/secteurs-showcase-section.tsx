@@ -6,17 +6,17 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 interface SecteursShowcaseSectionProps {
   heroImage: string
-  leftText: {
-    title: string
-    subtitle: string
-    description: string
+  leftText?: {
+    title?: string
+    subtitle?: string
+    description?: string
   }
-  rightText: {
-    title: string
-    subtitle: string
-    description: string
+  rightText?: {
+    title?: string
+    subtitle?: string
+    description?: string
   }
-  images: {
+  images?: {
     src: string
     alt: string
   }[]
@@ -74,38 +74,58 @@ export function SecteursShowcaseSection({
           />
         </div>
         
-        {/* Two Text Columns */}
+        {/* Two Text Columns - Only render if at least one text block exists */}
+        {(leftText || rightText) && (
         <div className="grid grid-cols-2 gap-4 mb-8 md:mb-12">
           {/* Left Text */}
+            {leftText && (
           <div className="js-reveal px-4 md:px-6 text-left max-w-[50ch]">
+                {leftText.subtitle && (
             <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60">{leftText.subtitle}</p>
+                )}
+                {leftText.title && (
             <h4 className="mt-2 text-2xl md:text-3xl font-light tracking-tight text-black leading-tight">{leftText.title}</h4>
+                )}
+                {leftText.description && (
             <p className="mt-2 text-base md:text-lg text-black/75 italic leading-snug">{leftText.description}</p>
+                )}
           </div>
+            )}
 
           {/* Right Text */}
+            {rightText && (
           <div className="js-reveal px-4 md:px-6 text-right max-w-[50ch] ml-auto">
+                {rightText.subtitle && (
             <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60">{rightText.subtitle}</p>
+                )}
+                {rightText.title && (
             <h4 className="mt-2 text-2xl md:text-3xl font-light tracking-tight text-black leading-tight">{rightText.title}</h4>
+                )}
+                {rightText.description && (
             <p className="mt-2 text-base md:text-lg text-black/75 italic leading-snug">{rightText.description}</p>
+                )}
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
         {/* Two Images - same height as inspiration collage images with gap */}
+        {images && images.length > 0 && (
         <div className="grid grid-cols-2 gap-4">
-          {images?.map((image, imageIndex) => (
+            {images.map((image, imageIndex) => (
             <div
               key={imageIndex}
               className="js-parallax relative overflow-hidden h-[95vh]"
             >
               <img
                 src={image.src}
-                alt={image.alt}
+                  alt={image.alt || ''}
                 className="h-full w-full object-cover"
               />
             </div>
           ))}
         </div>
+        )}
       </div>
     </section>
   )

@@ -144,110 +144,143 @@ export const secteur = defineType({
         }),
       ],
     }),
+    // Showcase Section (placed before applications to match CMS order)
+    // Applications – Primary (image right / text left)
     defineField({
-      name: 'sections',
-      title: 'Sections',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          name: 'applicationsSection',
-          title: 'Applications Section',
-          fields: [
-            defineField({
-              name: 'type',
-              title: 'Type',
-              type: 'string',
-              initialValue: 'applications',
-              readOnly: true,
-            }),
-            defineField({
-              name: 'title',
-              title: 'Section Title',
-              type: 'string',
-            }),
-            defineField({
-              name: 'items',
-              title: 'Application Items',
-              type: 'array',
-              of: [
-                {
+      name: 'applicationsPrimary',
+      title: 'Applications – Primary',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Section Title',
+          type: 'string',
+        }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Section',
+          type: 'boolean',
+          description: 'Toggle to display/hide this section on the secteur page',
+          initialValue: true,
+        }),
+        defineField({
+          name: 'items',
+          title: 'Application Items',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({ name: 'title', title: 'Item Title', type: 'string' }),
+                defineField({ name: 'subtitle', title: 'Subtitle', type: 'string' }),
+                defineField({
+                  name: 'description',
+                  title: 'Description',
+                  type: 'text',
+                  rows: 3,
+                }),
+                defineField({
+                  name: 'textSection',
+                  title: 'Text Section',
                   type: 'object',
                   fields: [
-                    defineField({
-                      name: 'title',
-                      title: 'Item Title',
-                      type: 'string',
-                    }),
-                    defineField({
-                      name: 'subtitle',
-                      title: 'Subtitle',
-                      type: 'string',
-                    }),
+                    defineField({ name: 'mainText', title: 'Main Text', type: 'string' }),
                     defineField({
                       name: 'description',
                       title: 'Description',
                       type: 'text',
-                      rows: 3,
-                    }),
-                    defineField({
-                      name: 'textSection',
-                      title: 'Text Section',
-                      type: 'object',
-                      description: 'Large main text with italic description',
-                      fields: [
-                        defineField({
-                          name: 'mainText',
-                          title: 'Main Text',
-                          type: 'string',
-                          description: 'Large text displayed prominently',
-                        }),
-                        defineField({
-                          name: 'description',
-                          title: 'Description',
-                          type: 'text',
-                          rows: 2,
-                          description: 'Smaller italic text below main text',
-                        }),
-                      ],
-                    }),
-                    defineField({
-                      name: 'features',
-                      title: 'Features',
-                      type: 'array',
-                      of: [{ type: 'string' }],
-                    }),
-                    defineField({
-                      name: 'image',
-                      title: 'Image',
-                      type: 'image',
-                      options: {
-                        hotspot: true,
-                      },
+                      rows: 2,
                     }),
                   ],
-                  preview: {
-                    select: {
-                      title: 'title',
-                      subtitle: 'subtitle',
-                      media: 'image',
-                    },
-                  },
-                },
+                }),
+                defineField({
+                  name: 'features',
+                  title: 'Features',
+                  type: 'array',
+                  of: [{ type: 'string' }],
+                }),
+                defineField({
+                  name: 'image',
+                  title: 'Image',
+                  type: 'image',
+                  options: { hotspot: true },
+                }),
               ],
-            }),
+              preview: {
+                select: { title: 'title', subtitle: 'subtitle', media: 'image' },
+              },
+            },
           ],
-          preview: {
-            select: {
-              title: 'title',
+        }),
+      ],
+    }),
+    // Applications – Secondary (image left / text right)
+    defineField({
+      name: 'applicationsSecondary',
+      title: 'Applications – Secondary',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Section Title',
+          type: 'string',
+        }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Section',
+          type: 'boolean',
+          description: 'Toggle to display/hide this section on the secteur page',
+          initialValue: true,
+        }),
+        defineField({
+          name: 'items',
+          title: 'Application Items',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({ name: 'title', title: 'Item Title', type: 'string' }),
+                defineField({ name: 'subtitle', title: 'Subtitle', type: 'string' }),
+                defineField({
+                  name: 'description',
+                  title: 'Description',
+                  type: 'text',
+                  rows: 3,
+                }),
+                defineField({
+                  name: 'textSection',
+                  title: 'Text Section',
+                  type: 'object',
+                  fields: [
+                    defineField({ name: 'mainText', title: 'Main Text', type: 'string' }),
+                    defineField({
+                      name: 'description',
+                      title: 'Description',
+                      type: 'text',
+                      rows: 2,
+                    }),
+                  ],
+                }),
+                defineField({
+                  name: 'features',
+                  title: 'Features',
+                  type: 'array',
+                  of: [{ type: 'string' }],
+                }),
+                defineField({
+                  name: 'image',
+                  title: 'Image',
+                  type: 'image',
+                  options: { hotspot: true },
+                }),
+              ],
+              preview: {
+                select: { title: 'title', subtitle: 'subtitle', media: 'image' },
+              },
             },
-            prepare({ title }) {
-              return {
-                title: `Applications: ${title}`,
-              }
-            },
-          },
-        },
+          ],
+        }),
       ],
     }),
     defineField({
@@ -468,6 +501,13 @@ export const secteur = defineType({
               },
             },
           ],
+        }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Section',
+          type: 'boolean',
+          description: 'Toggle to display/hide this section on the secteur page',
+          initialValue: true,
         }),
       ],
     }),

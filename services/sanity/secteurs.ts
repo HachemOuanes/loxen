@@ -57,9 +57,24 @@ export async function getSecteurBySlug(slug: string) {
         }
       }
     },
-    sections[]{
-      type,
+    applicationsPrimary{
       title,
+      enabled,
+      items[]{
+        title,
+        subtitle,
+        description,
+        textSection{
+          mainText,
+          description
+        },
+        features,
+        image
+      }
+    },
+    applicationsSecondary{
+      title,
+      enabled,
       items[]{
         title,
         subtitle,

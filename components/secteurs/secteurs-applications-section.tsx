@@ -16,25 +16,28 @@ interface ApplicationItem {
     image: string
 }
 
-interface SecteursApplicationsSectionProps {
-    title: string
+interface ApplicationsSectionProps {
     items: ApplicationItem[]
+    imageOnRight?: boolean
 }
 
-export function SecteursApplicationsSection({ title, items }: SecteursApplicationsSectionProps) {
+interface SecteursApplicationsSectionProps {
+    primaryItems: ApplicationItem[]
+    secondaryItems?: ApplicationItem[]
+}
+
+function ApplicationsSection({ items, imageOnRight = true }: ApplicationsSectionProps) {
     const sectionRef = useRef<HTMLDivElement>(null)
     const stickyImageRef = useRef<HTMLDivElement>(null)
-    const stickyTitleRef = useRef<HTMLDivElement>(null)
     const currentImageIndex = useRef(0)
 
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger)
 
-        if (!sectionRef.current || !stickyImageRef.current || !stickyTitleRef.current || !items?.length) return
+        if (!sectionRef.current || !stickyImageRef.current || !items?.length) return
 
         const section = sectionRef.current
         const stickyImage = stickyImageRef.current
-        const stickyTitle = stickyTitleRef.current
 
         // Create ScrollTrigger for sticky behavior with image transitions
         ScrollTrigger.create({
@@ -47,19 +50,9 @@ export function SecteursApplicationsSection({ title, items }: SecteursApplicatio
                 const progress = self.progress
                 const totalItems = items.length
 
-                // Calculate which image to show based on scroll progress
-                let imageIndex = 0
-
-                if (progress < 0.2) {
-                    imageIndex = 0 // First third - first image
-                } else if (progress < 0.8) {
-                    imageIndex = 1 // Second third - second image
-                } else {
-                    imageIndex = 2 // Last third - third image
-                }
-
-                // Ensure we don't exceed available items
-                imageIndex = Math.min(imageIndex, totalItems - 1)
+                // Dynamic image index based on progress
+                const rawIndex = Math.floor(progress * totalItems)
+                const imageIndex = Math.min(Math.max(rawIndex, 0), totalItems - 1)
 
                 // Only animate if image index changed
                 if (imageIndex !== currentImageIndex.current && items[imageIndex]?.image) {
@@ -68,26 +61,25 @@ export function SecteursApplicationsSection({ title, items }: SecteursApplicatio
                     const nextImg = images[imageIndex]
 
                     if (currentImg && nextImg) {
-                        // Determine scroll direction for swipe animation
                         const isScrollingDown = imageIndex > currentImageIndex.current
+                        const direction = imageOnRight ? 1 : -1
 
-                        // Position next image off-screen horizontally (full width)
+                        // Position next image off-screen horizontally
                         gsap.set(nextImg, {
                             opacity: 0,
-                            x: isScrollingDown ? '100%' : '-100%',
+                            x: isScrollingDown ? 100 * direction + '%' : -100 * direction + '%',
                             y: 0
                         })
 
-                        // Create continuous sliding + fade animation
                         gsap.timeline()
                             .to(currentImg, {
-                                x: isScrollingDown ? '-100%' : '100%',
+                                x: isScrollingDown ? -100 * direction + '%' : 100 * direction + '%',
                                 opacity: 0,
                                 duration: 0.6,
                                 ease: 'power2.inOut'
                             }, 0)
                             .to(nextImg, {
-                                x: 0,
+                                x: '0%',
                                 opacity: 1,
                                 duration: 0.6,
                                 ease: 'power2.inOut'
@@ -99,16 +91,6 @@ export function SecteursApplicationsSection({ title, items }: SecteursApplicatio
             }
         })
 
-        // Create separate ScrollTrigger for sticky title
-        ScrollTrigger.create({
-            trigger: section,
-            start: 'top top',
-            end: 'bottom bottom',
-            pin: stickyTitle,
-            pinSpacing: false,
-        })
-
-        // Cleanup
         return () => {
             ScrollTrigger.getAll().forEach(trigger => {
                 if (trigger.trigger === section) {
@@ -116,17 +98,14 @@ export function SecteursApplicationsSection({ title, items }: SecteursApplicatio
                 }
             })
         }
-    }, [items])
+    }, [items, imageOnRight])
 
     return (
-        <section id="applications" ref={sectionRef} className="relative bg-white md:my-12">
+        <section ref={sectionRef} className="relative bg-white">
             <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
-                <div ref={stickyTitleRef} className="js-reveal items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 hidden w-[20rem]">
-                </div>
-
                 <div className="grid grid-cols-2 gap-8">
-                    {/* GSAP Pinned Image - Right Side */}
-                    <div className="relative">
+                    {/* Sticky Image */}
+                    <div className={`relative ${imageOnRight ? 'md:order-2' : 'md:order-1'}`}>
                         <div ref={stickyImageRef} className="h-[96vh] overflow-hidden">
                             {items?.map((item, index) => (
                                 <img
@@ -140,17 +119,16 @@ export function SecteursApplicationsSection({ title, items }: SecteursApplicatio
                             ))}
                         </div>
                     </div>
-                    {/* Text Content - Left Side */}
-                    <div className="space-y-64 py-24">
+
+                    {/* Text Content */}
+                    <div className={`space-y-64 py-16 md:py-24 ${imageOnRight ? 'md:order-1' : 'md:order-2'}`}>
                         {items?.map((item: ApplicationItem, itemIndex: number) => (
-                            <div key={itemIndex} className="js-reveal min-h-[70vh] flex flex-col justify-center space-y-6">
-                                {/* Title and Subtitle */}
+                            <div key={itemIndex} className="js-reveal min-h-[60vh] md:min-h-[70vh] flex flex-col justify-center space-y-6">
                                 <div className="space-y-2">
                                     <p className="text-xs uppercase tracking-[0.18em] text-black/60">{item.title}</p>
                                     <h3 className="text-3xl md:text-5xl font-light tracking-tight text-black">{item.subtitle}</h3>
                                 </div>
 
-                                {/* First text section - Large main text + italic description */}
                                 {item.textSection && (
                                     <div className="space-y-2 py-4">
                                         {item.textSection.mainText && (
@@ -166,13 +144,10 @@ export function SecteursApplicationsSection({ title, items }: SecteursApplicatio
                                     </div>
                                 )}
 
-
-                                {/* Original description */}
                                 {item.description && (
                                     <p className="mt-4 text-black/70 leading-relaxed">{item.description}</p>
                                 )}
 
-                                {/* Features list */}
                                 {item.features && item.features.length > 0 && (
                                     <div className="mt-5 space-y-2">
                                         {item.features.map((feature: string, featureIndex: number) => (
@@ -195,5 +170,24 @@ export function SecteursApplicationsSection({ title, items }: SecteursApplicatio
                 </div>
             </div>
         </section>
+    )
+}
+
+export function SecteursApplicationsSection({ primaryItems, secondaryItems }: SecteursApplicationsSectionProps) {
+    // primaryItems: current CMS data
+    // secondaryItems: optional second section (if provided)
+
+    return (
+        <div className="space-y-12 md:space-y-16">
+            {/* First applications (current CMS content) */}
+            {primaryItems?.length > 0 && (
+                <ApplicationsSection items={primaryItems} imageOnRight />
+            )}
+
+            {/* Second applications (mirror layout) */}
+            {(secondaryItems?.length ?? 0) > 0 && (
+                <ApplicationsSection items={secondaryItems ?? []} imageOnRight={false} />
+            )}
+        </div>
     )
 }

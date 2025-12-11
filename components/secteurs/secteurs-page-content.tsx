@@ -24,13 +24,16 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
       <SecteursHeroSection
         title={specific?.title || 'Secteurs'}
         heroTextSections={specific?.heroTextSections}
-        heroImage={urlFor(specific?.heroImage).quality(100).url()}
+        heroImage={specific?.heroImage ? urlFor(specific.heroImage).quality(100).url() : ''}
         contactLink={shared?.contact?.link || '/contact'}
         contactCta={shared?.contact?.cta || 'Nous contacter'}
       />
 
       {/* Features Section - Conditionally rendered */}
-      {specific?.featuresSection?.enabled !== false && specific?.featuresSection?.features && (
+      {specific?.featuresSection?.enabled === true && 
+       specific?.featuresSection?.features && 
+       Array.isArray(specific.featuresSection.features) && 
+       specific.featuresSection.features.length > 0 && (
         <SecteursFeaturesSection
           features={specific.featuresSection.features.map((feature: any) => ({
             icon: feature.icon ? urlFor(feature.icon).width(80).height(80).quality(90).url() : null,
@@ -39,39 +42,47 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         />
       )}
 
-      {/* Showcase Section - Conditionally rendered */}
-      {specific?.showcaseSection?.enabled !== false && specific?.showcaseSection && (
+      {/* Showcase Section - Conditionally rendered (before applications to match CMS order) */}
+      {specific?.showcaseSection?.enabled === true && specific?.showcaseSection?.heroImage && (
         <SecteursShowcaseSection
           heroImage={urlFor(specific.showcaseSection.heroImage).width(2560).height(1440).quality(95).url()}
           leftText={specific.showcaseSection.leftText}
           rightText={specific.showcaseSection.rightText}
-          images={specific.showcaseSection.images.map((img: any) => ({
-            src: urlFor(img.src).width(1920).height(2560).quality(95).url(),
-            alt: img.alt
-          }))}
+          images={specific.showcaseSection.images && Array.isArray(specific.showcaseSection.images) 
+            ? specific.showcaseSection.images.map((img: any) => ({
+                src: img.src ? urlFor(img.src).width(1920).height(2560).quality(95).url() : '',
+                alt: img.alt || ''
+              }))
+            : undefined}
         />
       )}
 
-      {/* Dynamic sections based on data - Conditionally rendered */}
-      {specific?.sections?.map((section: any, sectionIndex: number) => {
-        if (section.type === 'applications') {
-          return (
-            <SecteursApplicationsSection
-              key={sectionIndex}
-              title={section.title}
-              items={section.items.map((item: any) => ({
-                ...item,
-                image: urlFor(item.image).width(1920).height(2560).quality(95).url()
-              }))}
-            />
-          )
-        }
+      {/* Applications Sections - fetch only from new fields */}
+      {(() => {
+        const primaryEnabled = specific?.applicationsPrimary?.enabled === true
+        const secondaryEnabled = specific?.applicationsSecondary?.enabled === true
+        const primaryItems = (specific?.applicationsPrimary?.items || []).map((item: any) => ({
+          ...item,
+          image: item?.image ? urlFor(item.image).width(1920).height(2560).quality(95).url() : ''
+        }))
+        const secondaryItems = (specific?.applicationsSecondary?.items || []).map((item: any) => ({
+          ...item,
+          image: item?.image ? urlFor(item.image).width(1920).height(2560).quality(95).url() : ''
+        }))
 
-        return null
-      })}
+        if (!primaryEnabled && !secondaryEnabled) return null
+        if (primaryEnabled && !primaryItems.length && secondaryEnabled && !secondaryItems.length) return null
+
+        return (
+          <SecteursApplicationsSection
+            primaryItems={primaryEnabled ? primaryItems : []}
+            secondaryItems={secondaryEnabled ? secondaryItems : []}
+          />
+        )
+      })()}
 
       {/* Customization Section - Conditionally rendered */}
-      {specific?.customizationSection?.enabled !== false && specific?.customizationSection && (
+      {specific?.customizationSection?.enabled === true && specific?.customizationSection && (
         <SecteursCustomizationSection
           title={specific.customizationSection.title || "Conceptions personnalisées avec Abet Digital"}
           mainText={specific.customizationSection.mainText || ""}
@@ -83,9 +94,10 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
       )}
 
       {/* Products Section - Conditionally rendered */}
-      {specific?.productsSection?.enabled !== false && specific?.productsSection && (
+      {specific?.productsSection?.enabled === true && specific?.productsSection && (
         <SecteursProductsSection
           title={specific.productsSection.title || "Produits"}
+          subtitle={specific.productsSection.subtitle}
           description={specific.productsSection.description}
           products={specific.productsSection.products?.map((item: any) => ({
             _id: item.product?._id || '',
@@ -100,7 +112,7 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
       )}
 
       {/* Contact Section - Conditionally rendered */}
-      {specific?.contactSection?.enabled !== false && (
+      {specific?.contactSection?.enabled === true && (
         <ArtisticCtaSection
           title={specific?.contactSection?.title || specific?.title || 'projet'}
           description={specific?.contactSection?.description || "Besoin d'un conseil personnalisé pour votre projet ? Nos équipes vous accompagnent dans le choix des matériaux et la mise en œuvre."}
