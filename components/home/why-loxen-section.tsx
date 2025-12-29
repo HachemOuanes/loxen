@@ -91,7 +91,7 @@ export function WhyLoxenSection() {
   if (loading) {
     return (
       <section id="why-loxen" className="w-full relative z-10 m-0 p-0 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-8 py-16 md:py-24">
           <div className="grid md:grid-cols-2 gap-0">
             <div className="py-6 md:py-8 pr-6 md:pr-8">
               <div className="h-8 bg-black/5 rounded w-32 mb-5"></div>
@@ -114,7 +114,7 @@ export function WhyLoxenSection() {
 
   return (
     <section id="why-loxen" className="w-full relative z-10 m-0 p-0 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
+      <div className="w-full px-8 py-16 md:py-24 lg:py-32">
         {/* Visual Separator at Top */}
         <div className="flex items-center justify-center mb-12">
           <div className="flex items-center gap-4 w-full max-w-2xl">
@@ -137,7 +137,7 @@ export function WhyLoxenSection() {
 
             {/* Main Slogan */}
             <h2 
-              className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light tracking-tight text-black mb-5 leading-tight [&_em]:italic [&_em]:font-light"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-black mb-6 tracking-[-0.02em] leading-tight [&_em]:italic [&_em]:font-light"
               dangerouslySetInnerHTML={{ __html: content.slogan }}
             />
 
@@ -185,7 +185,7 @@ export function WhyLoxenSection() {
                   </div>
 
                   {/* Point Description */}
-                  <p className="text-sm md:text-base text-black/70 leading-relaxed font-light pl-8 md:pl-10">
+                  <p className="text-base md:text-lg text-black/70 leading-relaxed font-light pl-8 md:pl-10">
                     {point.description}
                   </p>
                 </div>

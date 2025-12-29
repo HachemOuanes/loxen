@@ -138,6 +138,22 @@
     -webkit-backdrop-filter: blur(64px);
     backdrop-filter: blur(64px);
   }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  /* Smooth scrolling */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* Custom Minimalist Scrollbar */
@@ -186,4 +202,23 @@
 }
 .has-scroll-smooth [data-scroll-section] {
   position: relative;
+}
+
+/* Swiper Custom Styles */
+
+/* Products Swiper Styles */
+.products-swiper {
+  overflow: visible;
+}
+
+.products-swiper .swiper-wrapper {
+  overflow: visible;
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition-duration: 1000ms;
+}
+
+.products-swiper .swiper-slide {
+  position: relative;
+  will-change: transform;
+  flex-shrink: 0;
 }

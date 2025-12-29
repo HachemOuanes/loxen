@@ -1,11 +1,10 @@
 import { Header } from "@/components/shared/header"
 import { HeroSection } from "@/components/home/hero-section"
-import { InspirationSection } from "@/components/home/inspiration-section"
+import { ApplicationsSection } from "@/components/home/applications-section"
+import { VisionSection } from "@/components/home/vision-section"
 import { ProductsSection } from "@/components/home/products-section"
 import { WhyLoxenSection } from "@/components/home/why-loxen-section"
-import { InteriorSection } from "@/components/home/interior-section"
-import { ExteriorSection } from "@/components/home/exterior-section"
-import { PartnersSection } from "@/components/home/partners-section"
+import { InspirationSection } from "@/components/home/inspiration-section"
 import { ContactSection } from "@/components/home/contact-section"
 import { Footer } from "@/components/shared/footer"
 import { client } from "@/lib/sanity"
@@ -52,12 +51,11 @@ export default async function HomePage() {
       <main className="w-full">
         <Header />
         <HeroSection heroData={heroData} />
-        <InspirationSection />
+        <ApplicationsSection />
+        <VisionSection />
         <ProductsSection />
         <WhyLoxenSection />
-        <ExteriorSection />
-        <InteriorSection />
-        <PartnersSection />
+        <InspirationSection />
         <ContactSection />
         <Footer />
       </main>

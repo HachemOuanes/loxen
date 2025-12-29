@@ -12,14 +12,12 @@ interface Inspiration {
   location: string
   image: any
   order: number
-  description?: string
   category?: string
 }
 
 interface SectionContent {
   title: string
   description: string
-  buttonText: string
 }
 
 export function InspirationSection() {
@@ -51,19 +49,17 @@ export function InspirationSection() {
             _id: `inspiration-${index}`,
             title: project.title,
             location: project.location || '',
-            description: project.description || '',
-            category: project.category || '',
             image: project.image,
-            order: project.order || index
-          })).sort((a: any, b: any) => a.order - b.order)
+            order: project.order || index,
+            category: project.category || 'PROJECT'
+          })).sort((a: any, b: any) => a.order - b.order).slice(0, 4) // Limit to 4 inspirations
 
           setInspirations(formattedInspirations)
         }
 
         setSectionContent({
           title: sectionData?.title || 'Inspiration',
-          description: sectionData?.description || 'Découvrez une sélection de projets qui incarnent l\'excellence architecturale et reflètent notre savoir-faire unique en matière d\'aluminium et de façades.',
-          buttonText: 'Explorer Plus de Réalisations'
+          description: sectionData?.description || 'Découvrez une sélection de projets qui incarnent l\'excellence architecturale et reflètent notre savoir-faire unique en matière d\'aluminium et de façades.'
         })
       } catch (error) {
         console.error('Error fetching inspirations data:', error)
@@ -81,153 +77,72 @@ export function InspirationSection() {
 
   if (!inspirations.length) return null
 
-  // Split inspirations: first one goes in top right, rest go in grid below
-  const firstInspiration = inspirations[0]
-  const remainingInspirations = inspirations.slice(1)
-
   return (
-    <section id="inspirations" className="w-full relative z-10 m-0 p-0 bg-gray-100">
-      <div className="relative w-full m-0 p-0">
-        {/* Flexbox Layout with Staggered/Shifted Pattern */}
-        <div className="flex flex-wrap w-full">
-          {/* Title Section - Left, takes up space */}
-          <div className="w-full lg:w-1/2 flex-shrink-0 px-8 sm:px-12 lg:px-16 xl:px-24 py-16 lg:py-24">
-            <div className="max-w-xl">
-              {/* Section Indicator */}
-              <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-6">
-                <span className="h-[1px] w-8 bg-black/30" /> Nos Inspirations
-              </div>
-
-              {/* Main Headline */}
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-black mb-4 tracking-[-0.02em]">
-                {sectionContent?.title || 'Explore our project portfolio'}
-              </h1>
-
-              {/* Sub-headline */}
-              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-black mb-8 tracking-[-0.02em]">
-                {sectionContent?.description || 'Découvrez une sélection de projets qui incarnent l\'excellence architecturale.'}
-              </h2>
-
-              {/* Decorative Element */}
-              <div className="mt-8 flex items-center gap-2">
-                <svg width="60" height="2" className="text-black/20">
-                  <line x1="0" y1="1" x2="60" y2="1" stroke="currentColor" strokeWidth="0.5" />
-                </svg>
-                <div className="w-1.5 h-1.5 rounded-full bg-black/30"></div>
-                <svg width="60" height="2" className="text-black/20">
-                  <line x1="0" y1="1" x2="60" y2="1" stroke="currentColor" strokeWidth="0.5" />
-                </svg>
-              </div>
-            </div>
+    <section id="inspirations" className="w-full relative z-10 m-0 p-0 bg-white">
+      <div className="w-full px-8 py-16 md:py-24 lg:py-32">
+        {/* Header Section */}
+        <div className="mb-12">
+          {/* Section Indicator */}
+          <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-4 font-light">
+            <span className="h-[1px] w-8 bg-black/30" /> Inspirations
           </div>
 
-          {/* First Inspiration Image - Right, shifted down */}
-          {firstInspiration && (
-            <div className="w-full lg:w-1/2 flex-shrink-0 lg:mt-16 px-4 sm:px-6 lg:px-8">
-              <Link
-                href={`/inspirations/${firstInspiration._id}`}
-                className="group hover:opacity-95 transition-opacity block"
-              >
-                <div className="relative w-full overflow-hidden aspect-[4/3] lg:aspect-[5/3]">
-                  {firstInspiration.image ? (
-                    <img
-                      src={urlFor(firstInspiration.image).width(1200).height(720).quality(90).url()}
-                      alt={firstInspiration.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-800"></div>
-                  )}
-                  
-                  {/* Tag Overlay */}
-                  {firstInspiration.location && (
-                    <div className="absolute top-4 left-4 bg-black text-white px-3 py-1.5 rounded-full text-xs font-light">
-                      {firstInspiration.location}
-                    </div>
-                  )}
-                </div>
-                
-                {/* Text Below Image */}
-                <div className="px-4 py-4 bg-gray-100">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-xl sm:text-2xl font-light text-black group-hover:opacity-80 transition-opacity">
-                      {firstInspiration.title}
-                      {firstInspiration.location && (
-                        <span className="block text-base sm:text-lg font-light text-black/90 mt-1">
-                          {firstInspiration.location}
-                        </span>
-                      )}
-                    </h3>
-                    <ArrowUpRight className="w-4 h-4 text-black/60 group-hover:text-black group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
-                  </div>
-                  {firstInspiration.category && (
-                    <p className="text-xs tracking-[0.15em] uppercase text-black/70 font-light">
-                      {firstInspiration.category}
-                    </p>
-                  )}
-                </div>
-              </Link>
-            </div>
-          )}
+          {/* Main Headline */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em]">
+            Architectural excellence. Realized through innovative design.
+          </h1>
 
-          {/* Remaining Inspirations - Staggered Pattern */}
-          {remainingInspirations.map((inspiration, index) => {
-            // Alternate between left and right, creating staggered effect
-            const isLeft = index % 2 === 0
-            const isRight = index % 2 === 1
-            
-            return (
-              <div
-                key={inspiration._id}
-                className={`w-full lg:w-1/2 flex-shrink-0 px-4 sm:px-6 lg:px-8 ${isLeft ? 'lg:mt-0' : 'lg:mt-16'}`}
-              >
+        </div>
+
+        {/* Inspiration Items Grid - 4 columns with varying heights */}
+        {inspirations.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {inspirations.map((inspiration, index) => {
+              // Alternating heights: even indices (0, 2) are tall, odd indices (1, 3) are short
+              const isTall = index % 2 === 0
+              const imageHeight = isTall ? 'h-[400px] md:h-[500px] lg:h-[600px]' : 'h-[260px] md:h-[360px] lg:h-[460px]'
+
+              return (
                 <Link
+                  key={inspiration._id || index}
                   href={`/inspirations/${inspiration._id}`}
-                  className="group hover:opacity-95 transition-opacity block"
+                  className="group bg-white"
                 >
-                  <div className="relative w-full overflow-hidden aspect-[4/3] lg:aspect-[5/3]">
+                  {/* Image Section - Top with varying heights */}
+                  <div className={`relative overflow-hidden ${imageHeight} mb-4 bg-gray-100`}>
                     {inspiration.image ? (
                       <img
-                        src={urlFor(inspiration.image).width(1200).height(720).quality(90).url()}
+                        src={urlFor(inspiration.image).width(1200).height(900).quality(90).url()}
                         alt={inspiration.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-125"
                       />
                     ) : (
-                      <div className="w-full h-full bg-gray-800"></div>
-                    )}
-                    
-                    {/* Tag Overlay */}
-                    {inspiration.location && (
-                      <div className="absolute top-4 left-4 bg-black text-white px-3 py-1.5 rounded-full text-xs font-light">
-                        {inspiration.location}
-                      </div>
+                      <div className="w-full h-full bg-gray-100"></div>
                     )}
                   </div>
-                  
-                  {/* Text Below Image */}
-                  <div className="px-4 py-4 bg-gray-100">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-xl sm:text-2xl font-light text-black group-hover:opacity-80 transition-opacity">
-                        {inspiration.title}
-                        {inspiration.location && (
-                          <span className="block text-base sm:text-lg font-light text-black/90 mt-1">
-                            {inspiration.location}
-                          </span>
-                        )}
-                      </h3>
-                      <ArrowUpRight className="w-4 h-4 text-black/60 group-hover:text-black group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+
+                  {/* Content Section - Below image */}
+                  <div className="flex flex-col">
+                    {/* Category and Read Time */}
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xs tracking-[0.18em] uppercase text-black/60 font-light">
+                        CATEGORY {index + 1}
+                      </span>
+                      <span className="text-xs tracking-[0.18em] uppercase text-black/60 font-light">
+                        PRODUCT {index + 1}
+                      </span>
                     </div>
-                    {inspiration.category && (
-                      <p className="text-xs tracking-[0.15em] uppercase text-black/70 font-light">
-                        {inspiration.category}
-                      </p>
-                    )}
+
+                    {/* Title */}
+                    <h3 className="text-xl sm:text-2xl text-black group-hover:opacity-70 transition-opacity leading-tight">
+                      {inspiration.title}
+                    </h3>
                   </div>
                 </Link>
-              </div>
-            )
-          })}
-        </div>
+              )
+            })}
+          </div>
+        )}
       </div>
     </section>
   )

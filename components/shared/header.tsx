@@ -265,7 +265,7 @@ export function Header() {
         className={`fixed z-50 transition-all duration-500 ease-out ${isScrolled
           ? `h-44 w-12 bg-white backdrop-blur-sm border-2 border-gray-200 shadow-sm ${isSidebarOpen ? "-translate-x-full" : "left-4"
           } top-4`
-          : "w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black backdrop-blur-sm left-4 top-4"
+          : "w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black/70  backdrop-blur-sm left-4 top-4 rounded-lg"
           }`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -338,10 +338,10 @@ export function Header() {
       >
         <div
           ref={panelRef}
-          className="absolute left-4 right-4 bg-black overflow-hidden"
+          className="absolute left-4 right-4 bg-black/70 backdrop-blur-md overflow-hidden rounded-lg"
           style={{ top: 0, height: "75vh" }}
         >
-          <div ref={contentRef} className="h-full text-white pt-6 md:pt-8 px-4 md:px-6 max-w-7xl mx-auto">
+          <div ref={contentRef} className="h-full text-white pt-6 md:pt-8 px-4 md:px-6 max-w-7xl mx-auto ">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
               {activeMega === "produits" && (
                 <>

@@ -121,14 +121,13 @@ export function HeroSection({ title, description, heroImage, contactLink, contac
                 <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-3">
                   <span className="h-[1px] w-8 bg-black/30" /> Inspirations
                 </div>
-                <h1 className="text-3xl md:text-6xl font-light tracking-tight text-black mb-4 ">{title}</h1>
+                <h1 className="text-3xl md:text-6xl tracking-tight text-black mb-4 ">{title}</h1>
               </div>
-              <div className="">
-                <p className="text-base md:text-lg text-black/70 leading-relaxed">{description}</p>
-                {/* <div className="mt-7 flex flex-wrap gap-3">
-                  <a href="#examples" className="border border-black/20 px-5 py-2.5 text-sm tracking-[0.14em] uppercase hover:bg-black hover:text-white transition-colors">Voir les exemples</a>
-                  <a href={contactLink} className="border border-black/20 px-5 py-2.5 text-sm tracking-[0.14em] uppercase hover:bg-black hover:text-white transition-colors">{contactCta}</a>
-                </div> */}
+              <div className=" flex flex-col gap-6">
+                {/* <p className="text-xl text-black/70 leading-relaxed">{description}</p> */}
+                <p className="text-xl text-black/70 leading-relaxed">L’impression numérique sur stratifié fait dialoguer image et matière. À partir de vos fichiers natifs, le visuel est imprimé sur un papier décor grâce à des têtes jet d’encre industrielles très haute résolution, pilotées par une chaîne graphique maîtrisée. Ce décor rejoint.</p>
+                <p className="text-xl text-black/70 leading-relaxed">L’impression numérique sur stratifié fait dialoguer image et matière. À partir de vos fichiers natifs, le visuel est imprimé sur un papier décor grâce à des têtes jet d’encre industrielles très haute résolution.</p>
+              
               </div>
             </div>
           </div>
