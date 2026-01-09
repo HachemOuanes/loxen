@@ -7,41 +7,67 @@ interface InteriorExteriorSkeletonProps {
 
 export function InteriorExteriorSkeleton({ sectionId, isInterior = false }: InteriorExteriorSkeletonProps) {
   return (
-    <section id={sectionId} className="relative h-screen flex flex-col lg:flex-row px-6 gap-2 my-6">
-      {/* Categories grid skeleton */}
-      <div className={`w-full lg:w-3/4 ${isInterior ? 'order-1 lg:order-2' : 'order-2 lg:order-1'}`}>
-        <div className="grid grid-cols-2 sm:grid-cols-2 h-full gap-2">
-          {[...Array(6)].map((_, index) => (
-            <div key={index} className="relative group overflow-hidden flex-1">
-              {/* Image skeleton */}
-              <Skeleton className="w-full h-full" />
-              {/* Overlay skeleton */}
-              <div className="absolute inset-0 bg-black/40" />
-              {/* Text skeleton */}
-              <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 lg:p-4">
-                <Skeleton className="h-4 sm:h-5 w-3/4 bg-white/30 mb-1" />
-                <Skeleton className="h-3 sm:h-4 w-2/3 bg-white/20" />
-              </div>
+    <section id={sectionId} className="w-full relative z-10 m-0 p-0 bg-white">
+      <div className="w-[calc(100%-2rem)] ml-4 px-6 md:px-8 py-16 md:py-20 lg:py-24">
+        {/* Main Content - 3 Column Grid */}
+        <div className="grid md:grid-cols-3 gap-0 items-start">
+          {/* Left Column - Category List */}
+          <div className="py-6 md:py-8 lg:py-10 pr-6 md:pr-8 lg:pr-10 border-r border-black/10">
+            {/* Title Skeleton */}
+            <Skeleton className="h-16 md:h-20 lg:h-24 w-3/4 mb-8 md:mb-10 bg-gray-200" />
+            
+            {/* Decorative Element Skeleton */}
+            <div className="mb-8 md:mb-10 flex items-center gap-2">
+              <Skeleton className="h-px w-12 bg-gray-200" />
+              <Skeleton className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+              <Skeleton className="h-px w-12 bg-gray-200" />
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Content panel skeleton */}
-      <div className={`w-full lg:w-1/4 relative flex flex-col items-center justify-center z-10 ${isInterior ? 'order-2 lg:order-1' : 'order-1 lg:order-2'}`}>
-        {/* Background skeleton */}
-        <Skeleton className="absolute inset-0" />
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-        
-        {/* Content skeleton */}
-        <div className="relative text-center space-y-4 sm:space-y-6 lg:space-y-8 px-4">
-          <Skeleton className="h-8 sm:h-10 lg:h-12 w-40 sm:w-48 mx-auto bg-white/30" />
-          <div className="space-y-3 max-w-md mx-auto">
-            <Skeleton className="h-4 sm:h-5 w-full bg-white/20" />
-            <Skeleton className="h-4 sm:h-5 w-4/5 mx-auto bg-white/20" />
-            <Skeleton className="h-4 sm:h-5 w-3/4 mx-auto bg-white/20" />
+            {/* Category Buttons Skeleton */}
+            <div className="flex flex-col gap-3 md:gap-4">
+              {[...Array(4)].map((_, index) => (
+                <Skeleton key={index} className="h-12 w-full bg-gray-200 rounded-full" />
+              ))}
+            </div>
           </div>
-          <Skeleton className="h-12 sm:h-14 w-40 sm:w-48 mx-auto bg-white/25 rounded-none" />
+
+          {/* Middle Column - Category Image */}
+          <div className="py-6 md:py-8 lg:py-10 px-6 md:px-8 lg:px-10 border-r border-black/10">
+            {/* Image Skeleton */}
+            <Skeleton className="w-full aspect-[3/4] bg-gray-200 mb-6 md:mb-8" />
+            
+            {/* Button Skeleton */}
+            <Skeleton className="h-12 w-32 bg-gray-200 rounded-full" />
+          </div>
+
+          {/* Right Column - Products List */}
+          <div className="py-6 md:py-8 lg:py-10 pl-6 md:pl-8 lg:pl-10">
+            {/* Products Header Skeleton */}
+            <div className="mb-6 md:mb-8">
+              <Skeleton className="h-8 md:h-10 lg:h-12 w-32 mb-3 bg-gray-200" />
+              <Skeleton className="h-px w-12 md:w-16 bg-gray-200" />
+            </div>
+
+            {/* Products List Skeleton */}
+            <div className="space-y-4 md:space-y-5">
+              {[...Array(3)].map((_, index) => (
+                <div key={index} className="p-4 md:p-5 border border-gray-200">
+                  <Skeleton className="h-6 md:h-7 lg:h-8 w-3/4 mb-2 md:mb-3 bg-gray-200" />
+                  <Skeleton className="h-4 md:h-5 w-full bg-gray-100" />
+                  <Skeleton className="h-4 md:h-5 w-5/6 mt-2 bg-gray-100" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Visual Separator at Bottom */}
+        <div className="flex items-center justify-center mt-16 md:mt-20 lg:mt-24">
+          <div className="flex items-center gap-4 w-full max-w-2xl">
+            <Skeleton className="flex-1 h-px bg-gray-200" />
+            <Skeleton className="w-2 h-2 rounded-full bg-gray-300" />
+            <Skeleton className="flex-1 h-px bg-gray-200" />
+          </div>
         </div>
       </div>
     </section>

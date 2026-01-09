@@ -1,7 +1,5 @@
 "use client"
 
-import React from 'react'
-
 interface CtaSectionProps {
   title: string
   description: string

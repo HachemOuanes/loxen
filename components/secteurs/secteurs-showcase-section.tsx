@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -87,7 +87,7 @@ export function SecteursShowcaseSection({
             <h4 className="mt-2 text-2xl md:text-3xl font-light tracking-tight text-black leading-tight">{leftText.title}</h4>
                 )}
                 {leftText.description && (
-            <p className="mt-2 text-base md:text-lg text-black/75 italic leading-snug">{leftText.description}</p>
+            <div className="mt-2 text-base md:text-lg text-black/75 italic leading-snug">{leftText.description}</div>
                 )}
           </div>
             )}
@@ -102,7 +102,7 @@ export function SecteursShowcaseSection({
             <h4 className="mt-2 text-2xl md:text-3xl font-light tracking-tight text-black leading-tight">{rightText.title}</h4>
                 )}
                 {rightText.description && (
-            <p className="mt-2 text-base md:text-lg text-black/75 italic leading-snug">{rightText.description}</p>
+            <div className="mt-2 text-base md:text-lg text-black/75 italic leading-snug">{rightText.description}</div>
                 )}
               </div>
             )}

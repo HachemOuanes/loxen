@@ -1,15 +1,15 @@
 import { defineType, defineField } from 'sanity'
 
-export const partnersSection = defineType({
-  name: 'partnersSection',
-  title: 'Partners Section',
+export const interiorProductCategories = defineType({
+  name: 'interiorProductCategories',
+  title: 'Interior Product Categories',
   type: 'document',
   fields: [
     defineField({
       name: 'title',
       title: 'Section Title',
       type: 'string',
-      initialValue: 'Partenaires de Confiance',
+      initialValue: 'Intérieur',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -20,8 +20,8 @@ export const partnersSection = defineType({
       description: 'Description shown in the section',
     }),
     defineField({
-      name: 'partners',
-      title: 'Partners List',
+      name: 'categories',
+      title: 'Interior Categories',
       type: 'array',
       of: [
         {
@@ -29,17 +29,25 @@ export const partnersSection = defineType({
           fields: [
             defineField({
               name: 'name',
-              title: 'Partner Name',
+              title: 'Category Name',
               type: 'string',
               validation: (Rule) => Rule.required(),
             }),
             defineField({
-              name: 'logo',
-              title: 'Partner Logo',
+              name: 'description',
+              title: 'Category Description',
+              type: 'text',
+              rows: 3,
+              validation: (Rule) => Rule.max(200),
+            }),
+            defineField({
+              name: 'image',
+              title: 'Category Image',
               type: 'image',
               options: {
                 hotspot: true,
               },
+              validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'order',
@@ -47,35 +55,36 @@ export const partnersSection = defineType({
               type: 'number',
               initialValue: 0,
             }),
+            defineField({
+              name: 'link',
+              title: 'Category Link',
+              type: 'string',
+              description: 'Optional link to category page (e.g., /produits/interieur/partitions)',
+            }),
           ],
           preview: {
             select: {
               title: 'name',
-              media: 'logo',
+              subtitle: 'description',
+              media: 'image',
             },
           },
         },
       ],
-      validation: (Rule) => Rule.min(1),
-    }),
-    defineField({
-      name: 'showSection',
-      title: 'Show Section',
-      type: 'boolean',
-      description: 'Toggle to show/hide this section on the website',
-      initialValue: true,
+      validation: (Rule) => Rule.min(1).max(6),
+      description: 'Maximum 6 categories',
     }),
   ],
   preview: {
     select: {
       title: 'title',
       subtitle: 'description',
-      partnersCount: 'partners.length',
+      categoriesCount: 'categories.length',
     },
-    prepare({ title, subtitle, partnersCount }) {
+    prepare({ title, subtitle, categoriesCount }) {
       return {
         title,
-        subtitle: `${partnersCount || 0} partners • ${subtitle || ''}`,
+        subtitle: `${categoriesCount || 0} categories • ${subtitle || ''}`,
       }
     },
   },

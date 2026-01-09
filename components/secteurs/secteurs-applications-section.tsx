@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -145,7 +145,7 @@ function ApplicationsSection({ items, imageOnRight = true }: ApplicationsSection
                                 )}
 
                                 {item.description && (
-                                    <p className="mt-4 text-black/70 leading-relaxed">{item.description}</p>
+                                    <div className="mt-4 text-black/70 leading-relaxed">{item.description}</div>
                                 )}
 
                                 {item.features && item.features.length > 0 && (

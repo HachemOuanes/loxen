@@ -1,8 +1,8 @@
 import { defineType, defineField } from 'sanity'
 
-export const exteriorSection = defineType({
-  name: 'exteriorSection',
-  title: 'Exterior Section',
+export const exteriorProductCategories = defineType({
+  name: 'exteriorProductCategories',
+  title: 'Exterior Product Categories',
   type: 'document',
   fields: [
     defineField({
@@ -18,15 +18,6 @@ export const exteriorSection = defineType({
       type: 'text',
       rows: 4,
       description: 'Description shown in the section',
-    }),
-    defineField({
-      name: 'sectionImage',
-      title: 'Section Background Image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-      description: 'Main background image for the exterior section',
     }),
     defineField({
       name: 'categories',
@@ -64,6 +55,12 @@ export const exteriorSection = defineType({
               type: 'number',
               initialValue: 0,
             }),
+            defineField({
+              name: 'link',
+              title: 'Category Link',
+              type: 'string',
+              description: 'Optional link to category page (e.g., /produits/exterieur/facades)',
+            }),
           ],
           preview: {
             select: {
@@ -75,14 +72,7 @@ export const exteriorSection = defineType({
         },
       ],
       validation: (Rule) => Rule.min(1).max(6),
-      description: 'Maximum 6 categories for 2x3 grid display',
-    }),
-    defineField({
-      name: 'showSection',
-      title: 'Show Section',
-      type: 'boolean',
-      description: 'Toggle to show/hide this section on the website',
-      initialValue: true,
+      description: 'Maximum 6 categories',
     }),
   ],
   preview: {

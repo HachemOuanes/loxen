@@ -1,18 +1,16 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import gsap from "gsap"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { client, urlFor } from "@/lib/sanity"
+import { urlFor } from "@/lib/sanity"
 import { Menu, X } from "lucide-react"
 import { getSecteursForMegaMenu, getExteriorProductsForMegaMenu, getInteriorProductsForMegaMenu, getInspirationsForMegaMenu, getCataloguesForMegaMenu } from '@/services/sanity'
 
 export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   // Mega menu state
   const [megaOpen, setMegaOpen] = useState(false)
   const [activeMega, setActiveMega] = useState<string | null>(null)
@@ -98,14 +96,6 @@ export function Header() {
     fetchCatalogues()
   }, [])
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100)
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
 
   const navItems = [
     { key: "secteurs", label: "Secteurs", href: "/secteurs" },
@@ -116,17 +106,6 @@ export function Header() {
   ]
 
 
-  const handleMouseEnter = () => {
-    if (isScrolled) {
-      setIsSidebarOpen(true)
-    }
-  }
-
-  const handleMouseLeave = () => {
-    if (isScrolled) {
-      setIsSidebarOpen(false)
-    }
-  }
 
   // Mega menu open/close helpers
   const positionPanel = () => {
@@ -144,7 +123,6 @@ export function Header() {
   }
 
   const openMega = (key: string) => {
-    if (isScrolled) return // Only show in full header mode
     setActiveMega(key)
     if (!megaOpen) {
       setMegaOpen(true)
@@ -258,49 +236,27 @@ export function Header() {
     return () => window.removeEventListener("keydown", onKey)
   }, [])
 
+
   return (
     <>
       <header
         ref={headerRef}
-        className={`fixed z-50 transition-all duration-500 ease-out ${isScrolled
-          ? `h-44 w-12 bg-white backdrop-blur-sm border-2 border-gray-200 shadow-sm ${isSidebarOpen ? "-translate-x-full" : "left-4"
-          } top-4`
-          : "w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black/70  backdrop-blur-sm left-4 top-4 rounded-lg"
+          className={`fixed transition z-50 w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black/70 backdrop-blur-md left-4 top-4 ${
+            megaOpen 
+              ? 'rounded-t-2xl rounded-bl-none rounded-br-none' 
+              : 'rounded-2xl'
           }`}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
       >
-        <div className={`h-full transition-all duration-500 ${isScrolled ? "flex flex-col items-center justify-center py-4" : "flex items-center px-4"}`}>
+        <div className="h-full flex items-center px-6 md:px-8">
           <a
             href="/"
-            className={`transition-all duration-500 font-light tracking-[-0.02em] cursor-pointer hover:opacity-80 ${isScrolled
-              ? "text-xl text-black flex flex-col items-center justify-center gap-3"
-              : "absolute left-4 text-2xl sm:text-4xl text-white drop-shadow-lg"
-              }`}
+            className="absolute left-6 md:left-8 text-2xl sm:text-4xl text-white drop-shadow-lg font-light tracking-[-0.02em] cursor-pointer hover:opacity-80"
           >
-         
-            <div className={isScrolled ? "flex flex-col items-center pt-4" : ""}>
-              {isScrolled ? (
-                <div className="flex flex-col items-center gap-0.5">
-                  <span>L</span>
-                  <span className="font-extralight opacity-60">O</span>
-                  <span>X</span>
-                  <span className="font-extralight opacity-60">E</span>
-                  <span>N</span>
-                </div>
-              ) : (
-                <>
                   L<span className="font-extralight opacity-60">O</span>X
                   <span className="font-extralight opacity-60">E</span>N
-                </>
-              )}
-            </div>
           </a>
 
-          <nav
-            className={`hidden md:flex items-center space-x-6 lg:space-x-12 transition-all duration-500 ml-auto ${isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"
-              }`}
-          >
+          <nav className="hidden md:flex items-center space-x-6 lg:space-x-12 ml-auto">
             {navItems.map((item) => (
               <div
                 key={item.label}
@@ -315,8 +271,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            className={`md:hidden hover:bg-transparent transition-all duration-500 text-white hover:text-white/60 drop-shadow-md ml-auto ${isScrolled ? "opacity-0 pointer-events-none" : "opacity-100"
-              }`}
+            className="md:hidden hover:bg-transparent text-white hover:text-white/60 drop-shadow-md ml-auto"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? (
@@ -338,7 +293,7 @@ export function Header() {
       >
         <div
           ref={panelRef}
-          className="absolute left-4 right-4 bg-black/70 backdrop-blur-md overflow-hidden rounded-lg"
+          className="absolute left-4 right-4 bg-black/70 backdrop-blur-md overflow-hidden rounded-b-2xl rounded-tl-none rounded-tr-none"
           style={{ top: 0, height: "75vh" }}
         >
           <div ref={contentRef} className="h-full text-white pt-6 md:pt-8 px-4 md:px-6 max-w-7xl mx-auto ">
@@ -538,60 +493,6 @@ export function Header() {
                 </>
               )}
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        className={`fixed top-0 left-0 h-full w-72 sm:w-80 bg-white/95 backdrop-blur-xl border-r border-gray-200/30 z-40 transition-transform duration-500 ease-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        <div className="p-6 sm:p-8 h-full flex flex-col">
-          <div className="mb-8 sm:mb-12">
-            <div className="text-2xl sm:text-3xl font-light tracking-[-0.02em] text-black mb-2">
-              L<span className="font-extralight opacity-60">O</span>X
-              <span className="font-extralight opacity-60">E</span>N
-            </div>
-            <div className="w-12 h-px bg-black/20"></div>
-          </div>
-
-          <nav className="flex-1">
-            <div className="space-y-4 sm:space-y-6">
-              {navItems.map((item, index) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className={`block text-black font-light text-base sm:text-lg tracking-[0.05em] uppercase hover:opacity-60 transition-all duration-300 transform ${isSidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0"
-                    }`}
-                  style={{
-                    transitionDelay: isSidebarOpen ? `${index * 50}ms` : "0ms",
-                  }}
-                  onClick={() => setIsSidebarOpen(false)}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          </nav>
-
-          <div className="mt-auto">
-            <div className="text-xs text-black/40 uppercase tracking-[0.1em] font-light">
-              Solutions Architecturales Premium
-            </div>
-            {process.env.NODE_ENV === 'development' && (
-              <div className="mt-2">
-                <a
-                  href="/cms"
-                  className="text-xs text-blue-600 hover:text-blue-800 underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  CMS Access
-                </a>
-              </div>
-            )}
           </div>
         </div>
       </div>

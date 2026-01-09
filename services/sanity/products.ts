@@ -70,92 +70,6 @@ export async function getExteriorProducts() {
   return await client.fetch(query)
 }
 
-// Get exterior product by slug
-export async function getExteriorProductBySlug(slug: string) {
-  const query = `*[_type == "exteriorProduct" && slug.current == $slug][0]{
-    _id,
-    name,
-    productId,
-    slug,
-    description,
-    longDescription,
-    image,
-    featured,
-    order,
-    category->{
-      _id,
-      name,
-      slug,
-      color
-    },
-    characteristics,
-    applications,
-    panelFormats,
-    thickness,
-    technicalDocuments[]{
-      title,
-      file{
-        asset->{
-          _id,
-          url,
-          originalFilename,
-          size,
-          mimeType
-        }
-      },
-      downloadText
-    },
-    bimRequest,
-    collectionName,
-    specifications[]{
-      label,
-      value
-    },
-    price,
-    inStock,
-    tags,
-    imageSections[]{
-      _key,
-      _type,
-      order,
-      title,
-      subtitle,
-      description,
-      features,
-      image,
-      bannerLeft{
-        title,
-        subtitle,
-        description
-      },
-      bannerRight{
-        title,
-        subtitle,
-        description
-      },
-      heroLeft{
-        title,
-        subtitle,
-        description
-      },
-      heroRight{
-        title,
-        subtitle,
-        description
-      }
-    },
-    finishes[]{
-      name,
-      code,
-      image,
-      image_url,
-      color,
-      order
-    }
-  }`
-  
-  return await client.fetch(query, { slug })
-}
 
 // Get exterior products for mega menu (first 4)
 export async function getExteriorProductsForMegaMenu() {
@@ -259,92 +173,6 @@ export async function getInteriorProducts() {
   return await client.fetch(query)
 }
 
-// Get interior product by slug
-export async function getInteriorProductBySlug(slug: string) {
-  const query = `*[_type == "interiorProduct" && slug.current == $slug][0]{
-    _id,
-    name,
-    productId,
-    slug,
-    description,
-    longDescription,
-    image,
-    featured,
-    order,
-    category->{
-      _id,
-      name,
-      slug,
-      color
-    },
-    characteristics,
-    applications,
-    panelFormats,
-    thickness,
-    technicalDocuments[]{
-      title,
-      file{
-        asset->{
-          _id,
-          url,
-          originalFilename,
-          size,
-          mimeType
-        }
-      },
-      downloadText
-    },
-    bimRequest,
-    collectionName,
-    specifications[]{
-      label,
-      value
-    },
-    price,
-    inStock,
-    tags,
-    imageSections[]{
-      _key,
-      _type,
-      order,
-      title,
-      subtitle,
-      description,
-      features,
-      image,
-      bannerLeft{
-        title,
-        subtitle,
-        description
-      },
-      bannerRight{
-        title,
-        subtitle,
-        description
-      },
-      heroLeft{
-        title,
-        subtitle,
-        description
-      },
-      heroRight{
-        title,
-        subtitle,
-        description
-      }
-    },
-    finishes[]{
-      name,
-      code,
-      image,
-      image_url,
-      color,
-      order
-    }
-  }`
-  
-  return await client.fetch(query, { slug })
-}
 
 // Get interior products for mega menu (first 4)
 export async function getInteriorProductsForMegaMenu() {
@@ -359,54 +187,79 @@ export async function getInteriorProductsForMegaMenu() {
   return await client.fetch(query)
 }
 
-// ===== RELATED PRODUCTS =====
 
-// Get related products (excluding current product)
-export async function getRelatedProducts(productType: string, currentProductId: string) {
-  const query = `*[_type == $productType && _id != $currentProductId] | order(featured desc, order asc, name asc) [0...4] {
+// ===== EXTERIOR PRODUCT CATEGORIES =====
+// Get exterior product categories (used by exterior products page)
+export async function getExteriorProductCategories() {
+  // Try to fetch by document ID first, then fallback to first document
+  const query = `*[_type == "exteriorProductCategories" && (_id == "exteriorProductCategories" || _id == "drafts.exteriorProductCategories")][0]{
     _id,
-    name,
-    slug,
+    title,
     description,
-    image,
-    featured
-  }`
-  
-  return await client.fetch(query, { productType, currentProductId })
-}
-
-// Get product by ID (works for all product types)
-export async function getProductById(productId: string, productType: string) {
-  const query = `*[_type == $productType && _id == $productId][0]{
-    _id,
-    name,
-    productId,
-    slug,
-    panelFormats,
-    thickness,
-    finishes[]{
+    categories[]{
       name,
-      code,
+      description,
       image,
-      image_url,
-      color,
+      link,
       order
     }
   }`
+  let result = await client.fetch(query)
   
-  return await client.fetch(query, { productId, productType })
+  // If not found by ID, try to get the first one
+  if (!result) {
+    const fallbackQuery = `*[_type == "exteriorProductCategories"][0]{
+      _id,
+      title,
+      description,
+      categories[]{
+        name,
+        description,
+        image,
+        link,
+        order
+      }
+    }`
+    result = await client.fetch(fallbackQuery)
+  }
+  
+  return result
 }
 
-// ===== PRODUCT SLUGS =====
-
-// Get all exterior product slugs for static generation
-export async function getExteriorProductSlugs() {
-  const query = `*[_type == "exteriorProduct"].slug.current`
-  return await client.fetch(query)
-}
-
-// Get all interior product slugs for static generation
-export async function getInteriorProductSlugs() {
-  const query = `*[_type == "interiorProduct"].slug.current`
-  return await client.fetch(query)
+// ===== INTERIOR PRODUCT CATEGORIES =====
+// Get interior product categories (used by interior products page)
+export async function getInteriorProductCategories() {
+  // Try to fetch by document ID first, then fallback to first document
+  const query = `*[_type == "interiorProductCategories" && (_id == "interiorProductCategories" || _id == "drafts.interiorProductCategories")][0]{
+    _id,
+    title,
+    description,
+    categories[]{
+      name,
+      description,
+      image,
+      link,
+      order
+    }
+  }`
+  let result = await client.fetch(query)
+  
+  // If not found by ID, try to get the first one
+  if (!result) {
+    const fallbackQuery = `*[_type == "interiorProductCategories"][0]{
+      _id,
+      title,
+      description,
+      categories[]{
+        name,
+        description,
+        image,
+        link,
+        order
+      }
+    }`
+    result = await client.fetch(fallbackQuery)
+  }
+  
+  return result
 }

@@ -3,7 +3,6 @@ import { getAllDecors } from '@/services/sanity'
 import { DecorsWithFilters } from '@/components/decors/decors-with-filters'
 import { Header } from '@/components/shared/header'
 import { Footer } from '@/components/shared/footer'
-import React from 'react'
 
 type Finish = {
   _id: string

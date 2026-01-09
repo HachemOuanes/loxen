@@ -1,24 +1,42 @@
 import { defineType, defineField } from 'sanity'
 
-export const productsSection = defineType({
-  name: 'productsSection',
-  title: 'Products Section (Home)',
+export const homeProductsSection = defineType({
+  name: 'homeProductsSection',
+  title: 'Home Products Section',
   type: 'document',
-  description: 'Products section displayed on the home page',
   fields: [
     defineField({
-      name: 'title',
-      title: 'Section Title',
+      name: 'sectionLabel',
+      title: 'Section Label',
       type: 'string',
       initialValue: 'Produits',
+    }),
+    defineField({
+      name: 'title',
+      title: 'Main Title',
+      type: 'string',
+      initialValue: 'High-performance hardscaping. Consciously crafted + fully customisable.',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'description',
-      title: 'Section Description',
-      type: 'text',
-      rows: 4,
-      description: 'Description shown in the section',
+      title: 'Description',
+      type: 'array',
+      of: [{ type: 'text', rows: 2 }],
+      description: 'Description paragraphs (2 paragraphs)',
+      validation: (Rule) => Rule.length(2),
+    }),
+    defineField({
+      name: 'ctaText',
+      title: 'CTA Button Text',
+      type: 'string',
+      initialValue: 'Découvrir nos produits',
+    }),
+    defineField({
+      name: 'ctaLink',
+      title: 'CTA Button Link',
+      type: 'string',
+      initialValue: '/produits',
     }),
     defineField({
       name: 'products',
@@ -56,6 +74,11 @@ export const productsSection = defineType({
               type: 'number',
               initialValue: 0,
             }),
+            defineField({
+              name: 'link',
+              title: 'Product Link',
+              type: 'string',
+            }),
           ],
           preview: {
             select: {
@@ -66,34 +89,27 @@ export const productsSection = defineType({
           },
         },
       ],
-      validation: (Rule) => Rule.min(1).max(6),
-      description: 'Maximum 6 products for home page display',
-    }),
-    defineField({
-      name: 'ctaText',
-      title: 'Call to Action Text',
-      type: 'string',
-      initialValue: 'Voir les catalogues produits',
+      validation: (Rule) => Rule.min(1).max(10),
     }),
     defineField({
       name: 'showSection',
       title: 'Show Section',
       type: 'boolean',
-      description: 'Toggle to show/hide this section on the website',
       initialValue: true,
     }),
   ],
   preview: {
     select: {
       title: 'title',
-      subtitle: 'description',
+      subtitle: 'sectionLabel',
       productsCount: 'products.length',
     },
     prepare({ title, subtitle, productsCount }) {
       return {
         title,
-        subtitle: `${productsCount || 0} products • ${subtitle || ''}`,
+        subtitle: `${subtitle} • ${productsCount || 0} products`,
       }
     },
   },
 })
+

@@ -2,113 +2,200 @@
 
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
+import { CTAButton } from "@/components/ui/cta-button"
+import { urlFor } from "@/lib/sanity"
+import type { HomeApplicationsSection } from "@/lib/types/home"
 
-export function ApplicationsSection() {
-    return (
-        <section id="applications" className="w-full relative z-10 m-0 p-0 bg-white overflow-hidden">
-            <div className="relative w-full px-8">
+interface ApplicationsSectionProps {
+  data?: HomeApplicationsSection | null
+}
+
+export function ApplicationsSection({ data }: ApplicationsSectionProps) {
+  // Don't display section if no data at all
+  if (!data) {
+    return null
+  }
+
+  const sectionLabel = data.sectionLabel
+  const title = data.title
+  const description = data.description
+  const ctaTitle = data.ctaTitle
+  const ctaText = data.ctaText
+  const ctaLink = data.ctaLink
+  const interiorCard = data.interiorCard
+  const exteriorCard = data.exteriorCard
+
+  return (
+    <section id="applications" className="w-full relative z-10 m-0 p-0 bg-white overflow-hidden">
+            <div className="relative w-[calc(100%-2rem)] ml-4 px-6 md:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 relative">
                     {/* Title at top - spans 2 columns */}
-                    <div className="absolute top-8 md:top-12 lg:top-16 xl:top-20 left-0 mb-16 z-10 w-full">
-                        <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-4 font-light">
-                            <span className="h-[1px] w-8 bg-black/30" /> Applications
-                        </div>
-                        <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em] leading-tight w-2/3 pr-10">
-                            Interior and exterior solution.
-                        </h2>
-                        <h2 className="text-5xl font-light text-black mb-3 tracking-[-0.02em] leading-tight w-1/3">
-                            Our solutions are designed to meet the unique needs of your project.
-                        </h2>
-                    </div>
+                    {(sectionLabel || title || description) && (
+                      <div className="absolute top-8 md:top-12 lg:top-16 xl:top-20 left-0 mb-16 z-10 w-full">
+                          {sectionLabel && (
+                            <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-4 font-light">
+                                <span className="h-[1px] w-8 bg-black/30" /> {sectionLabel}
+                            </div>
+                          )}
+                          {title && (
+                            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em] leading-tight w-2/3 pr-10">
+                                {title}
+                            </h2>
+                          )}
+                          {description && description.length > 0 && (
+                            <div className=" w-1/3 pr-12 pt-12 space-y-3">
+                                {description.map((para, index) => (
+                                    <p key={index} className="text-lg md:text-xl text-black/70 leading-relaxed ">
+                                        {para}
+                                    </p>
+                                ))}
+                            </div>
+                          )}
+                      </div>
+                    )}
                     
                     {/* Text Column - Left */}
                     <div className="relative bg-white flex flex-col py-8 md:py-12 lg:py-16 xl:py-20">
                         {/* Background color overlay - dark slate from midpoint, extends full column width */}
-                        <div className="absolute top-1/2 -left-8 md:-left-12 lg:-left-16 xl:-left-20 -right-8 md:-right-12 lg:-right-16 xl:-right-20 bottom-0 bg-slate-900"></div>
+                        <div className="absolute top-2/3 -left-8 md:-left-12 lg:-left-16 xl:-left-20 -right-8 md:-right-12 lg:-right-16 xl:-right-20 bottom-0 bg-black"></div>
 
                         {/* CTA Section - Positioned in lower half, below midpoint, on black background */}
-                        <div className="max-w-md mt-auto relative z-10">
-                            <h3 className="text-xl md:text-2xl lg:text-3xl font-light text-white mb-6 tracking-[-0.02em] leading-tight">
-                                Ready to get started?
-                            </h3>
-                            <p className="text-base md:text-lg lg:text-xl text-white/80 leading-relaxed font-light mb-8">
-                                Explore our comprehensive product portfolio and discover innovative solutions for your next project. Our team is here to help you find the perfect materials and systems tailored to your architectural vision. 
-                            </p>
-                            <Link
-                                href="/produits"
-                                className="inline-flex items-center gap-2 text-white hover:text-white/80 transition-colors group"
-                            >
-                                <span className="text-sm md:text-base tracking-wider uppercase font-light underline">Explore Our Products</span>
-                                <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
-                            </Link>
-                        </div>
+                        {(ctaTitle || (ctaText && ctaLink)) && (
+                          <div className="max-w-md mt-auto relative z-10">
+                              {ctaTitle && (
+                                <h3 className="text-lg md:text-xl lg:text-2xl  text-white mb-6 tracking-[-0.02em] leading-tight">
+                                    {ctaTitle}
+                                </h3>
+                              )}
+                              {ctaText && ctaLink && (
+                                <CTAButton
+                                    asChild
+                                    theme="white"
+                                >
+                                <Link
+                                    href={ctaLink}
+                                        className="inline-flex items-center gap-2"
+                                >
+                                        <span>{ctaText}</span>
+                                    <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                                </Link>
+                                </CTAButton>
+                              )}
+                          </div>
+                        )}
                     </div>
 
                     {/* Intérieur Column - Middle, slightly lowered */}
-                    <div className="relative bg-white overflow-visible flex items-start justify-center py-20">
-                        {/* Background color overlay - dark slate from midpoint, extends full column width */}
-                        <div className="absolute top-1/2 -left-8 md:-left-12 lg:-left-16 xl:-left-20 -right-8 md:-right-12 lg:-right-16 xl:-right-20 bottom-0 bg-slate-900"></div>
+                    {interiorCard && (interiorCard.title || interiorCard.image) && (
+                      <div className="relative bg-white overflow-visible flex items-start justify-center py-20">
+                          {/* Background color overlay - dark slate from midpoint, extends full column width */}
+                          <div className="absolute top-2/3 -left-8 md:-left-12 lg:-left-16 xl:-left-20 -right-8 md:-right-12 lg:-right-16 xl:-right-20 bottom-0 bg-black"></div>
 
-                        <Link
-                            href="/produits/interieur"
-                            className="relative w-full aspect-[3/4] group cursor-pointer mt-36 z-10"
-                        >
-                            <div className="relative w-full h-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
-                                {/* Corner Brackets - Inside but inverted/flipped outward */}
-                                <div className="absolute top-12 left-12 w-8 h-8 border-b-4 border-r-4 border-white z-10"></div>
-                                <div className="absolute top-12 right-12 w-8 h-8 border-b-4 border-l-4 border-white z-10"></div>
-                                <div className="absolute bottom-12 left-12 w-8 h-8 border-t-4 border-r-4 border-white z-10"></div>
-                                <div className="absolute bottom-12 right-12 w-8 h-8 border-t-4 border-l-4 border-white z-10"></div>
+                          <Link
+                              href={interiorCard.link || "/produits/interieur"}
+                              className="relative w-full aspect-[3/4] group cursor-pointer mt-36 z-10"
+                          >
+                            <div className="relative w-full h-full overflow-hidden">
+                                {/* Background Image */}
+                                {interiorCard.image ? (
+                                  <img
+                                      src={urlFor(interiorCard.image).url()}
+                                      alt={interiorCard.title || "Intérieur"}
+                                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                                  />
+                                ) : (
+                                  <div className="absolute inset-0 w-full h-full bg-gray-200"></div>
+                                )}
 
-                                {/* Content */}
-                                <div className="absolute inset-0 flex flex-col justify-center items-center p-6 md:p-8 lg:p-10">
-                                    <h3 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium text-white mb-4 tracking-[-0.02em] text-center">
-                                        Intérieur
-                                    </h3>
-                                    <div className="flex items-center gap-2 text-white/80 group-hover:text-white transition-colors">
-                                        <span className="text-sm md:text-base tracking-wider uppercase font-light">Découvrir</span>
-                                        <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
-                                    </div>
+                                {/* Black Filter Overlay - fainter, reduces opacity on hover */}
+                                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-700"></div>
+
+                                {/* Border highlight on hover */}
+                                <div className="absolute inset-0 border-2 border-white/0 group-hover:border-white/20 transition-all duration-500 pointer-events-none z-20"></div>
+
+                                {/* Shine effect on hover */}
+                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-20">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                                 </div>
 
-                                {/* Hover Overlay */}
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                                {/* Corner Brackets - Inside but inverted/flipped outward */}
+                                <div className="absolute top-12 left-12 w-8 h-8 border-b-4 border-r-4 border-white z-30"></div>
+                                <div className="absolute top-12 right-12 w-8 h-8 border-b-4 border-l-4 border-white z-30"></div>
+                                <div className="absolute bottom-12 left-12 w-8 h-8 border-t-4 border-r-4 border-white z-30"></div>
+                                <div className="absolute bottom-12 right-12 w-8 h-8 border-t-4 border-l-4 border-white z-30"></div>
+
+                                {/* Content */}
+                                {interiorCard.title && (
+                                  <div className="absolute inset-0 flex flex-col justify-center items-center p-6 md:p-8 lg:p-10 z-30">
+                                      <h3 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium text-white mb-4 tracking-[-0.02em] text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-700">
+                                          {interiorCard.title}
+                                      </h3>
+                                      <div className="flex items-center gap-2 text-white/80 group-hover:text-white transition-all duration-700 delay-150 transform translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100">
+                                          <span className="text-sm md:text-base tracking-wider uppercase ">Découvrir</span>
+                                          <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                                      </div>
+                                  </div>
+                                )}
                             </div>  
-                        </Link>
-                    </div>
+                          </Link>
+                      </div>
+                    )}
 
                     {/* Extérieur Column - Right, aligned at top */}
-                    <div className="relative bg-white overflow-visible flex items-start justify-center py-8 md:py-12 lg:py-16 xl:py-20">
-                        {/* Background color overlay - dark slate from midpoint, extends full column width */}
-                        <div className="absolute top-1/2 -left-8 md:-left-12 lg:-left-16 xl:-left-20 -right-8 md:-right-12 lg:-right-16 xl:-right-20 bottom-0 bg-slate-900"></div>
+                    {exteriorCard && (exteriorCard.title || exteriorCard.image) && (
+                      <div className="relative bg-white overflow-visible flex items-start justify-center py-8 md:py-12 lg:py-16 xl:py-20">
+                          {/* Background color overlay - dark slate from midpoint, extends full column width */}
+                          <div className="absolute top-2/3 -left-8 md:-left-12 lg:-left-16 xl:-left-20 -right-8 md:-right-12 lg:-right-16 xl:-right-20 bottom-0 bg-black"></div>
 
-                        <Link
-                            href="/produits/exterieur"
-                            className="relative w-full aspect-[3/4] group cursor-pointer mt-4 md:mt-6 z-10"
-                        >
-                            <div className="relative w-full h-full bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 overflow-visible">
-                                {/* Corner Brackets - Inside with padding */}
-                                <div className="absolute top-12 left-12 w-8 h-8 border-t-4 border-l-4 border-white z-10"></div>
-                                <div className="absolute top-12 right-12 w-8 h-8 border-t-4 border-r-4 border-white z-10"></div>
-                                <div className="absolute bottom-12 left-12 w-8 h-8 border-b-4 border-l-4 border-white z-10"></div>
-                                <div className="absolute bottom-12 right-12 w-8 h-8 border-b-4 border-r-4 border-white z-10"></div>
+                          <Link
+                              href={exteriorCard.link || "/produits/exterieur"}
+                              className="relative w-full aspect-[3/4] group cursor-pointer mt-4 md:mt-6 z-10"
+                          >
+                            <div className="relative w-full h-full overflow-hidden">
+                                {/* Background Image */}
+                                {exteriorCard.image ? (
+                                  <img
+                                      src={urlFor(exteriorCard.image).url()}
+                                      alt={exteriorCard.title || "Extérieur"}
+                                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                                  />
+                                ) : (
+                                  <div className="absolute inset-0 w-full h-full bg-gray-200"></div>
+                                )}
 
-                                {/* Content */}
-                                <div className="absolute inset-0 flex flex-col justify-center items-center p-6 md:p-8 lg:p-10">
-                                    <h3 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium text-white mb-4 tracking-[-0.02em] text-center">
-                                        Extérieur
-                                    </h3>
-                                    <div className="flex items-center gap-2 text-white/80 group-hover:text-white transition-colors">
-                                        <span className="text-sm md:text-base tracking-wider uppercase font-light">Découvrir</span>
-                                        <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
-                                    </div>
+                                {/* Black Filter Overlay - fainter, reduces opacity on hover */}
+                                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-700"></div>
+
+                                {/* Border highlight on hover */}
+                                <div className="absolute inset-0 border-2 border-white/0 group-hover:border-white/20 transition-all duration-500 pointer-events-none z-20"></div>
+
+                                {/* Shine effect on hover */}
+                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-20">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                                 </div>
 
-                                {/* Hover Overlay */}
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                                {/* Corner Brackets - Inside with padding */}
+                                <div className="absolute top-12 left-12 w-8 h-8 border-t-4 border-l-4 border-white z-30"></div>
+                                <div className="absolute top-12 right-12 w-8 h-8 border-t-4 border-r-4 border-white z-30"></div>
+                                <div className="absolute bottom-12 left-12 w-8 h-8 border-b-4 border-l-4 border-white z-30"></div>
+                                <div className="absolute bottom-12 right-12 w-8 h-8 border-b-4 border-r-4 border-white z-30"></div>
+
+                                {/* Content */}
+                                {exteriorCard.title && (
+                                  <div className="absolute inset-0 flex flex-col justify-center items-center p-6 md:p-8 lg:p-10 z-30">
+                                      <h3 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium text-white mb-4 tracking-[-0.02em] text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-700">
+                                          {exteriorCard.title}
+                                      </h3>
+                                      <div className="flex items-center gap-2 text-white/80 group-hover:text-white transition-all duration-700 delay-150 transform translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100">
+                                          <span className="text-sm md:text-base tracking-wider uppercase ">Découvrir</span>
+                                          <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                                      </div>
+                                  </div>
+                                )}
                             </div>
-                        </Link>
-                    </div>
+                          </Link>
+                      </div>
+                    )}
 
                 </div>
             </div>

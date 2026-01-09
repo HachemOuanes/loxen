@@ -14,7 +14,7 @@ export function Footer() {
         </svg>
       </div>
 
-      <div className="mx-auto px-4 relative z-10">
+      <div className="w-[calc(100%-2rem)] ml-4 px-6 md:px-8 relative z-10">
         <div className="flex items-center justify-center mb-16">
           <svg width="160" height="2" className="text-background/15">
             <line x1="0" y1="1" x2="160" y2="1" stroke="currentColor" strokeWidth="0.5" />
@@ -33,9 +33,13 @@ export function Footer() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mb-16">
           <div className="text-center md:text-left">
-            <h3 className="text-4xl font-light font-sans mb-6 tracking-[0.2em]">
-              L<span className="text-background/60">O</span>X<span className="text-background/60">E</span>N
-            </h3>
+            <a
+              href="/"
+              className="text-2xl sm:text-4xl text-background drop-shadow-lg font-light tracking-[-0.02em] cursor-pointer hover:opacity-80 mb-6 block"
+            >
+              L<span className="font-extralight opacity-60">O</span>X
+              <span className="font-extralight opacity-60">E</span>N
+            </a>
             <p className="text-background/60 leading-relaxed font-light text-lg tracking-wide max-w-sm">
               Transformer les visions architecturales avec des solutions premium d'aluminium et de façades.
             </p>

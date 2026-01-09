@@ -84,6 +84,17 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
   }
+  
+  /* Text selection styling - black background with white text */
+  ::selection {
+    background-color: #000000;
+    color: #ffffff;
+  }
+  
+  ::-moz-selection {
+    background-color: #000000;
+    color: #ffffff;
+  }
 }
 
 /* Added custom animations for fade-in effects */

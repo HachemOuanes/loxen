@@ -29,32 +29,32 @@ export const structure: StructureResolver = (S) =>
               S.listItem()
                 .title('Hero Section')
                 .icon(ImageIcon)
-                .child(S.document().schemaType('heroSection').documentId('heroSection')),
+                .child(S.document().schemaType('homeHeroSection').documentId('homeHeroSection')),
+
+              S.listItem()
+                .title('Applications Section')
+                .icon(ComponentIcon)
+                .child(S.document().schemaType('homeApplicationsSection').documentId('homeApplicationsSection')),
+
+              S.listItem()
+                .title('Vision Section')
+                .icon(SparklesIcon)
+                .child(S.document().schemaType('homeVisionSection').documentId('homeVisionSection')),
+
+              S.listItem()
+                .title('Solutions Section')
+                .icon(CircleIcon)
+                .child(S.document().schemaType('homeSolutionsSection').documentId('homeSolutionsSection')),
 
               S.listItem()
                 .title('Products Section')
                 .icon(PackageIcon)
-                .child(S.document().schemaType('productsSection').documentId('productsSection')),
+                .child(S.document().schemaType('homeProductsSection').documentId('homeProductsSection')),
 
               S.listItem()
                 .title('Inspiration Section')
                 .icon(ImageIcon)
-                .child(S.document().schemaType('inspirationSection').documentId('inspirationSection')),
-
-              S.listItem()
-                .title('Interior Section')
-                .icon(HomeIcon)
-                .child(S.document().schemaType('interiorSection').documentId('interiorSection')),
-
-              S.listItem()
-                .title('Exterior Section')
-                .icon(StackIcon)
-                .child(S.document().schemaType('exteriorSection').documentId('exteriorSection')),
-
-              S.listItem()
-                .title('Partners Section')
-                .icon(UsersIcon)
-                .child(S.document().schemaType('partnersSection').documentId('partnersSection')),
+                .child(S.document().schemaType('homeInspirationSection').documentId('homeInspirationSection')),
 
               S.listItem()
                 .title('Contact Information')
@@ -80,6 +80,16 @@ export const structure: StructureResolver = (S) =>
                 .title('Exterior Products')
                 .icon(StackIcon)
                 .child(S.documentTypeList('exteriorProduct').title('Exterior Products')),
+
+              S.listItem()
+                .title('Interior Categories')
+                .icon(ComponentIcon)
+                .child(S.document().schemaType('interiorProductCategories').documentId('interiorProductCategories')),
+
+              S.listItem()
+                .title('Exterior Categories')
+                .icon(ComponentIcon)
+                .child(S.document().schemaType('exteriorProductCategories').documentId('exteriorProductCategories')),
             ])
         ),
 

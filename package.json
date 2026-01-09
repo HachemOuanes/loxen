@@ -17,6 +17,8 @@
     "backup:restore": "node scripts/backup-data.js restore",
     "backup:list": "node scripts/backup-data.js list",
     "seed:inspirations": "node scripts/seed-inspirations.js",
+    "seed:home": "tsx scripts/seed-home-page.ts",
+    "seed:exterior": "tsx scripts/seed-exterior-section.ts",
     "update:hero-images": "node scripts/update-hero-images.js",
     "migrate:products": "node scripts/migrate-products.js",
     "check:products": "node scripts/check-existing-products.js",

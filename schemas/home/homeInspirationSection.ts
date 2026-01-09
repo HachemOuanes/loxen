@@ -1,23 +1,22 @@
 import { defineType, defineField } from 'sanity'
 
-export const inspirationSection = defineType({
-  name: 'inspirationSection',
-  title: 'Inspiration Section',
+export const homeInspirationSection = defineType({
+  name: 'homeInspirationSection',
+  title: 'Home Inspiration Section',
   type: 'document',
   fields: [
     defineField({
-      name: 'title',
-      title: 'Section Title',
+      name: 'sectionLabel',
+      title: 'Section Label',
       type: 'string',
-      initialValue: 'Inspiration',
-      validation: (Rule) => Rule.required(),
+      initialValue: 'Inspirations',
     }),
     defineField({
-      name: 'description',
-      title: 'Section Description',
-      type: 'text',
-      rows: 4,
-      description: 'Description shown in the section',
+      name: 'title',
+      title: 'Main Title',
+      type: 'string',
+      initialValue: 'Architectural excellence. Realized through innovative design.',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'projects',
@@ -34,13 +33,6 @@ export const inspirationSection = defineType({
               validation: (Rule) => Rule.required(),
             }),
             defineField({
-              name: 'description',
-              title: 'Project Description',
-              type: 'text',
-              rows: 3,
-              validation: (Rule) => Rule.required(),
-            }),
-            defineField({
               name: 'image',
               title: 'Project Image',
               type: 'image',
@@ -52,6 +44,11 @@ export const inspirationSection = defineType({
             defineField({
               name: 'location',
               title: 'Project Location',
+              type: 'string',
+            }),
+            defineField({
+              name: 'category',
+              title: 'Category',
               type: 'string',
             }),
             defineField({
@@ -70,27 +67,27 @@ export const inspirationSection = defineType({
           },
         },
       ],
-      validation: (Rule) => Rule.min(1),
+      validation: (Rule) => Rule.min(1).max(8),
     }),
     defineField({
       name: 'showSection',
       title: 'Show Section',
       type: 'boolean',
-      description: 'Toggle to show/hide this section on the website',
       initialValue: true,
     }),
   ],
   preview: {
     select: {
       title: 'title',
-      subtitle: 'description',
+      subtitle: 'sectionLabel',
       projectsCount: 'projects.length',
     },
     prepare({ title, subtitle, projectsCount }) {
       return {
         title,
-        subtitle: `${projectsCount || 0} projects • ${subtitle || ''}`,
+        subtitle: `${subtitle} • ${projectsCount || 0} projects`,
       }
     },
   },
 })
+
