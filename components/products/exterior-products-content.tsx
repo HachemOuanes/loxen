@@ -310,18 +310,27 @@ export function ExteriorProductsContent() {
   return (
     <section id="exterieur" className="w-full relative z-10 m-0 p-0 bg-white">
       <div className="w-[calc(100%-2rem)] ml-4 px-6 md:px-8 py-16 md:py-20 lg:py-24">
+        <div className="bg-gray-100 absolute top-0 left-0 h-full w-1/3 -z-10"></div>
+
         {/* Main Content - 3 Column Grid */}
-        <div className="grid md:grid-cols-3 gap-0 items-start">
+        <div className="grid md:grid-cols-3 gap-0 items-start z-10">
           {/* Left Column - Category List */}
-          <div className="py-6 md:py-8 lg:py-10 pr-6 md:pr-8 lg:pr-10 border-r border-black/10">
-            {sectionContent?.title && (
+          <div className="py-6 md:py-8 lg:py-10 pr-6 md:pr-8 lg:pr-10">
+            {/* {sectionContent?.title && (
               <h1 className="text-5xl md:text-6xl lg:text-7xl text-black tracking-[-0.02em] leading-tight mb-8 md:mb-10">
-                {sectionContent.title}
+              {sectionContent.title}
               </h1>
-            )}
-            
+              )} */}
+
+
+            <div ref={productsTitleRef} className="mb-6 md:mb-8 opacity-100" style={{ transform: 'translateX(0)' }}>
+              <h3 className="text-xl md:text-2xl lg:text-5xl text-black mb-3 tracking-tight flex flex-col">
+                <i className="text-3xl">Applications</i>  <span className="">Extérieures</span>
+              </h3>
+            </div>
+
             {/* Decorative Element */}
-            <div className="mb-8 md:mb-10 flex items-center gap-2">
+            {/* <div className="mb-8 md:mb-10 flex items-center gap-2">
               <svg width="60" height="2" className="text-black/20">
                 <line x1="0" y1="1" x2="60" y2="1" stroke="currentColor" strokeWidth="0.5" />
               </svg>
@@ -329,29 +338,32 @@ export function ExteriorProductsContent() {
               <svg width="60" height="2" className="text-black/20">
                 <line x1="0" y1="1" x2="60" y2="1" stroke="currentColor" strokeWidth="0.5" />
               </svg>
+            </div> */}
+            <div className="z-80 opacity-100">
+              {/* Category Buttons */}
+              {categories.length > 0 && (
+                <div className="flex flex-col gap-3 md:gap-4 z-30">
+                  {categories.map((category, index) => (
+                    <CTAButton
+                      key={category._id}
+                      theme={selectedCategory === index ? "black" : "transparent"}
+                      onClick={() => !isAnimating && setSelectedCategory(index)}
+                      disabled={isAnimating}
+                      className="w-full justify-start px-6"
+                    >
+                      {category.name}
+                    </CTAButton>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Category Buttons */}
-            {categories.length > 0 && (
-              <div className="flex flex-col gap-3 md:gap-4">
-                {categories.map((category, index) => (
-                  <CTAButton
-                    key={category._id}
-                    theme={selectedCategory === index ? "black" : "transparent"}
-                    onClick={() => !isAnimating && setSelectedCategory(index)}
-                    disabled={isAnimating}
-                    className="w-full justify-start px-6"
-                  >
-                    {category.name}
-                  </CTAButton>
-                ))}
-              </div>
-            )}
+
           </div>
 
           {/* Middle Column - Category Image */}
           {currentCategory && (
-            <div className="py-6 md:py-8 lg:py-10 px-6 md:px-8 lg:px-10 border-r border-black/10">
+            <div className="py-6 md:py-8 lg:py-10 px-6 md:px-8 lg:px-10">
 
               {currentCategory.image ? (
                 <div
@@ -442,19 +454,6 @@ export function ExteriorProductsContent() {
           </div>
         </div>
 
-        {/* Visual Separator at Bottom */}
-        <div className="flex items-center justify-center mt-16 md:mt-20 lg:mt-24">
-          <div className="flex items-center gap-4 w-full max-w-2xl">
-            <div className="flex-1 h-px bg-black/10"></div>
-            <div className="flex items-center gap-2">
-              <svg width="8" height="8" className="text-black/30">
-                <circle cx="4" cy="4" r="1" fill="currentColor" />
-                <circle cx="4" cy="4" r="3.5" fill="none" stroke="currentColor" strokeWidth="0.5" />
-              </svg>
-            </div>
-            <div className="flex-1 h-px bg-black/10"></div>
-          </div>
-        </div>
       </div>
     </section>
   )
