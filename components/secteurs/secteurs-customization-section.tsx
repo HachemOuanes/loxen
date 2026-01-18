@@ -50,25 +50,7 @@ export function SecteursCustomizationSection({
         )
       })
 
-      // Parallax for image
-      const parallaxEl = section.querySelector('.js-parallax')
-      if (parallaxEl) {
-        gsap.set(parallaxEl, { willChange: 'transform', force3D: true })
-        gsap.fromTo(
-          parallaxEl,
-          { scale: 1.05 },
-          {
-            scale: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: parallaxEl,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 1.2,
-            },
-          }
-        )
-      }
+      // Removed parallax zoom animation - keeping only hover effects
     }, section)
 
     return () => ctx.revert()
@@ -80,13 +62,13 @@ export function SecteursCustomizationSection({
         <div className="grid grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left Column - Text */}
           <div className="js-reveal space-y-6">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-black leading-tight">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black tracking-[-0.02em] leading-tight">
               {title}
             </h2>
-            <p className="text-base md:text-lg text-black/75 leading-relaxed font-light">
+            <p className="text-lg md:text-xl text-black/70 leading-relaxed">
               {mainText}
             </p>
-            <p className="text-sm md:text-base text-black/60 leading-relaxed font-light">
+            <p className="text-base md:text-lg text-black/70 leading-relaxed">
               {secondaryText}
             </p>
             {ctaText && ctaLink && (
@@ -102,11 +84,11 @@ export function SecteursCustomizationSection({
           </div>
 
           {/* Right Column - Image */}
-          <div className="js-parallax relative overflow-hidden">
+          <div className="relative overflow-hidden group">
             <img
               src={image}
               alt={title}
-              className="w-full h-[600px] md:h-[700px] object-cover"
+              className="w-full h-[600px] md:h-[700px] object-cover transition-transform duration-700 ease-out group-hover:scale-110"
               loading="lazy"
               decoding="async"
             />

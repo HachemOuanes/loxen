@@ -40,8 +40,8 @@ export function FinitionsSection({ title, items }: FinitionsSectionProps) {
   return (
     <section className="relative bg-white py-8 md:py-12">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-6">
-          <span className="h-[1px] w-8 bg-black/20" /> {title}
+        <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 font-light mb-6">
+          <span className="h-[1px] w-8 bg-black/30" /> {title}
         </div>
 
         <div className="relative">
@@ -63,9 +63,9 @@ export function FinitionsSection({ title, items }: FinitionsSectionProps) {
                       />
                     </div>
                     <div className="p-5 md:p-6">
-                      <h4 className="text-lg md:text-xl font-medium tracking-tight text-black">{f.title}</h4>
-                      <p className="text-sm uppercase tracking-[0.14em] text-black/60">{f.subtitle}</p>
-                      <p className="mt-3 text-black/70 leading-relaxed">{f.description}</p>
+                      <h4 className="text-lg md:text-xl lg:text-2xl tracking-tight text-black">{f.title}</h4>
+                      <p className="text-xs tracking-[0.18em] uppercase text-black/70 font-light mt-1">{f.subtitle}</p>
+                      <p className="mt-3 text-base md:text-lg text-black/70 leading-relaxed">{f.description}</p>
                     </div>
                     {f.schema && (
                       <img 

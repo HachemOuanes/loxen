@@ -91,7 +91,7 @@ export function CataloguesPageClient({ catalogues }: CataloguesPageClientProps) 
               ))
             ) : (
               <div className="py-12 text-center">
-                <p className="text-black/60 font-light">Aucun catalogue trouvé.</p>
+                <p className="text-lg md:text-xl text-black/70">Aucun catalogue trouvé.</p>
               </div>
             )}
           </div>

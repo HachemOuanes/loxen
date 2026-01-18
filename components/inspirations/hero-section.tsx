@@ -121,12 +121,12 @@ export function HeroSection({ title, description, heroImage, contactLink, contac
                 <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-3">
                   <span className="h-[1px] w-8 bg-black/30" /> Inspirations
                 </div>
-                <h1 className="text-3xl md:text-6xl tracking-tight text-black mb-4 ">{title}</h1>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black tracking-[-0.02em] leading-tight mb-4">{title}</h1>
               </div>
               <div className=" flex flex-col gap-6">
                 {/* <p className="text-xl text-black/70 leading-relaxed">{description}</p> */}
-                <p className="text-xl text-black/70 leading-relaxed">L’impression numérique sur stratifié fait dialoguer image et matière. À partir de vos fichiers natifs, le visuel est imprimé sur un papier décor grâce à des têtes jet d’encre industrielles très haute résolution, pilotées par une chaîne graphique maîtrisée. Ce décor rejoint.</p>
-                <p className="text-xl text-black/70 leading-relaxed">L’impression numérique sur stratifié fait dialoguer image et matière. À partir de vos fichiers natifs, le visuel est imprimé sur un papier décor grâce à des têtes jet d’encre industrielles très haute résolution.</p>
+                <p className="text-lg md:text-xl text-black/70 leading-relaxed">L’impression numérique sur stratifié fait dialoguer image et matière. À partir de vos fichiers natifs, le visuel est imprimé sur un papier décor grâce à des têtes jet d’encre industrielles très haute résolution, pilotées par une chaîne graphique maîtrisée. Ce décor rejoint.</p>
+                <p className="text-lg md:text-xl text-black/70 leading-relaxed">L’impression numérique sur stratifié fait dialoguer image et matière. À partir de vos fichiers natifs, le visuel est imprimé sur un papier décor grâce à des têtes jet d’encre industrielles très haute résolution.</p>
               
               </div>
             </div>

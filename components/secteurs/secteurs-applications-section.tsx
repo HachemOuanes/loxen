@@ -125,19 +125,19 @@ function ApplicationsSection({ items, imageOnRight = true }: ApplicationsSection
                         {items?.map((item: ApplicationItem, itemIndex: number) => (
                             <div key={itemIndex} className="js-reveal min-h-[60vh] md:min-h-[70vh] flex flex-col justify-center space-y-6">
                                 <div className="space-y-2">
-                                    <p className="text-xs uppercase tracking-[0.18em] text-black/60">{item.title}</p>
-                                    <h3 className="text-3xl md:text-5xl font-light tracking-tight text-black">{item.subtitle}</h3>
+                                    <p className="text-xs tracking-[0.18em] uppercase text-black/70 font-light">{item.title}</p>
+                                    <h3 className="text-2xl md:text-3xl lg:text-5xl text-black tracking-tight">{item.subtitle}</h3>
                                 </div>
 
                                 {item.textSection && (
                                     <div className="space-y-2 py-4">
                                         {item.textSection.mainText && (
-                                            <p className="text-xl md:text-2xl font-light text-black leading-tight">
+                                            <p className="text-xl md:text-3xl italic text-black leading-tight">
                                                 {item.textSection.mainText}
                                             </p>
                                         )}
                                         {item.textSection.description && (
-                                            <p className="text-sm md:text-base text-black/60 italic leading-relaxed max-w-xl">
+                                            <p className="text-lg md:text-xl text-black/70 leading-relaxed max-w-xl">
                                                 {item.textSection.description}
                                             </p>
                                         )}
@@ -145,7 +145,7 @@ function ApplicationsSection({ items, imageOnRight = true }: ApplicationsSection
                                 )}
 
                                 {item.description && (
-                                    <div className="mt-4 text-black/70 leading-relaxed">{item.description}</div>
+                                    <div className="mt-4 text-lg md:text-xl text-black/70 leading-relaxed">{item.description}</div>
                                 )}
 
                                 {item.features && item.features.length > 0 && (
@@ -183,7 +183,6 @@ export function SecteursApplicationsSection({ primaryItems, secondaryItems }: Se
             {primaryItems?.length > 0 && (
                 <ApplicationsSection items={primaryItems} imageOnRight />
             )}
-
             {/* Second applications (mirror layout) */}
             {(secondaryItems?.length ?? 0) > 0 && (
                 <ApplicationsSection items={secondaryItems ?? []} imageOnRight={false} />

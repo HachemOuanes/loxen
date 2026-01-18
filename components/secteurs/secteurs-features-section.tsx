@@ -97,22 +97,22 @@ export function SecteursFeaturesSection({ features }: SecteursFeaturesSectionPro
               >
                 {/* Vertical dividers */}
                 {isLeftmost && (
-                  <div className="absolute left-0 top-0 bottom-0 w-px bg-black/20" />
+                  <div className="absolute left-0 top-0 bottom-0 w-px bg-black/5" />
                 )}
-                <div className="absolute right-0 top-0 bottom-0 w-px bg-black/20" />
-                <div className="flex items-center justify-center mb-4 text-black">
+                <div className="absolute right-0 top-0 bottom-0 w-px bg-black/5" />
+                <div className="flex items-center justify-center mb-5 md:mb-6 text-black">
                   {feature.icon ? (
                     <img 
                       src={feature.icon} 
                       alt={feature.label}
-                      className="w-14 h-14 object-contain"
+                      className="w-14 h-14 md:w-16 md:h-16 object-contain"
                       loading="lazy"
                     />
                   ) : (
-                    <div className="w-10 h-10 bg-black/10" />
+                    <div className="w-11 h-11 bg-black/10" />
                   )}
                 </div>
-                <p className="text-xs md:text-sm uppercase tracking-[0.1em] text-gray-800 text-center font-medium">
+                <p className="text-xs md:text-sm uppercase tracking-[0.18em] text-black/70 text-center">
                   {feature.label}
                 </p>
               </div>

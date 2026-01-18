@@ -44,11 +44,11 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                           )}
                           {description && description.length > 0 && (
                             <div className=" w-1/3 pr-12 pt-12 space-y-3">
-                                {description.map((para, index) => (
-                                    <p key={index} className="text-lg md:text-xl text-black/70 leading-relaxed ">
-                                        {para}
+                                {description[0] && (
+                                    <p className="text-lg md:text-xl text-black/70 leading-relaxed ">
+                                        {description[0]}
                                     </p>
-                                ))}
+                                )}
                             </div>
                           )}
                       </div>
@@ -57,15 +57,15 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                     {/* Text Column - Left */}
                     <div className="relative bg-white flex flex-col py-8 md:py-12 lg:py-16 xl:py-20">
                         {/* Background color overlay - dark slate from midpoint, extends full column width */}
-                        <div className="absolute top-2/3 -left-8 md:-left-12 lg:-left-16 xl:-left-20 -right-8 md:-right-12 lg:-right-16 xl:-right-20 bottom-0 bg-black"></div>
+                        <div className="absolute top-[55%] -left-8 md:-left-12 lg:-left-16 xl:-left-20 -right-8 md:-right-12 lg:-right-16 xl:-right-20 bottom-0 bg-black"></div>
 
                         {/* CTA Section - Positioned in lower half, below midpoint, on black background */}
-                        {(ctaTitle || (ctaText && ctaLink)) && (
+                        {(description && description.length > 1 && description[1]) || (ctaText && ctaLink) ? (
                           <div className="max-w-md mt-auto relative z-10">
-                              {ctaTitle && (
-                                <h3 className="text-lg md:text-xl lg:text-2xl  text-white mb-6 tracking-[-0.02em] leading-tight">
-                                    {ctaTitle}
-                                </h3>
+                              {description && description.length > 1 && description[1] && (
+                                <p className="text-lg md:text-xl text-white/90 mb-6 leading-relaxed">
+                                    {description[1]}
+                                </p>
                               )}
                               {ctaText && ctaLink && (
                                 <CTAButton
@@ -82,7 +82,7 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                                 </CTAButton>
                               )}
                           </div>
-                        )}
+                        ) : null}
                     </div>
 
                     {/* Intérieur Column - Middle, slightly lowered */}

@@ -21,10 +21,10 @@ export const secteur = defineType({
     }),
     defineField({
       name: 'description',
-      title: 'Description (Legacy)',
+      title: 'Description',
       type: 'text',
       rows: 3,
-      description: 'Deprecated - use heroTextSections instead',
+      description: 'Used for display in the mega menu',
     }),
     defineField({
       name: 'heroTextSections',
@@ -95,6 +95,34 @@ export const secteur = defineType({
       options: {
         hotspot: true,
       },
+    }),
+    defineField({
+      name: 'bigTextSection',
+      title: 'Big Text Section',
+      type: 'object',
+      description: 'Large text section displayed below the hero section',
+      fields: [
+        defineField({
+          name: 'largeText',
+          title: 'Large Text',
+          type: 'string',
+          description: 'Large text displayed on the left side',
+        }),
+        defineField({
+          name: 'smallText',
+          title: 'Small Text',
+          type: 'text',
+          rows: 4,
+          description: 'Descriptive text displayed on the right side (can be multiple paragraphs)',
+        }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Section',
+          type: 'boolean',
+          description: 'Toggle to display/hide this section',
+          initialValue: true,
+        }),
+      ],
     }),
     defineField({
       name: 'featuresSection',
@@ -362,6 +390,31 @@ export const secteur = defineType({
                   name: 'alt',
                   title: 'Alt Text',
                   type: 'string',
+                }),
+                defineField({
+                  name: 'text',
+                  title: 'Text',
+                  type: 'object',
+                  description: 'Text displayed next to the image (left for first image, right for second image)',
+                  fields: [
+                    defineField({
+                      name: 'subtitle',
+                      title: 'Subtitle',
+                      type: 'string',
+                      description: 'Small uppercase text',
+                    }),
+                    defineField({
+                      name: 'title',
+                      title: 'Title',
+                      type: 'string',
+                    }),
+                    defineField({
+                      name: 'description',
+                      title: 'Description',
+                      type: 'text',
+                      rows: 3,
+                    }),
+                  ],
                 }),
               ],
             },

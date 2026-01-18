@@ -164,9 +164,9 @@ export function ApplicationsSection({ title, items }: ApplicationsSectionProps) 
                     className="js-reveal mb-8 md:mb-12"
                     style={{ marginTop: `${marginTop}px` }}
                   >
-                    <p className="mb-2 text-xs uppercase tracking-[0.18em] text-black/60 ">{item.title}</p>
-                    <h3 className="text-2xl md:text-3xl font-light tracking-tight text-black">{item.subtitle}</h3>
-                    <p className="mt-4 text-black/70 leading-relaxed">{item.description}</p>
+                    <p className="mb-2 text-xs tracking-[0.18em] uppercase text-black/70 font-light">{item.title}</p>
+                    <h3 className="text-2xl md:text-3xl lg:text-4xl text-black tracking-tight">{item.subtitle}</h3>
+                    <p className="mt-4 text-base md:text-lg text-black/70 leading-relaxed">{item.description}</p>
                     <ul className="mt-5 space-y-2 text-black/75">
                       {item.features?.map((feature: string, featureIndex: number) => (
                         <li key={featureIndex} className="flex items-center gap-3 text-sm">
@@ -198,7 +198,7 @@ export function ApplicationsSection({ title, items }: ApplicationsSectionProps) 
                     style={{ marginTop: `${marginTop}px` }}
                   >
                     <p className="mb-2 text-xs uppercase tracking-[0.18em] text-black/60">{item.title}</p>
-                    <h3 className="text-2xl md:text-3xl font-light tracking-tight text-black">{item.subtitle}</h3>
+                    <h3 className="text-2xl md:text-3xl lg:text-4xl text-black tracking-tight">{item.subtitle}</h3>
                     <p className="mt-4 text-black/70 leading-relaxed">{item.description}</p>
                     <ul className="mt-5 space-y-2 text-black/75">
                       {item.features?.map((feature: string, featureIndex: number) => (

@@ -69,10 +69,10 @@ export function InteriorProductsContent() {
         
         {/* Content */}
         <div className="relative z-10 text-center w-full">
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-extralight text-white mb-6 sm:mb-8 tracking-[-0.02em] drop-shadow-lg">
-            Produits <span className="italic font-extralight">Intérieur</span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white mb-6 sm:mb-8 tracking-[-0.02em] leading-tight drop-shadow-lg">
+            Produits <span className="italic">Intérieur</span>
           </h1>
-          <p className="text-sm sm:text-base lg:text-lg text-white/90 font-light max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed drop-shadow-md px-4 mb-8">
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed drop-shadow-md px-4 mb-8">
             Matériaux et systèmes pour l'agencement, cloisons, plans et revêtements. Solutions HPL premium pour vos projets intérieurs.
           </p>
           
@@ -93,14 +93,14 @@ export function InteriorProductsContent() {
       <section className="py-16 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto text-center">
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-light text-gray-900 mb-6">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-gray-900 mb-6 tracking-[-0.02em] leading-tight">
               Bientôt Disponible
             </h2>
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed">
               Nous travaillons actuellement sur notre gamme de produits intérieurs. 
               Découvrez bientôt nos solutions HPL pour l'agencement, les cloisons et les revêtements.
             </p>
-            <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-medium">
+            <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm">
               <span className="w-2 h-2 bg-yellow-600 rounded-full animate-pulse"></span>
               Coming Soon
             </div>
@@ -113,7 +113,7 @@ export function InteriorProductsContent() {
         <section className="py-16 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extralight text-black mb-4 tracking-[-0.02em]">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-4 tracking-[-0.02em] leading-tight">
                 Produits Vedettes
               </h2>
               <div className="w-16 h-px bg-black/20 mx-auto"></div>
@@ -135,19 +135,19 @@ export function InteriorProductsContent() {
                   </div>
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-xl font-light text-gray-900">{product.name}</h3>
+                      <h3 className="text-lg md:text-xl lg:text-2xl text-gray-900">{product.name}</h3>
                       <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
                         Featured
                       </span>
                     </div>
-                    <p className="text-gray-600 mb-4 leading-relaxed">{product.description}</p>
+                    <p className="text-base md:text-lg text-gray-600 mb-4 leading-relaxed">{product.description}</p>
                     
                     {product.collectionName && (
                       <p className="text-sm text-gray-500 mb-3">Collection: {product.collectionName}</p>
                     )}
                     
                     {product.price && (
-                      <p className="text-lg font-medium text-gray-900 mb-4">{product.price}</p>
+                      <p className="text-lg md:text-xl text-gray-900 mb-4">{product.price}</p>
                     )}
                     
                     <div className="flex items-center justify-between">
@@ -162,7 +162,7 @@ export function InteriorProductsContent() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-sm font-medium text-gray-900 hover:text-gray-600 transition-colors border-gray-300 hover:border-gray-400"
+                        className="text-sm text-gray-900 hover:text-gray-600 transition-colors border-gray-300 hover:border-gray-400"
                         asChild
                       >
                         <a href={`/produits/interieur/${product.slug?.current || ''}`}>
@@ -183,7 +183,7 @@ export function InteriorProductsContent() {
         <section className="py-16 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extralight text-black mb-4 tracking-[-0.02em]">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-4 tracking-[-0.02em] leading-tight">
                 Tous les Produits Intérieurs
               </h2>
               <div className="w-16 h-px bg-black/20 mx-auto"></div>
@@ -204,15 +204,15 @@ export function InteriorProductsContent() {
                     )}
                   </div>
                   <div className="p-6">
-                    <h3 className="text-xl font-light text-gray-900 mb-3">{product.name}</h3>
-                    <p className="text-gray-600 mb-4 leading-relaxed">{product.description}</p>
+                    <h3 className="text-lg md:text-xl lg:text-2xl text-gray-900 mb-3">{product.name}</h3>
+                    <p className="text-base md:text-lg text-gray-600 mb-4 leading-relaxed">{product.description}</p>
                     
                     {product.collectionName && (
                       <p className="text-sm text-gray-500 mb-3">Collection: {product.collectionName}</p>
                     )}
                     
                     {product.price && (
-                      <p className="text-lg font-medium text-gray-900 mb-4">{product.price}</p>
+                      <p className="text-lg md:text-xl text-gray-900 mb-4">{product.price}</p>
                     )}
                     
                     <div className="flex items-center justify-between">
@@ -227,7 +227,7 @@ export function InteriorProductsContent() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-sm font-medium text-gray-900 hover:text-gray-600 transition-colors border-gray-300 hover:border-gray-400"
+                        className="text-sm text-gray-900 hover:text-gray-600 transition-colors border-gray-300 hover:border-gray-400"
                         asChild
                       >
                         <a href={`/produits/interieur/${product.slug?.current || ''}`}>

@@ -93,13 +93,13 @@ export function SecteursProductsSection({
                   {subtitle}
                 </p>
               )} */}
-                            <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light tracking-tight text-black leading-tight">
+                            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black tracking-[-0.02em] leading-tight">
                                 {title}
                             </h2>
                         </div>
                         {description && (
                             <div className="md:text-right">
-                                <p className="text-base md:text-lg text-black/60 italic leading-relaxed max-w-[50ch] md:ml-auto">
+                                <p className="text-lg md:text-xl text-black/70 leading-relaxed max-w-[50ch] md:ml-auto">
                                     {description}
                                 </p>
                             </div>
@@ -120,12 +120,12 @@ export function SecteursProductsSection({
     }
 
     return (
-        <section className="relative bg-white py-8 md:py-12">
-            <div className="max-w-7xl mx-auto px-4 md:px-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-12 mb-12 items-start">
+            <section className="relative bg-white py-8 md:py-12">
+                <div className="max-w-7xl mx-auto px-4 md:px-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-12 items-start">
                     {/* Left - Title */}
                     <div>
-                        <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light tracking-tight text-black leading-tight">
+                        <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black tracking-[-0.02em] leading-tight">
                             {title}
                         </h2>
                     </div>
@@ -133,7 +133,7 @@ export function SecteursProductsSection({
                     {/* Right - Description */}
                     {description && (
                         <div className="md:text-right">
-                            <p className="text-base md:text-lg text-black/60 italic leading-relaxed max-w-[50ch] md:ml-auto">
+                            <p className="text-lg md:text-xl text-black/70 leading-relaxed max-w-[50ch] md:ml-auto">
                                 {description}
                             </p>
                         </div>
@@ -179,11 +179,11 @@ export function SecteursProductsSection({
                                             </span>
                                         </div>
                                     )}
-                                    <h3 className="text-xl md:text-2xl font-light tracking-tight text-black mb-2 group-hover:text-black/80 transition-colors">
+                                    <h3 className="text-lg md:text-xl lg:text-2xl text-black mb-2 group-hover:opacity-70 transition-opacity">
                                         {product.name}
                                     </h3>
                                     {product.description && (
-                                        <p className="text-sm text-black/60 leading-relaxed line-clamp-2">
+                                        <p className="text-base md:text-lg text-black/70 leading-relaxed line-clamp-3">
                                             {product.description}
                                         </p>
                                     )}

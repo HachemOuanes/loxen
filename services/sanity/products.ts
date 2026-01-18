@@ -201,7 +201,13 @@ export async function getExteriorProductCategories() {
       description,
       image,
       link,
-      order
+      order,
+      products[]{
+        name,
+        description,
+        link,
+        order
+      }
     }
   }`
   let result = await client.fetch(query)
@@ -217,7 +223,13 @@ export async function getExteriorProductCategories() {
         description,
         image,
         link,
-        order
+        order,
+        products[]{
+          name,
+          description,
+          link,
+          order
+        }
       }
     }`
     result = await client.fetch(fallbackQuery)

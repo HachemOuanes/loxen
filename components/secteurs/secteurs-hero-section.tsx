@@ -62,21 +62,21 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
         {/* Title overlay on image */}
         <div className="flex flex-col justify-center">
           <div className='w-fit'>
-            <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-3">
+            <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 font-light mb-3">
               <span className="h-[1px] w-8 bg-black/30" /> Secteurs
             </div>
-            <h1 className="text-4xl md:text-6xl font-light tracking-tight text-black mb-8">{title}</h1>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black tracking-[-0.02em] leading-tight mb-8">{title}</h1>
             <div className="space-y-6 py-8">
               {/* First text section */}
               {heroTextSections?.section1 && (
                 <div className="space-y-2">
                   {heroTextSections.section1.mainText && (
-                    <p className="text-xl md:text-2xl font-light text-black leading-tight">
+                    <p className="text-xl md:text-2xl text-black leading-tight">
                       {heroTextSections.section1.mainText}
                     </p>
                   )}
                   {heroTextSections.section1.description && (
-                    <p className="text-sm md:text-base text-black/60 italic leading-relaxed max-w-xl">
+                    <p className="text-lg md:text-xl text-black/70 leading-relaxed max-w-xl">
                       {heroTextSections.section1.description}
                     </p>
                   )}
@@ -87,12 +87,12 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
               {heroTextSections?.section2 && (
                 <div className="space-y-2 pt-4">
                   {heroTextSections.section2.mainText && (
-                    <p className="text-xl md:text-2xl font-light text-black leading-tight">
+                    <p className="text-xl md:text-2xl text-black leading-tight">
                       {heroTextSections.section2.mainText}
                     </p>
                   )}
                   {heroTextSections.section2.description && (
-                    <p className="text-sm md:text-base text-black/60 italic leading-relaxed max-w-xl">
+                    <p className="text-lg md:text-xl text-black/70 leading-relaxed max-w-xl">
                       {heroTextSections.section2.description}
                     </p>
                   )}
@@ -102,7 +102,7 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
               {/* Third text section */}
               {heroTextSections?.section3?.description && (
                 <div className="space-y-2 pt-4">
-                  <p className="text-xs md:text-sm text-black/40 italic leading-relaxed max-w-md">
+                  <p className="text-base md:text-lg text-black/70 leading-relaxed max-w-md">
                     {heroTextSections.section3.description}
                   </p>
                 </div>
@@ -126,12 +126,12 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
             </div>
           </div>
         </div>
-        <div className="relative overflow-hidden h-full min-h-[60vh]">
-          <div ref={imageRef} className="h-full w-full">
+        <div className="relative overflow-hidden aspect-[3/4] min-h-[60vh]">
+          <div ref={imageRef} className="absolute inset-0 w-full h-full">
             <img
               src={heroImage || '/contemporary-cultural-center-glass-facade-paris.png'}
               alt={`Secteur ${title}`}
-              className="h-full w-full object-cover"
+              className="w-full h-full object-cover"
               loading="eager"
               decoding="async"
               fetchPriority="high"

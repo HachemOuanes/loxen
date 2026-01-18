@@ -128,8 +128,8 @@ export function DecorsCarousel({
 
   return (
     <div className={className}>
-      <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/60 mb-4">
-        <span className="h-[1px] w-8 bg-black/20" /> {title}
+      <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 font-light mb-4">
+        <span className="h-[1px] w-8 bg-black/30" /> {title}
         <span className="ml-2 text-black/40 normal-case tracking-normal">• {actualFinishCount} décors</span>
       </div>
 
@@ -137,10 +137,10 @@ export function DecorsCarousel({
         {/* Left intro text */}
         <div className="md:col-span-4">
           <div className="sticky top-24">
-            <h3 className="text-xl md:text-2xl font-light tracking-tight text-black">
+            <h3 className="text-2xl md:text-3xl lg:text-4xl text-black tracking-tight">
               {actualFinishCount} décors d'exception vous attendent.
             </h3>
-            <p className="mt-3 text-black/70 leading-relaxed">
+            <p className="mt-3 text-lg md:text-xl text-black/70 leading-relaxed">
               Commandez dès maintenant vos échantillons gratuits et démarrez votre projet.
             </p>
             <div className="mt-5">
@@ -205,10 +205,10 @@ export function DecorsCarousel({
                     )}
                   </div>
                   <div className="p-3">
-                    <p className="text-xs font-medium text-black">{finish.code}</p>
+                    <p className="text-xs text-black">{finish.code}</p>
                     <p className="text-xs text-black/70 truncate">{finish.name}</p>
                     {finish.products && finish.products.length > 0 && (
-                      <p className="mt-1 text-[11px] text-black/50 truncate">
+                      <p className="mt-1 text-xs text-black/50 truncate">
                         {finish.products.slice(0, 2).map(p => p.name).join(', ')}
                         {finish.products.length > 2 && ` +${finish.products.length - 2}`}
                       </p>
@@ -226,7 +226,7 @@ export function DecorsCarousel({
           {collectionName ? (
             <div className="bg-gray-50 mt-6 p-3 border border-gray-200">
               <p className="text-xs text-gray-700 text-center">
-                Collection <span className="font-medium">{collectionName}</span>
+                Collection <span className="">{collectionName}</span>
                 {actualFinishCount > 0 && <span> • {actualFinishCount} décors</span>}
                 {" "}
                 <Link 

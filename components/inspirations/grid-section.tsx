@@ -26,13 +26,13 @@ export function GridSection({ text, images, title }: GridSectionProps) {
           {/* Top left: Text */}
           <div className="flex items-center px-4 md:px-6">
             <div>
-              <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60 mb-2">
+              <p className="text-xs tracking-[0.18em] uppercase text-black/70 font-light mb-2">
                 {text.subtitle}
               </p>
-              <h4 className="text-2xl md:text-3xl font-light tracking-tight text-black leading-tight mb-4">
+              <h4 className="text-2xl md:text-3xl lg:text-4xl text-black tracking-tight leading-tight mb-4">
                 {text.title}
               </h4>
-              <p className="text-base md:text-lg text-black/75 italic leading-snug">
+              <p className="text-lg md:text-xl text-black/70 italic leading-relaxed">
                 {text.description}
               </p>
             </div>

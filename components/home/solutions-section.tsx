@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { CTAButton } from "@/components/ui/cta-button"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { SolutionsSkeleton } from "@/components/home/skeletons/solutions-skeleton"
@@ -212,17 +211,27 @@ export function SolutionsSection({ data }: SolutionsSectionProps) {
 
             {/* Solution Buttons */}
             {solutions.length > 0 && (
-              <div className="mt-8 flex flex-col gap-3">
+              <div className="mt-8 flex flex-col gap-2">
                 {solutions.map((solution, index) => (
-                  <CTAButton
+                  <button
                     key={index}
-                    theme={selectedSolution === index ? "black" : "transparent"}
                     onClick={() => !isAnimating && setSelectedSolution(index)}
                     disabled={isAnimating}
-                    className="w-full justify-start px-6"
+                    className={`
+                      relative w-full text-left px-6 py-3 md:py-3.5
+                      text-sm md:text-base tracking-wider uppercase
+                      transition-all duration-300 ease-out
+                      disabled:pointer-events-none disabled:opacity-50
+                      outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2
+                      ${
+                        selectedSolution === index
+                          ? "bg-black text-white"
+                          : "bg-transparent text-black border border-black/10 hover:border-black/30 hover:bg-black/5"
+                      }
+                    `}
                   >
-                    {solution.name}
-                  </CTAButton>
+                    <span className="relative z-10">{solution.name}</span>
+                  </button>
                 ))}
               </div>
             )}

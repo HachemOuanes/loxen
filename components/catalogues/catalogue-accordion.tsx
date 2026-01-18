@@ -69,15 +69,15 @@ export function CatalogueAccordion({ catalogue, index, isLast, id }: CatalogueAc
           {/* Title Section */}
           <div className="flex-1 text-left">
             <div className="flex items-baseline gap-3">
-              <span className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight text-black/40">
+              <span className="text-3xl md:text-5xl lg:text-6xl tracking-tight text-black/40">
                 {(index + 1).toString().padStart(2, '0')}.
               </span>
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight text-black">
+              <h2 className="text-3xl md:text-5xl lg:text-6xl text-black tracking-tight">
                 {catalogue.title}
               </h2>
             </div>
             {catalogue.description && (
-              <p className="mt-3 md:mt-4 text-sm md:text-base text-black/60 font-light max-w-2xl leading-relaxed">
+              <p className="mt-3 md:mt-4 text-base md:text-lg text-black/70 max-w-2xl leading-relaxed">
                 {catalogue.description}
               </p>
             )}
@@ -120,14 +120,14 @@ export function CatalogueAccordion({ catalogue, index, isLast, id }: CatalogueAc
                   </div>
 
                   {/* Main Title */}
-                  <h3 className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight text-black mb-5 leading-tight">
+                  <h3 className="text-2xl md:text-3xl lg:text-4xl text-black tracking-tight mb-5 leading-tight">
                     {catalogue.overview || catalogue.title}
                   </h3>
 
                   {/* Description */}
                   {catalogue.description && (
                     <div className="space-y-3">
-                        <div className="text-base md:text-lg text-black/70 leading-relaxed font-light">
+                        <div className="text-lg md:text-xl text-black/70 leading-relaxed">
                           {catalogue.description}
                         </div>
                     </div>
@@ -138,10 +138,10 @@ export function CatalogueAccordion({ catalogue, index, isLast, id }: CatalogueAc
                 <div className="py-6 md:py-8 pl-6 md:pl-8">
                   {/* Section Header */}
                   <div className="flex items-center justify-between mb-5">
-                    <span className="text-xs tracking-[0.18em] uppercase text-black/60 font-light">
+                    <span className="text-xs tracking-[0.18em] uppercase text-black/70 font-light">
                       Supporting Docs
                     </span>
-                    <span className="text-xs tracking-[0.18em] uppercase text-black/60 font-light">
+                    <span className="text-xs tracking-[0.18em] uppercase text-black/70 font-light">
                       {catalogue.documents.length.toString().padStart(2, '0')} Available
                     </span>
                   </div>
@@ -163,14 +163,14 @@ export function CatalogueAccordion({ catalogue, index, isLast, id }: CatalogueAc
 
                           {/* Document Name */}
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm md:text-base text-black font-light truncate">
+                            <p className="text-base md:text-lg text-black truncate">
                               {doc.title}
                             </p>
                           </div>
 
                           {/* File Type */}
                           {doc.fileType && (
-                            <span className="text-xs uppercase text-black/50 font-light mr-4 flex-shrink-0">
+                            <span className="text-xs uppercase text-black/50 mr-4 flex-shrink-0">
                               {doc.fileType}
                             </span>
                           )}
@@ -220,7 +220,7 @@ export function CatalogueAccordion({ catalogue, index, isLast, id }: CatalogueAc
                 {/* Description Text */}
                 {catalogue.description && (
                   <div className="mb-6 md:mb-8">
-                    <p className="text-base md:text-lg text-black/75 leading-relaxed font-light max-w-3xl">
+                    <p className="text-lg md:text-xl text-black/70 leading-relaxed max-w-3xl">
                       {catalogue.description}
                     </p>
                   </div>

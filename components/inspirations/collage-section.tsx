@@ -78,15 +78,15 @@ export function CollageSection({ images, tiles, title }: CollageSectionProps) {
             <div key={tileIndex} className={`js-reveal px-4 md:px-6 ${tileIndex === 0 ? 'text-left max-w-[50ch]' : 'relative overflow-hidden flex items-center justify-end bg-white'}`}>
               {tileIndex === 0 ? (
                 <>
-                  <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60">{tile.subtitle}</p>
-                  <h4 className="mt-2 text-2xl md:text-3xl font-light tracking-tight text-black leading-tight">{tile.title}</h4>
-                  <p className="mt-2 text-base md:text-lg text-black/75 italic leading-snug">{tile.description}</p>
+                  <p className="text-xs tracking-[0.18em] uppercase text-black/70 font-light">{tile.subtitle}</p>
+                  <h4 className="mt-2 text-2xl md:text-3xl lg:text-4xl text-black tracking-tight leading-tight">{tile.title}</h4>
+                  <p className="mt-2 text-lg md:text-xl text-black/70 italic leading-relaxed">{tile.description}</p>
                 </>
               ) : (
                 <div className="js-reveal px-4 md:px-6 text-right max-w-[50ch] ml-auto">
-                  <p className="uppercase tracking-[0.18em] text-[11px] md:text-xs text-black/60">{tile.subtitle}</p>
-                  <h4 className="mt-2 text-2xl md:text-3xl font-light tracking-tight text-black leading-tight">{tile.title}</h4>
-                  <p className="mt-2 text-base md:text-lg text-black/75 italic leading-snug">{tile.description}</p>
+                  <p className="text-xs tracking-[0.18em] uppercase text-black/70 font-light">{tile.subtitle}</p>
+                  <h4 className="mt-2 text-2xl md:text-3xl lg:text-4xl text-black tracking-tight leading-tight">{tile.title}</h4>
+                  <p className="mt-2 text-lg md:text-xl text-black/70 italic leading-relaxed">{tile.description}</p>
                 </div>
               )}
             </div>

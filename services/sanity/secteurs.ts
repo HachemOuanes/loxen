@@ -19,6 +19,11 @@ export async function getSecteurBySlug(slug: string) {
         description
       }
     },
+    bigTextSection{
+      enabled,
+      largeText,
+      smallText
+    },
     featuresSection{
       enabled,
       features[]{
@@ -102,7 +107,12 @@ export async function getSecteurBySlug(slug: string) {
       },
       images[]{
         src,
-        alt
+        alt,
+        text{
+          title,
+          subtitle,
+          description
+        }
       }
     },
     contactSection{

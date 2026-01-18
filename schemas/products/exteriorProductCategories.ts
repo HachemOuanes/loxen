@@ -61,6 +61,50 @@ export const exteriorProductCategories = defineType({
               type: 'string',
               description: 'Optional link to category page (e.g., /produits/exterieur/facades)',
             }),
+            defineField({
+              name: 'products',
+              title: 'Products',
+              type: 'array',
+              of: [
+                {
+                  type: 'object',
+                  fields: [
+                    defineField({
+                      name: 'name',
+                      title: 'Product Name',
+                      type: 'string',
+                      validation: (Rule) => Rule.required(),
+                    }),
+                    defineField({
+                      name: 'description',
+                      title: 'Product Description',
+                      type: 'text',
+                      rows: 2,
+                      validation: (Rule) => Rule.required(),
+                    }),
+                    defineField({
+                      name: 'link',
+                      title: 'Product Link',
+                      type: 'string',
+                      description: 'Link to product page (e.g., /produits/exterieur/copanel)',
+                    }),
+                    defineField({
+                      name: 'order',
+                      title: 'Display Order',
+                      type: 'number',
+                      initialValue: 0,
+                    }),
+                  ],
+                  preview: {
+                    select: {
+                      title: 'name',
+                      subtitle: 'description',
+                    },
+                  },
+                },
+              ],
+              description: 'Products associated with this category',
+            }),
           ],
           preview: {
             select: {

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -15,6 +16,8 @@ export function Header() {
   const [megaOpen, setMegaOpen] = useState(false)
   const [activeMega, setActiveMega] = useState<string | null>(null)
   const headerRef = useRef<HTMLElement | null>(null)
+  const lastScrollY = useRef(0)
+  const scrollDirection = useRef<'up' | 'down'>('up')
   const overlayRef = useRef<HTMLDivElement | null>(null)
   const panelRef = useRef<HTMLDivElement | null>(null)
   const contentRef = useRef<HTMLDivElement | null>(null)
@@ -116,8 +119,8 @@ export function Header() {
     // Place panel flush just below navbar (no extra spacing)
     const top = Math.max(0, headerRect.bottom)
     panel.style.top = `${top}px`
-    panel.style.left = `16px`
-    panel.style.right = `16px`
+    panel.style.left = `0px`
+    panel.style.right = `0px`
     panel.style.height = `75vh`
     return { headerRect, panelRect: panel.getBoundingClientRect() }
   }
@@ -236,15 +239,88 @@ export function Header() {
     return () => window.removeEventListener("keydown", onKey)
   }, [])
 
+  // Scroll-based hide/show animation (works with Lenis smooth scroll)
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
+    const header = headerRef.current
+    if (!header) return
+
+    // Get scroll position - Lenis updates document.documentElement.scrollTop
+    const getScrollY = () => {
+      return document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset || 0
+    }
+
+    let rafId: number | null = null
+    let lastKnownScrollY = getScrollY()
+
+    const handleScroll = () => {
+      const currentScrollY = getScrollY()
+      
+      // Only process if scroll position actually changed
+      if (Math.abs(currentScrollY - lastKnownScrollY) < 1) {
+        return
+      }
+      
+      // Determine scroll direction
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        // Scrolling down and past 100px - hide header
+        if (scrollDirection.current !== 'down') {
+          scrollDirection.current = 'down'
+          gsap.to(header, {
+            y: -100,
+            opacity: 0,
+            duration: 0.5,
+            ease: "power2.out"
+          })
+        }
+      } else if (currentScrollY < lastScrollY.current || currentScrollY <= 50) {
+        // Scrolling up or near top - show header
+        if (scrollDirection.current !== 'up') {
+          scrollDirection.current = 'up'
+          gsap.to(header, {
+            y: 0,
+            opacity: 1,
+            duration: 0.5,
+            ease: "power2.out"
+          })
+        }
+      }
+
+      lastScrollY.current = currentScrollY
+      lastKnownScrollY = currentScrollY
+    }
+
+    // Set initial state
+    lastScrollY.current = getScrollY()
+    gsap.set(header, { y: 0, opacity: 1 })
+
+    // Use requestAnimationFrame to continuously check scroll position (works with Lenis)
+    const checkScroll = () => {
+      handleScroll()
+      rafId = requestAnimationFrame(checkScroll)
+    }
+    rafId = requestAnimationFrame(checkScroll)
+    
+    // Also listen to native scroll events as additional trigger
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId)
+      }
+    }
+  }, [])
+
 
   return (
     <>
       <header
         ref={headerRef}
-          className={`fixed transition z-50 w-[calc(100%-2rem)] sm:w-[calc(100%-2rem)] h-16 bg-black/70 backdrop-blur-md left-4 top-4 ${
+          className={`fixed top-0 left-0 right-0 z-50 w-full h-16 bg-black/70 backdrop-blur-md ${
             megaOpen 
-              ? 'rounded-t-2xl rounded-bl-none rounded-br-none' 
-              : 'rounded-2xl'
+              ? 'rounded-b-none' 
+              : ''
           }`}
       >
         <div className="h-full flex items-center px-6 md:px-8">
@@ -293,7 +369,7 @@ export function Header() {
       >
         <div
           ref={panelRef}
-          className="absolute left-4 right-4 bg-black/70 backdrop-blur-md overflow-hidden rounded-b-2xl rounded-tl-none rounded-tr-none"
+          className="absolute left-0 right-0 bg-black/70 backdrop-blur-md overflow-hidden rounded-tl-none rounded-tr-none"
           style={{ top: 0, height: "75vh" }}
         >
           <div ref={contentRef} className="h-full text-white pt-6 md:pt-8 px-4 md:px-6 max-w-7xl mx-auto ">

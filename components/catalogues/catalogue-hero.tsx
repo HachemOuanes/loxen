@@ -29,7 +29,7 @@ export function CatalogueHero({ onSearchChange, onCategoryFilter, selectedCatego
     <div className="bg-gray-50 pt-20 md:pt-24">
       {/* Title Section */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-12">
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-black">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black tracking-[-0.02em] leading-tight">
           Catalogues
         </h1>
       </div>
@@ -43,7 +43,7 @@ export function CatalogueHero({ onSearchChange, onCategoryFilter, selectedCatego
           {/* Filter Section */}
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-black/60" strokeWidth={1.5} />
-            <span className="text-xs tracking-[0.18em] uppercase text-black/60 font-light">
+            <span className="text-xs tracking-[0.18em] uppercase text-black/70 font-light">
               Filter:
             </span>
             <div className="relative">

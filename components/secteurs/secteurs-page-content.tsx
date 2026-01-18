@@ -29,17 +29,41 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         contactCta={shared?.contact?.cta || 'Nous contacter'}
       />
 
-      {/* Features Section - Conditionally rendered */}
-      {specific?.featuresSection?.enabled === true && 
-       specific?.featuresSection?.features && 
-       Array.isArray(specific.featuresSection.features) && 
-       specific.featuresSection.features.length > 0 && (
-        <SecteursFeaturesSection
-          features={specific.featuresSection.features.map((feature: any) => ({
-            icon: feature.icon ? urlFor(feature.icon).width(80).height(80).quality(90).url() : null,
-            label: feature.label || ''
-          }))}
-        />
+      {/* Big Text Section - Below hero section */}
+      {(() => {
+        // Debug: log the bigTextSection data
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Big Text Section data:', specific?.bigTextSection)
+        }
+        return specific?.bigTextSection?.enabled === true && (specific?.bigTextSection?.largeText || specific?.bigTextSection?.smallText)
+      })() && (
+        <section className="relative bg-white py-12 md:py-16">
+          <div className="max-w-7xl mx-auto px-4 md:px-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+              {/* Left side - Large text */}
+              {specific.bigTextSection.largeText && (
+                <div className="flex flex-col">
+                  <h2 className="text-5xl md:text-6xl lg:text-7xl text-black tracking-[-0.02em] leading-tight">
+                    {specific.bigTextSection.largeText}
+                  </h2>
+                </div>
+              )}
+
+              {/* Right side - Descriptive text */}
+              {specific.bigTextSection.smallText && (
+                <div className="flex flex-col space-y-4">
+                  {specific.bigTextSection.smallText.split('\n\n').map((paragraph: string, index: number) => (
+                    paragraph.trim() && (
+                      <p key={index} className="text-lg md:text-xl text-black/70 leading-relaxed">
+                        {paragraph.trim()}
+                      </p>
+                    )
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
       )}
 
       {/* Showcase Section - Conditionally rendered (before applications to match CMS order) */}
@@ -49,9 +73,28 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
           leftText={specific.showcaseSection.leftText}
           rightText={specific.showcaseSection.rightText}
           images={specific.showcaseSection.images && Array.isArray(specific.showcaseSection.images) 
-            ? specific.showcaseSection.images.map((img: any) => ({
-                src: img.src ? urlFor(img.src).width(1920).height(2560).quality(95).url() : '',
-                alt: img.alt || ''
+            ? specific.showcaseSection.images.map((img: any) => {
+                // Process the image - img.src is a Sanity image object
+                const imageSrc = img.src ? urlFor(img.src).width(1920).height(2560).quality(95).url() : ''
+                const hasText = img.text && (img.text.title || img.text.subtitle || img.text.description)
+                return {
+                  src: imageSrc,
+                  alt: img.alt || '',
+                  text: hasText ? {
+                    title: img.text.title || undefined,
+                    subtitle: img.text.subtitle || undefined,
+                    description: img.text.description || undefined
+                  } : undefined
+                }
+              })
+            : undefined}
+          features={specific?.featuresSection?.enabled === true && 
+                   specific?.featuresSection?.features && 
+                   Array.isArray(specific.featuresSection.features) && 
+                   specific.featuresSection.features.length > 0
+            ? specific.featuresSection.features.map((feature: any) => ({
+                icon: feature.icon ? urlFor(feature.icon).width(80).height(80).quality(90).url() : null,
+                label: feature.label || ''
               }))
             : undefined}
         />
