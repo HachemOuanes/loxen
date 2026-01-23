@@ -24,7 +24,7 @@ export function VisionSection({ data }: VisionSectionProps) {
   return (
     <section id="vision" className="w-full relative z-10 m-0 p-0 bg-gradient-to-b from-gray-100 to-white">
       <div className="w-[calc(100%-2rem)] ml-4 px-6 md:px-8 py-16 md:py-24 lg:py-32">
-        <div className="grid grid-cols-8 gap-4 items-end">
+        <div className="grid grid-cols-8 items-center">
           {/* Large text on the left */}
           {largeText && (
             <div className="flex flex-col col-span-6">
@@ -36,7 +36,7 @@ export function VisionSection({ data }: VisionSectionProps) {
 
           {/* Small text on the right, aligned with top */}
           {smallText && (
-            <div className="flex flex-col col-span-2 pb-8">
+            <div className="flex flex-col col-span-2">
               <p className="text-base md:text-xl text-black/70 leading-relaxed ">
                 {smallText}
               </p>

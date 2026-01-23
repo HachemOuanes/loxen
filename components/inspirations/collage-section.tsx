@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { urlFor } from '@/lib/sanity'
+import { ImageAlbum } from '@/components/shared/image-album'
 
 interface CollageTile {
   title: string
@@ -12,7 +12,7 @@ interface CollageTile {
 }
 
 interface CollageSectionProps {
-  images: any[]
+  images: Array<{ images: any[] }>
   tiles: CollageTile[]
   title?: string
 }
@@ -20,38 +20,7 @@ interface CollageSectionProps {
 export function CollageSection({ images, tiles, title }: CollageSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null)
 
-  // Set up parallax animations for this section
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-    const section = sectionRef.current
-    if (!section) return
-
-    const ctx = gsap.context(() => {
-      const parallaxEls = gsap.utils.toArray<HTMLElement>('.js-parallax')
-      parallaxEls.forEach((el) => {
-        const raw = Number(el.getAttribute('data-speed') || '0.25')
-        const strength = gsap.utils.clamp(0.02, 0.1, raw * 0.25) // map old speed to subtle scale
-        const img = (el.querySelector('img') as HTMLElement) || el
-        gsap.set(img, { willChange: 'transform', force3D: true, transformOrigin: '50% 50%' })
-        gsap.fromTo(
-          img,
-          { scale: 1 },
-          {
-            scale: () => 1.4 + strength,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 0.4,
-            },
-          }
-        )
-      })
-    }, section)
-
-    return () => ctx.revert()
-  }, [])
+  // Parallax zoom effects removed - keeping hover zoom only
   return (
     <section ref={sectionRef} className="relative bg-white py-8 md:py-12">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -62,13 +31,9 @@ export function CollageSection({ images, tiles, title }: CollageSectionProps) {
         )}
         <div className="grid grid-cols-2 gap-4">
           {/* Top row: two parallax images */}
-          {images?.map((image: any, imageIndex: number) => (
+          {images?.map((album: any, imageIndex: number) => (
             <div key={imageIndex} className="js-parallax relative overflow-hidden h-[95vh]" data-speed={imageIndex === 0 ? "0.35" : "0.2"}>
-              <img 
-                src={image ? urlFor(image).quality(90).url() : '/placeholder.jpg'} 
-                alt={`Détail ${title}`} 
-                className="h-full w-full object-cover" 
-              />
+              <ImageAlbum images={album?.images || []} alt={`Détail ${title || ''}`} className="h-full w-full" />
             </div>
           ))}
         </div>

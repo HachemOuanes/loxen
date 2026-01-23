@@ -8,7 +8,7 @@ export function HeaderCompact() {
   const links = [
     { href: '/secteurs', label: 'Secteurs' },
     { href: '/produits', label: 'Produits' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/#contact', label: 'Contact' },
   ]
 
   return (

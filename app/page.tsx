@@ -1,4 +1,5 @@
 import { Header } from "@/components/shared/header"
+import { BottomBar } from "@/components/shared/bottom-bar"
 import { HeroSection } from "@/components/home/hero-section"
 import { ApplicationsSection } from "@/components/home/applications-section"
 import { VisionSection } from "@/components/home/vision-section"
@@ -7,6 +8,7 @@ import { SolutionsSection } from "@/components/home/solutions-section"
 import { InspirationSection } from "@/components/home/inspiration-section"
 import { ContactSection } from "@/components/home/contact-section"
 import { Footer } from "@/components/shared/footer"
+import { JobPositionModal } from "@/components/home/job-position-modal"
 import { getSiteSettings, getPageSEO, generateMetadata as createMetadata, generateStructuredData } from "@/lib/seo"
 import {
   getHomeHeroSection,
@@ -96,6 +98,8 @@ export default async function HomePage() {
         <InspirationSection data={homeData.inspiration} />
         <ContactSection data={homeData.contact} />
         <Footer />
+        <BottomBar />
+        <JobPositionModal />
       </main>
     </>
   )

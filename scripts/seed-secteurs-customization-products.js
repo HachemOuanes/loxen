@@ -40,7 +40,7 @@ const contactSectionData = {
   title: "projet",
   description: "Besoin d'un conseil personnalisé pour votre projet ? Nos équipes vous accompagnent dans le choix des matériaux et la mise en œuvre.",
   ctaText: "Nous contacter",
-  ctaLink: "/contact"
+  ctaLink: "/#contact"
 }
 
 // Helper function to upload image to Sanity

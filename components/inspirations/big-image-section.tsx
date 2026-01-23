@@ -1,6 +1,6 @@
 "use client"
 
-import { urlFor } from '@/lib/sanity'
+import { ImageAlbum } from '@/components/shared/image-album'
 
 interface TextContent {
   title?: string
@@ -9,7 +9,7 @@ interface TextContent {
 }
 
 interface BigImageItem {
-  image: any
+  images: any[]
   leftText?: TextContent
   rightText?: TextContent
 }
@@ -39,13 +39,14 @@ export function BigImageSection({ images, alt = 'Inspiration', title }: BigImage
             <div key={index} className="space-y-8 md:space-y-12">
               {/* Image */}
               <div className="relative overflow-hidden group">
-                <img
-                  src={item.image ? urlFor(item.image).quality(100).url() : '/placeholder.jpg'}
-                  alt={`${alt} - Image ${index + 1}`}
-                  className="w-full h-[95vh] object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                  loading="lazy"
-                  decoding="async"
-                />
+                {/* Album */}
+                <div className="w-full h-[95vh]">
+                  <ImageAlbum
+                    images={item.images || []}
+                    alt={`${alt} - Image ${index + 1}`}
+                    className="h-full w-full"
+                  />
+                </div>
               </div>
 
               {/* Optional Left and Right Text */}

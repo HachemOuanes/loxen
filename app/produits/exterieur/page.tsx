@@ -1,4 +1,5 @@
 import { Header } from '@/components/shared/header'
+import { BottomBar } from '@/components/shared/bottom-bar'
 import { Footer } from '@/components/shared/footer'
 import { ExteriorProductsContent } from '@/components/products/exterior-products-content'
 
@@ -11,6 +12,7 @@ export default function ExteriorProductsPage() {
       <Header />
       <ExteriorProductsContent />
       <Footer />
+      <BottomBar />
     </main>
   )
 }

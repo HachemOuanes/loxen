@@ -116,18 +116,17 @@ export function HeroSection({ title, description, heroImage, contactLink, contac
 
         <div className="relative h-[120vh] max-w-7xl mx-auto py-20 gap-6 js-hero-text flex flex-col justify-end items-center">
           <div className='bg-white px-4 md:px-6'>
-            <div className='backdrop-blur-sm w-full py-6'>
+            <div className='backdrop-blur-sm w-full py-6 space-y-12'>
               <div className=''>
                 <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-3">
                   <span className="h-[1px] w-8 bg-black/30" /> Inspirations
                 </div>
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black tracking-[-0.02em] leading-tight mb-4">{title}</h1>
               </div>
-              <div className=" flex flex-col gap-6">
+              <div className=" grid grid-cols-2 gap-12">
                 {/* <p className="text-xl text-black/70 leading-relaxed">{description}</p> */}
-                <p className="text-lg md:text-xl text-black/70 leading-relaxed">L’impression numérique sur stratifié fait dialoguer image et matière. À partir de vos fichiers natifs, le visuel est imprimé sur un papier décor grâce à des têtes jet d’encre industrielles très haute résolution, pilotées par une chaîne graphique maîtrisée. Ce décor rejoint.</p>
-                <p className="text-lg md:text-xl text-black/70 leading-relaxed">L’impression numérique sur stratifié fait dialoguer image et matière. À partir de vos fichiers natifs, le visuel est imprimé sur un papier décor grâce à des têtes jet d’encre industrielles très haute résolution.</p>
-              
+                <p className="text-lg md:text-3xl text-black/80 leading-relaxed">Engineered stone trench grate covers. A cornerstone of any urban drainage system—redefined to be beautiful, functional, and last a lifetime.</p>
+                <p className="text-md md:text-base text-black/60 leading-relaxed">Whether it is a channel drain grate for a driveway or heavy-duty trench grating that can withstand city centre traffic, our engineered stone trench grates combine composite stonework with reinforced steel framing to create high-performance decorative grating for urban hardscapes.</p>
               </div>
             </div>
           </div>

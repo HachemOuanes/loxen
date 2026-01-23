@@ -4,6 +4,8 @@ import { useEffect, useRef, useState, useMemo } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { urlFor } from "@/lib/sanity"
+import { CTAButton } from '@/components/ui/cta-button'
+import { scrollToContact } from '@/lib/scroll-to-contact'
 
 export type Decor = {
   _id: string
@@ -143,14 +145,6 @@ export function DecorsCarousel({
             <p className="mt-3 text-lg md:text-xl text-black/70 leading-relaxed">
               Commandez dès maintenant vos échantillons gratuits et démarrez votre projet.
             </p>
-            <div className="mt-5">
-              <Link 
-                href="/contact" 
-                className="inline-block border border-black/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-black hover:text-white transition-colors"
-              >
-                Commander des échantillons
-              </Link>
-            </div>
           </div>
         </div>
 
@@ -163,7 +157,7 @@ export function DecorsCarousel({
                   key={(finish.code + finish.name) + '-' + idx}
                   className="js-decor-card basis-1/2 shrink-0 group bg-white box-border lg:basis-[calc((100%_-_1.5rem_*_4)/5)]"
                 >
-                  <div className="aspect-[4/5] overflow-hidden bg-gray-50 relative rounded-2xl border border-black/10">
+                  <div className="aspect-[4/5] overflow-hidden bg-gray-50 relative rounded-2xl border-2 border-gray-100">
                     {finish.image ? (
                       <img
                         src={urlFor(finish.image).width(320).height(400).quality(85).url()}
@@ -224,7 +218,7 @@ export function DecorsCarousel({
       {showCollectionBar && (
         <>
           {collectionName ? (
-            <div className="bg-gray-50 mt-6 p-3 border border-gray-200">
+            <div className="bg-gray-50 mt-6 p-3 border-2 border-gray-100">
               <p className="text-xs text-gray-700 text-center">
                 Collection <span className="">{collectionName}</span>
                 {actualFinishCount > 0 && <span> • {actualFinishCount} décors</span>}
@@ -238,7 +232,7 @@ export function DecorsCarousel({
               </p>
             </div>
           ) : actualFinishCount > 0 ? (
-            <div className="bg-gray-50 mt-6 p-3 border border-gray-200">
+            <div className="bg-gray-50 mt-6 p-3 border-2 border-gray-100">
               <p className="text-xs text-gray-700 text-center">
                 <Link 
                   href="/decors" 

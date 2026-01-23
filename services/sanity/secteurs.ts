@@ -4,8 +4,10 @@ import { client } from '@/lib/sanity'
 export async function getSecteurBySlug(slug: string) {
   const query = `*[_type == "secteur" && slug.current == $slug][0]{
     title,
+    type,
     description,
     heroImage,
+    showDecors,
     heroTextSections{
       section1{
         mainText,
@@ -43,7 +45,6 @@ export async function getSecteurBySlug(slug: string) {
     productsSection{
       title,
       enabled,
-      subtitle,
       description,
       products[]{
         productType,
@@ -120,7 +121,6 @@ export async function getSecteurBySlug(slug: string) {
       enabled,
       description,
       ctaText,
-      ctaLink
     }
   }`
   
@@ -138,6 +138,7 @@ export async function getSecteursForMegaMenu() {
   const query = `*[_type == "secteur"] | order(title asc){
     slug,
     title,
+    type,
     description,
     heroImage
   }`

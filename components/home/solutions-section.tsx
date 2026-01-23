@@ -167,7 +167,7 @@ export function SolutionsSection({ data }: SolutionsSectionProps) {
 
   return (
     <section ref={sectionRef} id="solutions" className="w-full relative z-10 m-0 p-0 bg-gradient-to-b from-white to-gray-100">
-      <div className="w-[calc(100%-2rem)] ml-4 px-6 md:px-8 py-16 md:py-24 lg:py-32">
+      <div className="w-[calc(100%-2rem)] ml-4 px-6 md:px-8 py-8 md:py-12 lg:py-16">
         {/* Visual Separator at Top */}
         <div className="flex items-center justify-center mb-12">
           <div className="flex items-center gap-4 w-full max-w-2xl">

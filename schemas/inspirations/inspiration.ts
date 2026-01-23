@@ -75,19 +75,24 @@ export const inspiration = defineType({
                   of: [{ type: 'string' }],
                 }),
                 defineField({
-                  name: 'image',
-                  title: 'Image',
-                  type: 'image',
-                  options: {
-                    hotspot: true,
-                  },
+                  name: 'images',
+                  title: 'Album Images',
+                  type: 'array',
+                  description: 'Add one or more images. The UI will display them as an album with a small selector.',
+                  of: [
+                    {
+                      type: 'image',
+                      options: { hotspot: true },
+                    },
+                  ],
+                  validation: (Rule) => Rule.min(1),
                 }),
               ],
               preview: {
                 select: {
                   title: 'title',
                   subtitle: 'subtitle',
-                  media: 'image',
+                  media: 'images.0',
                 },
               },
             },
@@ -129,9 +134,26 @@ export const inspiration = defineType({
           type: 'array',
           of: [
             {
-              type: 'image',
-              options: {
-                hotspot: true,
+              type: 'object',
+              fields: [
+                defineField({
+                  name: 'images',
+                  title: 'Album Images',
+                  type: 'array',
+                  of: [
+                    {
+                      type: 'image',
+                      options: { hotspot: true },
+                    },
+                  ],
+                  validation: (Rule) => Rule.min(1),
+                }),
+              ],
+              preview: {
+                select: { media: 'images.0' },
+                prepare({ media }) {
+                  return { title: 'Collage Album', media }
+                },
               },
             },
           ],
@@ -181,8 +203,15 @@ export const inspiration = defineType({
       },
     }),
     defineField({
+      name: 'showFinitions',
+      title: 'Show Finitions Section',
+      type: 'boolean',
+      description: 'Toggle to display/hide the Finitions section on this inspiration page',
+      initialValue: true,
+    }),
+    defineField({
       name: 'bigImages',
-      title: 'Big Images (Below Collage)',
+      title: 'Big Images Section',
       type: 'object',
       fields: [
         defineField({
@@ -200,13 +229,17 @@ export const inspiration = defineType({
               type: 'object',
               fields: [
                 defineField({
-                  name: 'image',
-                  title: 'Image',
-                  type: 'image',
-                  options: {
-                    hotspot: true,
-                  },
-                  validation: (Rule) => Rule.required(),
+                  name: 'images',
+                  title: 'Album Images',
+                  type: 'array',
+                  description: 'Add one or more images. The UI will display them as an album with a small selector.',
+                  of: [
+                    {
+                      type: 'image',
+                      options: { hotspot: true },
+                    },
+                  ],
+                  validation: (Rule) => Rule.min(1).required(),
                 }),
                 defineField({
                   name: 'leftText',
@@ -257,7 +290,7 @@ export const inspiration = defineType({
               ],
               preview: {
                 select: {
-                  media: 'image',
+                  media: 'images.0',
                 },
                 prepare({ media }) {
                   return {
@@ -410,13 +443,6 @@ export const inspiration = defineType({
       },
     }),
     defineField({
-      name: 'showFinitions',
-      title: 'Show Finitions Section',
-      type: 'boolean',
-      description: 'Toggle to display/hide the Finitions section on this inspiration page',
-      initialValue: true,
-    }),
-    defineField({
       name: 'showDecors',
       title: 'Show Decors Section',
       type: 'boolean',
@@ -438,12 +464,6 @@ export const inspiration = defineType({
           title: 'Contact Description',
           type: 'text',
           rows: 3,
-        }),
-        defineField({
-          name: 'contactLink',
-          title: 'Contact Link',
-          type: 'string',
-          initialValue: '/contact',
         }),
         defineField({
           name: 'contactCta',

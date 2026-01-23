@@ -13,8 +13,10 @@ interface ContactSectionProps {
 
 export function ContactSection({ data }: ContactSectionProps) {
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
+    company: "",
     message: "",
   })
 
@@ -22,7 +24,7 @@ export function ContactSection({ data }: ContactSectionProps) {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
+    // TODO: Implement form submission
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -32,6 +34,7 @@ export function ContactSection({ data }: ContactSectionProps) {
     })
   }
 
+
   // Don't display section if no data at all
   if (!contactInfo) {
     return null
@@ -39,6 +42,7 @@ export function ContactSection({ data }: ContactSectionProps) {
 
   return (
     <section id="contact" className="py-32 bg-foreground text-background relative overflow-hidden">
+      {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.02]">
         <svg width="100%" height="100%" className="absolute inset-0">
           <defs>
@@ -51,6 +55,7 @@ export function ContactSection({ data }: ContactSectionProps) {
       </div>
 
       <div className="w-[calc(100%-2rem)] ml-4 px-6 md:px-8 relative z-10">
+        {/* Centered Header with Decorative Elements */}
         <div className="text-center mb-20 relative">
           <div className="flex items-center justify-center mb-12">
             <svg width="120" height="2" className="text-background/20">
@@ -71,7 +76,7 @@ export function ContactSection({ data }: ContactSectionProps) {
             Nous <span className="font-extralight italic text-background/70">Contacter</span>
           </h2>
 
-          <p className="text-base md:text-lg text-background/70 max-w-3xl mx-auto leading-relaxed ">
+          <p className="text-base md:text-lg text-background/70 max-w-3xl mx-auto leading-relaxed">
             Prêt à transformer votre vision architecturale ? Discutons de votre projet.
           </p>
         </div>
@@ -79,25 +84,44 @@ export function ContactSection({ data }: ContactSectionProps) {
         <div>
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-16 items-start">
             {/* Contact Form */}
-            <div className="lg:col-span-3 lg:ml-24">
+            <div className="lg:col-span-3">
               <form onSubmit={handleSubmit} className="space-y-8">
+                {/* First Row: Prénom - Nom */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-3">
-                    <label className="text-sm  text-background/70 tracking-widest uppercase">
-                      Nom
+                    <label className="text-sm text-background/70 tracking-widest uppercase">
+                      Prénom
                     </label>
                     <Input
                       type="text"
-                      name="name"
-                      placeholder="Votre nom"
-                      value={formData.name}
+                      name="firstName"
+                      placeholder="Votre prénom"
+                      value={formData.firstName}
                       onChange={handleChange}
-                      className="bg-transparent border-0 border-b border-background/20 text-background placeholder:text-background/40 focus:border-background/60 h-14 rounded-none px-0 text-lg  focus-visible:ring-0"
+                      className="bg-transparent border-0 border-b border-background/20 text-background placeholder:text-background/40 focus:border-background/60 h-14 rounded-none px-0 text-lg focus-visible:ring-0"
                       required
                     />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-sm  text-background/70 tracking-widest uppercase">
+                    <label className="text-sm text-background/70 tracking-widest uppercase">
+                      Nom
+                    </label>
+                    <Input
+                      type="text"
+                      name="lastName"
+                      placeholder="Votre nom"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      className="bg-transparent border-0 border-b border-background/20 text-background placeholder:text-background/40 focus:border-background/60 h-14 rounded-none px-0 text-lg focus-visible:ring-0"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                {/* Second Row: Email - Société */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label className="text-sm text-background/70 tracking-widest uppercase">
                       Email
                     </label>
                     <Input
@@ -106,14 +130,29 @@ export function ContactSection({ data }: ContactSectionProps) {
                       placeholder="votre@email.com"
                       value={formData.email}
                       onChange={handleChange}
-                      className="bg-transparent border-0 border-b border-background/20 text-background placeholder:text-background/40 focus:border-background/60 h-14 rounded-none px-0 text-lg  focus-visible:ring-0"
+                      className="bg-transparent border-0 border-b border-background/20 text-background placeholder:text-background/40 focus:border-background/60 h-14 rounded-none px-0 text-lg focus-visible:ring-0"
                       required
                     />
                   </div>
+                  <div className="space-y-3">
+                    <label className="text-sm text-background/70 tracking-widest uppercase">
+                      Société
+                    </label>
+                    <Input
+                      type="text"
+                      name="company"
+                      placeholder="Nom de votre société (optionnel)"
+                      value={formData.company}
+                      onChange={handleChange}
+                      className="bg-transparent border-0 border-b border-background/20 text-background placeholder:text-background/40 focus:border-background/60 h-14 rounded-none px-0 text-lg focus-visible:ring-0"
+                    />
+                  </div>
                 </div>
+                
+                {/* Third Row: Description */}
                 <div className="space-y-3">
-                  <label className="text-sm  text-background/70 tracking-widest uppercase">
-                    Message
+                  <label className="text-sm text-background/70 tracking-widest uppercase">
+                    Description
                   </label>
                   <Textarea
                     name="message"
@@ -121,10 +160,11 @@ export function ContactSection({ data }: ContactSectionProps) {
                     value={formData.message}
                     onChange={handleChange}
                     rows={6}
-                    className="bg-transparent border-0 border-b border-background/20 text-background placeholder:text-background/40 focus:border-background/60 resize-none rounded-none px-0 text-lg  focus-visible:ring-0"
+                    className="bg-transparent border-0 border-b border-background/20 text-background placeholder:text-background/40 focus:border-background/60 resize-none rounded-none px-0 text-lg focus-visible:ring-0"
                     required
                   />
                 </div>
+                
                 <div className="pt-8">
                   <CTAButton
                     type="submit"
@@ -136,7 +176,7 @@ export function ContactSection({ data }: ContactSectionProps) {
               </form>
             </div>
 
-            <div className="lg:col-span-2 lg:mr-24 space-y-12">
+            <div className="lg:col-span-2 space-y-12">
               <div className="space-y-10">
                 {contactInfo.email && (
                   <div className="group">

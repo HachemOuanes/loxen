@@ -16,8 +16,9 @@ export async function getInspirationBySlug(slug: string) {
       heroImage,
       bigImages{
         title,
+        enabled,
         images[]{
-          image,
+          images[],
           leftText{
             title,
             subtitle,
@@ -38,13 +39,13 @@ export async function getInspirationBySlug(slug: string) {
           subtitle,
           description,
           features,
-          image
+          images[]
         }
       },
       collageSection{
         title,
         enabled,
-        images[],
+        images[]{ images[] },
         tiles[]{
           title,
           subtitle,
@@ -55,7 +56,7 @@ export async function getInspirationBySlug(slug: string) {
         title,
         enabled,
         images[]{
-          image,
+          images[],
           leftText{
             title,
             subtitle,
@@ -93,7 +94,6 @@ export async function getInspirationBySlug(slug: string) {
         title,
         enabled,
         description,
-        contactLink,
         contactCta
       },
       showFinitions,

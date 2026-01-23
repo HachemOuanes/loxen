@@ -3,6 +3,7 @@ import { getInspirationBySlug, getInspirationSlugs, getFinitionTypes } from '@/s
 import { getRandomDecors } from '@/services/sanity/decors'
 import { InspirationPageContent } from '@/components/inspirations/inspiration-page-content'
 import { Header } from '@/components/shared/header'
+import { BottomBar } from '@/components/shared/bottom-bar'
 import { Footer } from '@/components/shared/footer'
 
 // Revalidate every 60 seconds
@@ -48,7 +49,7 @@ export default async function InspirationPage({ params }: { params: { slug: stri
                 decors: randomDecors
             },
             contact: {
-                link: inspiration.contactSection?.contactLink || '/contact',
+                link: '/#contact',
                 cta: inspiration.contactSection?.contactCta || 'Nous contacter'
             }
         }
@@ -58,6 +59,7 @@ export default async function InspirationPage({ params }: { params: { slug: stri
                 <Header />
                 <InspirationPageContent shared={shared} specific={inspiration} />
                 <Footer />
+                <BottomBar />
             </main>
         )
     } catch (error) {

@@ -20,6 +20,19 @@ export const secteur = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'type',
+      title: 'Type',
+      type: 'string',
+      description: 'Type of secteur (Métier or Secteur)',
+      options: {
+        list: [
+          { title: 'Métier', value: 'metier' },
+          { title: 'Secteur', value: 'secteur' },
+        ],
+      },
+      initialValue: 'secteur',
+    }),
+    defineField({
       name: 'description',
       title: 'Description',
       type: 'text',
@@ -97,6 +110,13 @@ export const secteur = defineType({
       },
     }),
     defineField({
+      name: 'showDecors',
+      title: 'Show Decors Section',
+      type: 'boolean',
+      description: 'Toggle to display/hide the Decors section on this secteur page',
+      initialValue: true,
+    }),
+    defineField({
       name: 'bigTextSection',
       title: 'Big Text Section',
       type: 'object',
@@ -172,7 +192,124 @@ export const secteur = defineType({
         }),
       ],
     }),
-    // Showcase Section (placed before applications to match CMS order)
+    defineField({
+      name: 'showcaseSection',
+      title: 'Showcase Section',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'heroImage',
+          title: 'Showcase Hero Image',
+          type: 'image',
+          options: {
+            hotspot: true,
+          },
+        }),
+        defineField({
+          name: 'leftText',
+          title: 'Left Text Block',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'title',
+              title: 'Title',
+              type: 'string',
+            }),
+            defineField({
+              name: 'subtitle',
+              title: 'Subtitle',
+              type: 'string',
+            }),
+            defineField({
+              name: 'description',
+              title: 'Description',
+              type: 'text',
+              rows: 3,
+            }),
+          ],
+        }),
+        defineField({
+          name: 'rightText',
+          title: 'Right Text Block',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'title',
+              title: 'Title',
+              type: 'string',
+            }),
+            defineField({
+              name: 'subtitle',
+              title: 'Subtitle',
+              type: 'string',
+            }),
+            defineField({
+              name: 'description',
+              title: 'Description',
+              type: 'text',
+              rows: 3,
+            }),
+          ],
+        }),
+        defineField({
+          name: 'images',
+          title: 'Showcase Images',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({
+                  name: 'src',
+                  title: 'Image',
+                  type: 'image',
+                  options: {
+                    hotspot: true,
+                  },
+                }),
+                defineField({
+                  name: 'alt',
+                  title: 'Alt Text',
+                  type: 'string',
+                }),
+                defineField({
+                  name: 'text',
+                  title: 'Text',
+                  type: 'object',
+                  description: 'Text displayed next to the image (left for first image, right for second image)',
+                  fields: [
+                    defineField({
+                      name: 'subtitle',
+                      title: 'Subtitle',
+                      type: 'string',
+                      description: 'Small uppercase text',
+                    }),
+                    defineField({
+                      name: 'title',
+                      title: 'Title',
+                      type: 'string',
+                    }),
+                    defineField({
+                      name: 'description',
+                      title: 'Description',
+                      type: 'text',
+                      rows: 3,
+                    }),
+                  ],
+                }),
+              ],
+            },
+          ],
+        }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Section',
+          type: 'boolean',
+          description: 'Toggle to display/hide this section on the secteur page',
+          initialValue: true,
+        }),
+      ],
+    }),
     // Applications – Primary (image right / text left)
     defineField({
       name: 'applicationsPrimary',
@@ -312,124 +449,6 @@ export const secteur = defineType({
       ],
     }),
     defineField({
-      name: 'showcaseSection',
-      title: 'Showcase Section',
-      type: 'object',
-      fields: [
-        defineField({
-          name: 'heroImage',
-          title: 'Showcase Hero Image',
-          type: 'image',
-          options: {
-            hotspot: true,
-          },
-        }),
-        defineField({
-          name: 'leftText',
-          title: 'Left Text Block',
-          type: 'object',
-          fields: [
-            defineField({
-              name: 'title',
-              title: 'Title',
-              type: 'string',
-            }),
-            defineField({
-              name: 'subtitle',
-              title: 'Subtitle',
-              type: 'string',
-            }),
-            defineField({
-              name: 'description',
-              title: 'Description',
-              type: 'text',
-              rows: 3,
-            }),
-          ],
-        }),
-        defineField({
-          name: 'rightText',
-          title: 'Right Text Block',
-          type: 'object',
-          fields: [
-            defineField({
-              name: 'title',
-              title: 'Title',
-              type: 'string',
-            }),
-            defineField({
-              name: 'subtitle',
-              title: 'Subtitle',
-              type: 'string',
-            }),
-            defineField({
-              name: 'description',
-              title: 'Description',
-              type: 'text',
-              rows: 3,
-            }),
-          ],
-        }),
-        defineField({
-          name: 'images',
-          title: 'Showcase Images',
-          type: 'array',
-          of: [
-            {
-              type: 'object',
-              fields: [
-                defineField({
-                  name: 'src',
-                  title: 'Image',
-                  type: 'image',
-                  options: {
-                    hotspot: true,
-                  },
-                }),
-                defineField({
-                  name: 'alt',
-                  title: 'Alt Text',
-                  type: 'string',
-                }),
-                defineField({
-                  name: 'text',
-                  title: 'Text',
-                  type: 'object',
-                  description: 'Text displayed next to the image (left for first image, right for second image)',
-                  fields: [
-                    defineField({
-                      name: 'subtitle',
-                      title: 'Subtitle',
-                      type: 'string',
-                      description: 'Small uppercase text',
-                    }),
-                    defineField({
-                      name: 'title',
-                      title: 'Title',
-                      type: 'string',
-                    }),
-                    defineField({
-                      name: 'description',
-                      title: 'Description',
-                      type: 'text',
-                      rows: 3,
-                    }),
-                  ],
-                }),
-              ],
-            },
-          ],
-        }),
-        defineField({
-          name: 'enabled',
-          title: 'Show Section',
-          type: 'boolean',
-          description: 'Toggle to display/hide this section on the secteur page',
-          initialValue: true,
-        }),
-      ],
-    }),
-    defineField({
       name: 'customizationSection',
       title: 'Customization Section',
       type: 'object',
@@ -496,12 +515,6 @@ export const secteur = defineType({
           title: 'Section Title',
           type: 'string',
           initialValue: 'Produits',
-        }),
-        defineField({
-          name: 'subtitle',
-          title: 'Subtitle',
-          type: 'string',
-          description: 'Small uppercase text above the title',
         }),
         defineField({
           name: 'description',
@@ -588,13 +601,6 @@ export const secteur = defineType({
           type: 'string',
           description: 'Text displayed on the call-to-action button',
           initialValue: 'Nous contacter',
-        }),
-        defineField({
-          name: 'ctaLink',
-          title: 'CTA Link',
-          type: 'string',
-          description: 'URL for the call-to-action button',
-          initialValue: '/contact',
         }),
         defineField({
           name: 'enabled',

@@ -7,9 +7,9 @@ import { BigImageSection } from '@/components/inspirations/big-image-section'
 import { SplitSection } from '@/components/inspirations/split-section'
 import { GridSection } from '@/components/inspirations/grid-section'
 import { FinitionsSection } from '@/components/inspirations/finitions-section'
-import { DecorsDispoGrid } from '@/components/inspirations/decors-dispo-grid'
+import { DecorsSection } from '@/components/shared/decors-section'
 import { ArtisticCtaSection } from '@/components/shared/artistic-cta-section'
-import { useAnimations } from '@/components/inspirations/use-animations'
+import { useAnimations } from '@/components/shared/use-animations'
 
 interface InspirationPageContentProps {
   shared: any
@@ -26,12 +26,12 @@ export function InspirationPageContent({ shared, specific }: InspirationPageCont
         title={specific?.title || 'Inspiration'}
         description={specific?.description || ''}
         heroImage={specific?.heroImage}
-        contactLink={shared?.contact?.link || '/contact'}
+        contactLink={shared?.contact?.link || '/#contact'}
         contactCta={shared?.contact?.cta || 'Nous contacter'}
       />
 
       {/* Applications Section - Conditionally rendered */}
-      {specific?.applicationsSection?.enabled !== false && specific?.applicationsSection && (
+      {specific?.applicationsSection?.enabled === true && specific?.applicationsSection && (
         <ApplicationsSection
           title={specific.applicationsSection.title}
           items={specific.applicationsSection.items || []}
@@ -39,16 +39,24 @@ export function InspirationPageContent({ shared, specific }: InspirationPageCont
       )}
 
       {/* Collage Section - Conditionally rendered */}
-      {specific?.collageSection?.enabled !== false && specific?.collageSection && (
+      {specific?.collageSection?.enabled === true && specific?.collageSection && (
         <CollageSection
           images={specific.collageSection.images || []}
           tiles={specific.collageSection.tiles || []}
           title={specific.collageSection.title}
         />
       )}
+      
+      {/* Finitions Section - Conditionally rendered */}
+      {specific?.showFinitions === true && (
+        <FinitionsSection
+          title={shared?.typesFinitions?.title || 'Les types de finitions'}
+          items={shared?.typesFinitions?.items || []}
+        />
+      )}
 
       {/* Big Images Section - Conditionally rendered */}
-      {specific?.bigImages?.enabled !== false && specific?.bigImages?.images && specific.bigImages.images.length > 0 && (
+      {specific?.bigImages?.enabled === true && specific?.bigImages?.images && specific.bigImages.images.length > 0 && (
         <BigImageSection
           images={specific.bigImages.images}
           alt={specific?.title || 'Inspiration'}
@@ -57,7 +65,7 @@ export function InspirationPageContent({ shared, specific }: InspirationPageCont
       )}
 
       {/* Split Section - Conditionally rendered */}
-      {specific?.splitSection?.enabled !== false && specific?.splitSection && (
+      {specific?.splitSection?.enabled === true && specific?.splitSection && (
         <SplitSection
           topImage={specific.splitSection.topImage}
           topText={specific.splitSection.topText}
@@ -67,7 +75,7 @@ export function InspirationPageContent({ shared, specific }: InspirationPageCont
       )}
 
       {/* Grid Section - Conditionally rendered */}
-      {specific?.gridSection?.enabled !== false && specific?.gridSection && (
+      {specific?.gridSection?.enabled === true && specific?.gridSection && (
         <GridSection
           text={specific.gridSection.text}
           images={specific.gridSection.images || []}
@@ -75,29 +83,20 @@ export function InspirationPageContent({ shared, specific }: InspirationPageCont
         />
       )}
 
-      {/* Finitions Section - Conditionally rendered */}
-      {specific?.showFinitions !== false && (
-        <FinitionsSection
-          title={shared?.typesFinitions?.title || 'Les types de finitions'}
-          items={shared?.typesFinitions?.items || []}
-        />
-      )}
+
 
       {/* Decors Section - Conditionally rendered based on toggle */}
-      {specific?.showDecors !== false && (
-        <section id="examples" className="relative bg-white py-8 md:py-12">
-          <div className="max-w-7xl mx-auto px-4 md:px-6">
-            <DecorsDispoGrid slug={shared?.finitionsDisponibles?.productSlug || "meg-standard"} shared={shared} />
-          </div>
-        </section>
-      )}
+      <DecorsSection
+        enabled={specific?.showDecors === true}
+        slug={shared?.finitionsDisponibles?.productSlug || "meg-standard"}
+        shared={shared}
+      />
 
       {/* Contact Section - Conditionally rendered */}
-      {specific?.contactSection?.enabled !== false && (
+      {specific?.contactSection?.enabled === true && (
         <ArtisticCtaSection
           title={specific?.contactSection?.title || specific?.title || 'projet'}
           description={specific?.contactSection?.description || "Besoin d'un rendu marbre ou bois, de coupes spéciales ou d'un format sur-mesure ? Nos équipes vous accompagnent dans le choix des finitions et la mise en œuvre HPL."}
-          contactLink={specific?.contactSection?.contactLink || shared?.contact?.link || '/contact'}
           contactCta={specific?.contactSection?.contactCta || shared?.contact?.cta || 'Nous contacter'}
         />
       )}

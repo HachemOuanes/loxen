@@ -11,7 +11,7 @@ const ctaButtonVariants = cva(
           black: "bg-black text-white hover:bg-black/90",
           white: "bg-white text-black hover:bg-white/90",
           blurred: "bg-black/70 backdrop-blur-md text-white hover:bg-black/80",
-          transparent: "bg-transparent border-2 border-black/20 text-black hover:bg-black/10 hover:border-black/40",
+          transparent: "bg-white text-black border-2 border-gray-200",
         },
       },
     defaultVariants: {

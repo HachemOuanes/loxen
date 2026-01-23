@@ -1,14 +1,14 @@
 "use client"
 
-import { urlFor } from '@/lib/sanity'
 import { useEffect, useRef, useState } from 'react'
+import { ImageAlbum } from '@/components/shared/image-album'
 
 interface ApplicationItem {
   title: string
   subtitle: string
   description: string
   features: string[]
-  image: any
+  images: any[]
 }
 
 interface ApplicationsSectionProps {
@@ -145,11 +145,7 @@ export function ApplicationsSection({ title, items }: ApplicationsSectionProps) 
                     style={{ marginTop: `${marginTop}px` }}
                   >
                     <div className="relative w-full overflow-hidden h-[95vh]" style={{ minHeight: '50vh' }}>
-                      <img 
-                        src={item.image ? urlFor(item.image).quality(90).url() : '/placeholder.jpg'} 
-                        alt={item.title} 
-                        className="h-full w-full object-cover" 
-                      />
+                      <ImageAlbum images={item.images} alt={item.title} className="h-full w-full" />
                     </div>
                   </div>
                 )
@@ -222,11 +218,7 @@ export function ApplicationsSection({ title, items }: ApplicationsSectionProps) 
                     style={{ marginTop: `${marginTop}px` }}
                   >
                     <div className="relative w-full overflow-hidden h-[95vh]" style={{ minHeight: '50vh' }}>
-                      <img 
-                        src={item.image ? urlFor(item.image).quality(90).url() : '/placeholder.jpg'} 
-                        alt={item.title} 
-                        className="h-full w-full object-cover" 
-                      />
+                      <ImageAlbum images={item.images} alt={item.title} className="h-full w-full" />
                     </div>
                   </div>
                 )

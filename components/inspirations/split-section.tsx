@@ -30,7 +30,7 @@ export function SplitSection({ topImage, topText, bottomImage, title }: SplitSec
             <img
               src={topImage ? urlFor(topImage).quality(100).url() : '/placeholder.jpg'}
               alt={topText?.title || 'Detail'}
-              className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-110"
+              className="h-full w-full object-cover"
               loading="lazy"
               decoding="async"
             />

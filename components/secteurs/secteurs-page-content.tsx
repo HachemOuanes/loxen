@@ -1,12 +1,12 @@
 "use client"
 
 import { SecteursHeroSection } from '@/components/secteurs/secteurs-hero-section'
-import { SecteursFeaturesSection } from '@/components/secteurs/secteurs-features-section'
 import { SecteursApplicationsSection } from '@/components/secteurs/secteurs-applications-section'
 import { SecteursShowcaseSection } from '@/components/secteurs/secteurs-showcase-section'
 import { SecteursCustomizationSection } from '@/components/secteurs/secteurs-customization-section'
 import { SecteursProductsSection } from '@/components/secteurs/secteurs-products-section'
-import { useAnimations } from '@/components/inspirations/use-animations'
+import { DecorsSection } from '@/components/shared/decors-section'
+import { useAnimations } from '@/components/shared/use-animations'
 import { ArtisticCtaSection } from '@/components/shared/artistic-cta-section'
 import { urlFor } from '@/lib/sanity'
 
@@ -25,18 +25,19 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         title={specific?.title || 'Secteurs'}
         heroTextSections={specific?.heroTextSections}
         heroImage={specific?.heroImage ? urlFor(specific.heroImage).quality(100).url() : ''}
-        contactLink={shared?.contact?.link || '/contact'}
+        contactLink={shared?.contact?.link || '/#contact'}
         contactCta={shared?.contact?.cta || 'Nous contacter'}
       />
 
+      {/* Decors Section - Conditionally rendered based on toggle */}
+      <DecorsSection 
+        enabled={specific?.showDecors === true}
+        slug={shared?.finitionsDisponibles?.productSlug || "meg-standard"}
+        shared={shared}
+      />
+
       {/* Big Text Section - Below hero section */}
-      {(() => {
-        // Debug: log the bigTextSection data
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Big Text Section data:', specific?.bigTextSection)
-        }
-        return specific?.bigTextSection?.enabled === true && (specific?.bigTextSection?.largeText || specific?.bigTextSection?.smallText)
-      })() && (
+      {specific?.bigTextSection?.enabled === true && (specific?.bigTextSection?.largeText || specific?.bigTextSection?.smallText) && (
         <section className="relative bg-white py-12 md:py-16">
           <div className="max-w-7xl mx-auto px-4 md:px-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -140,7 +141,6 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
       {specific?.productsSection?.enabled === true && specific?.productsSection && (
         <SecteursProductsSection
           title={specific.productsSection.title || "Produits"}
-          subtitle={specific.productsSection.subtitle}
           description={specific.productsSection.description}
           products={specific.productsSection.products?.map((item: any) => ({
             _id: item.product?._id || '',
@@ -159,7 +159,6 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         <ArtisticCtaSection
           title={specific?.contactSection?.title || specific?.title || 'projet'}
           description={specific?.contactSection?.description || "Besoin d'un conseil personnalisé pour votre projet ? Nos équipes vous accompagnent dans le choix des matériaux et la mise en œuvre."}
-          contactLink={specific?.contactSection?.ctaLink || shared?.contact?.link || '/contact'}
           contactCta={specific?.contactSection?.ctaText || shared?.contact?.cta || 'Nous contacter'}
         />
       )}

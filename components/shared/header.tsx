@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { urlFor } from "@/lib/sanity"
 import { Menu, X } from "lucide-react"
 import { getSecteursForMegaMenu, getExteriorProductsForMegaMenu, getInteriorProductsForMegaMenu, getInspirationsForMegaMenu, getCataloguesForMegaMenu } from '@/services/sanity'
+import { scrollToContact } from "@/lib/scroll-to-contact"
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -105,7 +106,7 @@ export function Header() {
     { key: "produits", label: "Produits", href: "/" },
     { key: "inspirations", label: "Inspirations", href: "/" },
     { key: "catalogues", label: "Catalogues", href: "/catalogues" },
-    { key: "contact", label: "Contact", href: "/contact" },
+    { key: "contact", label: "Contact", href: "/#contact" },
   ]
 
 
@@ -121,7 +122,7 @@ export function Header() {
     panel.style.top = `${top}px`
     panel.style.left = `0px`
     panel.style.right = `0px`
-    panel.style.height = `75vh`
+    panel.style.height = `80vh`
     return { headerRect, panelRect: panel.getBoundingClientRect() }
   }
 
@@ -338,6 +339,12 @@ export function Header() {
                 key={item.label}
                 className="transition-all duration-300 font-light text-xs lg:text-sm tracking-[0.1em] uppercase hover:opacity-60 text-white drop-shadow-md cursor-pointer"
                 onMouseEnter={() => openMega(item.key)}
+                onClick={() => {
+                  if (item.key === 'contact') {
+                    closeMega()
+                    scrollToContact()
+                  }
+                }}
               >
                 {item.label}
               </div>
@@ -370,9 +377,9 @@ export function Header() {
         <div
           ref={panelRef}
           className="absolute left-0 right-0 bg-black/70 backdrop-blur-md overflow-hidden rounded-tl-none rounded-tr-none"
-          style={{ top: 0, height: "75vh" }}
+          style={{ top: 0, height: "80vh" }}
         >
-          <div ref={contentRef} className="h-full text-white pt-6 md:pt-8 px-4 md:px-6 max-w-7xl mx-auto ">
+          <div ref={contentRef} className="h-full text-white pt-6 md:pt-8 px-4 md:px-6 max-w-7xl mx-auto overflow-y-auto">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
               {activeMega === "produits" && (
                 <>
@@ -459,28 +466,68 @@ export function Header() {
 
               {activeMega === "secteurs" && (
                 <>
-                  <div className="md:col-span-4">
-                    <h3 className="text-2xl font-light">Secteurs</h3>
-                    <p className="text-white/70 mt-2">Intérieur, extérieur et projets spécifiques.</p>
-                    <a href="/secteurs" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Explorer</a>
+                  <div className="md:col-span-4 flex flex-col">
+                    <div>
+                      <h3 className="text-2xl font-light">Secteurs</h3>
+                      <p className="text-white/70 mt-2">Intérieur, extérieur et projets spécifiques.</p>
+                      <a href="/secteurs" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Explorer</a>
+                    </div>
+                    
+                    {/* Métier items below Explorer button - Product-like design */}
+                    {(() => {
+                      const metierItems = secteurs.filter((s) => s.type === 'metier')
+                      if (metierItems.length === 0) return null
+                      
+                      return (
+                        <div className="mt-6 flex flex-col gap-3">
+                          {metierItems.map((s) => (
+                            <a 
+                              key={s.slug?.current || s.slug} 
+                              href={`/secteurs/${s.slug?.current || s.slug}`} 
+                              className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-2 flex flex-col h-32"
+                            >
+                              <div className="aspect-[4/3] overflow-hidden border border-white/10 flex-1">
+                                {s.heroImage ? (
+                                  <img
+                                    src={urlFor(s.heroImage).width(480).height(360).quality(80).url()}
+                                    alt={s.title}
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full bg-white/5" />
+                                )}
+                              </div>
+                              <div className="mt-2">
+                                <div className="text-sm text-white leading-tight">{s.title}</div>
+                                {s.description && (
+                                  <div className="text-xs text-white/60 mt-1 line-clamp-1">{s.description}</div>
+                                )}
+                              </div>
+                            </a>
+                          ))}
+                        </div>
+                      )
+                    })()}
                   </div>
-                  <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
-                    {secteurs.length === 0 ? (
-                      <div className="col-span-2 text-white/60 text-sm">Secteurs en cours de chargement...</div>
-                    ) : (
-                      secteurs.map((s) => (
-                        <a key={s.slug?.current || s.slug} href={`/secteurs/${s.slug?.current || s.slug}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors overflow-hidden">
-                          <div className="relative h-36 overflow-hidden">
+                  <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6 self-start">
+                    {(() => {
+                      const secteurItems = secteurs.filter((s) => s.type === 'secteur' || !s.type)
+                      if (secteurItems.length === 0) {
+                        return <div className="col-span-2 text-white/60 text-sm">Secteurs en cours de chargement...</div>
+                      }
+                      return secteurItems.map((s) => (
+                        <a key={s.slug?.current || s.slug} href={`/secteurs/${s.slug?.current || s.slug}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors overflow-hidden flex flex-col">
+                          <div className="relative aspect-[16/9] overflow-hidden border border-white/10 m-2">
                             <img src={urlFor(s.heroImage).width(400).height(200).url()} alt={s.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
                           </div>
-                          <div className="p-4">
-                            <div className="text-base font-medium text-white">{s.title}</div>
-                            <div className="mt-2 text-sm text-white/60 line-clamp-2">{s.description}</div>
+                          <div className="px-2 pb-2">
+                            <div className="text-base font-medium text-white truncate">{s.title}</div>
+                            <div className="mt-1 text-sm text-white/60 line-clamp-2">{s.description}</div>
                           </div>
                         </a>
                       ))
-                    )}
+                    })()}
                   </div>
                 </>
               )}
@@ -492,13 +539,13 @@ export function Header() {
                     <p className="text-white/70 mt-2">Découvrez nos réalisations HPL dans différents espaces.</p>
                     <a href="/inspirations" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Explorer</a>
                   </div>
-                  <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
+                  <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 self-start">
                     {inspirations.length === 0 ? (
                       <div className="col-span-2 text-white/60 text-sm">Inspirations en cours de chargement...</div>
                     ) : (
                       inspirations.map((inspiration) => (
-                        <a key={inspiration._id} href={`/inspirations/${inspiration.slug?.current || inspiration.slug}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors overflow-hidden h-full">
-                          <div className="relative h-36 overflow-hidden">
+                        <a key={inspiration._id} href={`/inspirations/${inspiration.slug?.current || inspiration.slug}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors overflow-hidden flex flex-col">
+                          <div className="relative aspect-[16/9] overflow-hidden border border-white/10 m-2">
                             {inspiration.heroImage ? (
                               <img
                                 src={urlFor(inspiration.heroImage).width(400).height(200).url()}
@@ -510,9 +557,9 @@ export function Header() {
                             )}
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
                           </div>
-                          <div className="p-4">
-                            <div className="text-base font-medium text-white">{inspiration.title}</div>
-                            <div className="mt-2 text-sm text-white/60 line-clamp-2">{inspiration.description}</div>
+                          <div className="px-2 pb-2">
+                            <div className="text-base font-medium text-white truncate">{inspiration.title}</div>
+                            <div className="mt-1 text-sm text-white/60 line-clamp-2">{inspiration.description}</div>
                           </div>
                         </a>
                       ))
@@ -590,7 +637,13 @@ export function Header() {
                 style={{
                   transitionDelay: isMobileMenuOpen ? `${index * 100}ms` : "0ms",
                 }}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={(e) => {
+                  setIsMobileMenuOpen(false)
+                  if (item.key === 'contact') {
+                    e.preventDefault()
+                    scrollToContact()
+                  }
+                }}
               >
                 {item.label}
               </a>

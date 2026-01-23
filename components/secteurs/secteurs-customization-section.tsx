@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { CTAButton } from '@/components/ui/cta-button'
 
 interface SecteursCustomizationSectionProps {
   title: string
@@ -73,12 +74,14 @@ export function SecteursCustomizationSection({
             </p>
             {ctaText && ctaLink && (
               <div className="pt-4">
-                <Link
-                  href={ctaLink}
-                  className="inline-block border border-black/20 px-5 py-2.5 text-sm tracking-[0.14em] uppercase hover:bg-black hover:text-white transition-colors duration-200"
+                <CTAButton
+                  asChild
+                  theme="black"
                 >
-                  {ctaText}
-                </Link>
+                  <Link href={ctaLink}>
+                    {ctaText}
+                  </Link>
+                </CTAButton>
               </div>
             )}
           </div>

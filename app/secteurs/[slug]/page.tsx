@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
 import { getSecteurBySlug, getSecteursSlugs } from '@/services/sanity/secteurs'
+import { getRandomDecors } from '@/services/sanity/decors'
 import { SecteursPageContent } from '@/components/secteurs/secteurs-page-content'
 import { Header } from '@/components/shared/header'
+import { BottomBar } from '@/components/shared/bottom-bar'
 import { Footer } from '@/components/shared/footer'
 
 // Revalidate every 60 seconds
@@ -25,10 +27,17 @@ export default async function SecteursPage({ params }: { params: { slug: string 
       return notFound()
     }
 
-    // Mock shared data for now (will be replaced with Sanity data later)
+    // Fetch shared data (random decors)
+    const randomDecors = await getRandomDecors(20).catch(() => [])
+
     const shared = {
+      finitionsDisponibles: {
+        title: 'Décors disponibles',
+        productSlug: 'random', // Special flag for random decors
+        decors: randomDecors
+      },
       contact: {
-        link: '/contact',
+        link: '/#contact',
         cta: 'Nous contacter'
       }
     }
@@ -38,6 +47,7 @@ export default async function SecteursPage({ params }: { params: { slug: string 
         <Header />
         <SecteursPageContent shared={shared} specific={specific} />
         <Footer />
+        <BottomBar />
       </main>
     )
   } catch (error) {

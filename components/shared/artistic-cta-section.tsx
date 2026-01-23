@@ -4,11 +4,14 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { CTAButton } from '@/components/ui/cta-button'
+import { ArrowUpRight } from 'lucide-react'
+import { scrollToContact } from '@/lib/scroll-to-contact'
 
 interface ArtisticCtaSectionProps {
   title: string
   description: string
-  contactLink: string
+  contactLink?: string
   contactCta: string
 }
 
@@ -19,6 +22,8 @@ export function ArtisticCtaSection({
   contactCta 
 }: ArtisticCtaSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null)
+  const normalizedLink = contactLink || '/#contact'
+  const handleClick = normalizedLink === '/#contact' ? scrollToContact : undefined
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -123,21 +128,21 @@ export function ArtisticCtaSection({
               <div className="absolute -inset-4 border border-white/10 rotate-45" />
               <div className="absolute -inset-8 border border-white/5 rotate-12" />
               
-              <Link
-                href={contactLink}
-                className="relative group inline-flex items-center gap-4 bg-white text-black px-8 py-4 md:px-12 md:py-5 text-sm tracking-[0.14em] uppercase font-light hover:bg-white/90 transition-all duration-300"
+              <CTAButton
+                asChild
+                theme="white"
               >
-                <span>{contactCta}</span>
-                {/* Arrow Icon */}
-                <svg 
-                  className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
+                <Link 
+                  href={normalizedLink}
+                  onClick={(e) => {
+                    handleClick?.(e)
+                  }}
+                  className="group inline-flex items-center gap-2"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
+                  <span>{contactCta}</span>
+                  <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                </Link>
+              </CTAButton>
             </div>
 
             {/* Decorative Lines */}

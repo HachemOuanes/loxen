@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { CTAButton } from '@/components/ui/cta-button'
 
 interface HeroTextSections {
   section1?: {
@@ -109,8 +110,8 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
               )}
 
               <div className="flex flex-wrap gap-3 pt-6">
-                <a
-                  href="#applications"
+                <CTAButton
+                  theme="black"
                   onClick={(e) => {
                     e.preventDefault()
                     const element = document.getElementById('applications')
@@ -118,10 +119,9 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
                       element.scrollIntoView({ behavior: 'smooth', block: 'start' })
                     }
                   }}
-                  className="border border-black/20 px-5 py-2.5 text-sm tracking-[0.14em] uppercase hover:bg-black hover:text-white transition-colors"
                 >
                   Voir Applications
-                </a>
+                </CTAButton>
               </div>
             </div>
           </div>

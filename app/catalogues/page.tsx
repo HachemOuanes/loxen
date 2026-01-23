@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { Header } from '@/components/shared/header'
+import { BottomBar } from '@/components/shared/bottom-bar'
 import { Footer } from '@/components/shared/footer'
 import { CataloguesPageClient } from '@/components/catalogues/catalogues-page-client'
 import { getAllCatalogues } from '@/services/sanity/catalogues'
@@ -20,6 +21,7 @@ export default async function CataloguesPage() {
       <Header />
       <CataloguesPageClient catalogues={catalogues} />
       <Footer />
+      <BottomBar />
     </main>
   )
 }
