@@ -14,6 +14,8 @@ export async function getInspirationBySlug(slug: string) {
       title,
       description,
       heroImage,
+      heroLeftText,
+      heroRightText,
       bigImages{
         title,
         enabled,

@@ -11,9 +11,11 @@ interface HeroSectionProps {
   heroImage: any
   contactLink: string
   contactCta: string
+  leftText?: string
+  rightText?: string
 }
 
-export function HeroSection({ title, description, heroImage, contactLink, contactCta }: HeroSectionProps) {
+export function HeroSection({ title, description, heroImage, contactLink, contactCta, leftText, rightText }: HeroSectionProps) {
   const stickyHeroRef = useRef<HTMLDivElement | null>(null)
   const arrowRef = useRef<HTMLDivElement | null>(null)
 
@@ -123,11 +125,16 @@ export function HeroSection({ title, description, heroImage, contactLink, contac
                 </div>
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black tracking-[-0.02em] leading-tight mb-4">{title}</h1>
               </div>
-              <div className=" grid grid-cols-2 gap-12">
-                {/* <p className="text-xl text-black/70 leading-relaxed">{description}</p> */}
-                <p className="text-lg md:text-3xl text-black/80 leading-relaxed">Engineered stone trench grate covers. A cornerstone of any urban drainage system—redefined to be beautiful, functional, and last a lifetime.</p>
-                <p className="text-md md:text-base text-black/60 leading-relaxed">Whether it is a channel drain grate for a driveway or heavy-duty trench grating that can withstand city centre traffic, our engineered stone trench grates combine composite stonework with reinforced steel framing to create high-performance decorative grating for urban hardscapes.</p>
-              </div>
+              {(leftText || rightText) && (
+                <div className=" grid grid-cols-2 gap-12">
+                  {leftText && (
+                    <p className="text-lg md:text-3xl text-black/80 leading-relaxed">{leftText}</p>
+                  )}
+                  {rightText && (
+                    <p className="text-md md:text-base text-black/60 leading-relaxed">{rightText}</p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -34,6 +34,20 @@ export const inspiration = defineType({
       },
     }),
     defineField({
+      name: 'heroLeftText',
+      title: 'Hero Left Text',
+      type: 'text',
+      rows: 3,
+      description: 'Left column text displayed below the title in the hero section',
+    }),
+    defineField({
+      name: 'heroRightText',
+      title: 'Hero Right Text',
+      type: 'text',
+      rows: 3,
+      description: 'Right column text displayed below the title in the hero section',
+    }),
+    defineField({
       name: 'applicationsSection',
       title: 'Applications Section',
       type: 'object',

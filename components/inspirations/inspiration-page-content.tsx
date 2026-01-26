@@ -28,6 +28,8 @@ export function InspirationPageContent({ shared, specific }: InspirationPageCont
         heroImage={specific?.heroImage}
         contactLink={shared?.contact?.link || '/#contact'}
         contactCta={shared?.contact?.cta || 'Nous contacter'}
+        leftText={specific?.heroLeftText}
+        rightText={specific?.heroRightText}
       />
 
       {/* Applications Section - Conditionally rendered */}
