@@ -76,15 +76,13 @@ export interface HomeProductsSection {
 }
 
 export interface HomeInspirationProject {
-  _id: string
+  _key?: string
   title: string
-  slug: {
-    current: string
-  }
-  heroImage?: any
-  description?: string
-  heroLeftText?: string
-  heroRightText?: string
+  image?: any
+  location?: string
+  category?: string
+  link: string
+  order?: number
 }
 
 export interface HomeInspirationSection {

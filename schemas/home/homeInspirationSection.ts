@@ -43,10 +43,53 @@ export const homeInspirationSection = defineType({
       type: 'array',
       of: [
         {
-          type: 'reference',
-          to: [{ type: 'inspiration' }],
-          options: {
-            disableNew: true,
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'title',
+              title: 'Project Title',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'image',
+              title: 'Project Image',
+              type: 'image',
+              options: {
+                hotspot: true,
+              },
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'location',
+              title: 'Project Location',
+              type: 'string',
+            }),
+            defineField({
+              name: 'category',
+              title: 'Category',
+              type: 'string',
+            }),
+            defineField({
+              name: 'link',
+              title: 'Link',
+              type: 'string',
+              description: 'Link to the inspiration detail page (e.g., /inspirations/project-slug)',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'order',
+              title: 'Display Order',
+              type: 'number',
+              initialValue: 0,
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'title',
+              subtitle: 'location',
+              media: 'image',
+            },
           },
         },
       ],

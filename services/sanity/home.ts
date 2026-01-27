@@ -62,27 +62,42 @@ export async function getHomeProductsSection() {
 
 // Get home inspiration section
 export async function getHomeInspirationSection() {
-  const query = `*[_type == "homeInspirationSection"][0]{
-    ...,
-    description,
-    ctaText,
-    ctaLink,
-    projects[]->{
+  try {
+    const query = `*[_type == "homeInspirationSection"][0]{
       _id,
+      sectionLabel,
       title,
-      slug,
-      heroImage,
       description,
-      heroLeftText,
-      heroRightText
-    } | order(_createdAt desc)
-  }`
-  const result = await client.fetch(query)
-  // Filter out null references (broken links)
-  if (result && result.projects) {
-    result.projects = result.projects.filter((p: any) => p != null && p._id && p.slug?.current)
+      ctaText,
+      ctaLink,
+      showSection,
+      projects[]{
+        _key,
+        title,
+        image{
+          asset->
+        },
+        location,
+        category,
+        link,
+        order
+      } | order(order asc)
+    }`
+    const result = await client.fetch(query)
+    if (result) {
+      if (!result.projects) {
+        result.projects = []
+      }
+      // Ensure showSection defaults to true if not set
+      if (result.showSection === undefined) {
+        result.showSection = true
+      }
+    }
+    return result
+  } catch (error) {
+    console.error('Error fetching home inspiration section:', error)
+    return null
   }
-  return result
 }
 
 // Get contact info (used by home page)

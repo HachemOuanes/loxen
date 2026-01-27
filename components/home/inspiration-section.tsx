@@ -20,16 +20,20 @@ export function InspirationSection({ data }: InspirationSectionProps) {
     return null
   }
 
+  // Check if section should be shown (default to true if not specified)
+  if (data.showSection === false) {
+    return null
+  }
+
   const sectionLabel = data.sectionLabel
   const title = data.title
   const projects = (data.projects || [])
-    .filter((project): project is NonNullable<typeof project> => project != null)
+    .filter((project): project is NonNullable<typeof project> => project != null && project.title && project.link)
+    .sort((a, b) => (a.order || 0) - (b.order || 0))
     .slice(0, 4) // Limit to 4 inspirations
 
-  // Don't render if no projects
-  if (!projects.length) {
-    return null
-  }
+  // Always render the section if we have data, even if no projects
+  // This ensures the section is visible and can be debugged
 
   useEffect(() => {
     if (!sectionRef.current) return
@@ -110,32 +114,31 @@ export function InspirationSection({ data }: InspirationSectionProps) {
         )}
 
         {/* Inspiration Items Grid - 4 columns with varying heights */}
-        {projects.length > 0 && (
+        {projects.length > 0 ? (
           <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
               {projects.map((project, index) => {
                 // Skip if project is missing required fields
-                if (!project || !project._id || !project.slug?.current) {
+                if (!project || !project.title || !project.link) {
                   return null
                 }
 
                 // Alternating heights: even indices (0, 2) are tall, odd indices (1, 3) are short
                 const isTall = index % 2 === 0
                 const imageHeight = isTall ? 'h-[400px] md:h-[500px] lg:h-[600px]' : 'h-[260px] md:h-[360px] lg:h-[460px]'
-                const inspirationSlug = project.slug.current
 
                 return (
                   <Link
-                    key={project._id}
-                    href={`/inspirations/${inspirationSlug}`}
+                    key={project._key || index}
+                    href={project.link}
                     className="js-reveal-card group bg-white"
                   >
                     {/* Image Section - Top with varying heights */}
                     <div className={`relative overflow-hidden ${imageHeight} mb-4 bg-gray-100`}>
-                      {project.heroImage ? (
+                      {project.image ? (
                         <>
                           <img
-                            src={urlFor(project.heroImage).width(1200).height(900).quality(90).url()}
+                            src={urlFor(project.image).width(1200).height(900).quality(90).url()}
                             alt={project.title}
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                           />
@@ -155,6 +158,22 @@ export function InspirationSection({ data }: InspirationSectionProps) {
 
                     {/* Content Section - Below image */}
                     <div className="flex flex-col">
+                      {/* Category and Location */}
+                      {(project.category || project.location) && (
+                        <div className="flex items-center justify-between mb-3">
+                          {project.category && (
+                            <span className="text-xs tracking-[0.18em] uppercase text-black/60 font-light">
+                              {project.category}
+                            </span>
+                          )}
+                          {project.location && (
+                            <span className="text-xs tracking-[0.18em] uppercase text-black/60 font-light">
+                              {project.location}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
                       {/* Title */}
                       {project.title && (
                         <h3 className="text-lg md:text-xl lg:text-2xl text-black group-hover:opacity-70 transition-opacity leading-tight">
@@ -166,6 +185,10 @@ export function InspirationSection({ data }: InspirationSectionProps) {
                 )
               })}
             </div>
+          </div>
+        ) : (
+          <div className="text-center py-12 text-black/60">
+            <p>Aucune inspiration disponible pour le moment.</p>
           </div>
         )}
       </div>
