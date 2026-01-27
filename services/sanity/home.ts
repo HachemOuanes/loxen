@@ -52,7 +52,12 @@ export async function getHomeProductsSection() {
       }
     }
   }`
-  return await client.fetch(query)
+  const result = await client.fetch(query)
+  // Filter out null products
+  if (result && result.products) {
+    result.products = result.products.filter((p: any) => p != null)
+  }
+  return result
 }
 
 // Get home inspiration section
@@ -70,9 +75,14 @@ export async function getHomeInspirationSection() {
       description,
       heroLeftText,
       heroRightText
-    }
+    } | order(_createdAt desc)
   }`
-  return await client.fetch(query)
+  const result = await client.fetch(query)
+  // Filter out null references (broken links)
+  if (result && result.projects) {
+    result.projects = result.projects.filter((p: any) => p != null && p._id && p.slug?.current)
+  }
+  return result
 }
 
 // Get contact info (used by home page)

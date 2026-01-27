@@ -22,7 +22,8 @@ type Finish = {
   products?: Array<{
     _id: string
     _type: string
-    name: string
+    title?: string
+    name?: string
     productId?: string
     slug?: { current: string }
   }>
@@ -59,7 +60,6 @@ type ProductData = {
 
 export function DecorDetailModal({ finish, open, onOpenChange }: DecorDetailModalProps) {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
-  const [selectedProductType, setSelectedProductType] = useState<string | null>(null)
   const [productData, setProductData] = useState<ProductData | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -94,7 +94,6 @@ export function DecorDetailModal({ finish, open, onOpenChange }: DecorDetailModa
   useEffect(() => {
     if (!open || !finish) {
       setSelectedProductId(null)
-      setSelectedProductType(null)
       setProductData(null)
       return
     }
@@ -103,17 +102,27 @@ export function DecorDetailModal({ finish, open, onOpenChange }: DecorDetailModa
     if (finish.products && finish.products.length > 0) {
       const firstProduct = finish.products[0]
       setSelectedProductId(firstProduct._id)
-      setSelectedProductType(firstProduct._type)
     }
   }, [open, finish])
 
   // Fetch product data when selection changes
   useEffect(() => {
-    if (selectedProductId && selectedProductType) {
+    if (selectedProductId) {
       setLoading(true)
-      getProductById(selectedProductId, selectedProductType)
+      getProductById(selectedProductId)
         .then((data: ProductData | null) => {
-          setProductData(data)
+          if (data) {
+            // Map the unified product schema to the expected format
+            setProductData({
+              _id: data._id,
+              name: data.title || '',
+              slug: data.slug,
+              panelFormats: data.specificationSection?.format?.items || [],
+              thickness: data.specificationSection?.epaisseur || ''
+            })
+          } else {
+            setProductData(null)
+          }
           setLoading(false)
         })
         .catch((error: Error) => {
@@ -122,13 +131,12 @@ export function DecorDetailModal({ finish, open, onOpenChange }: DecorDetailModa
           setLoading(false)
         })
     }
-  }, [selectedProductId, selectedProductType])
+  }, [selectedProductId])
 
   if (!finish) return null
 
-  const handleProductClick = (productId: string, productType: string) => {
+  const handleProductClick = (productId: string) => {
     setSelectedProductId(productId)
-    setSelectedProductType(productType)
   }
 
   return (
@@ -197,13 +205,13 @@ export function DecorDetailModal({ finish, open, onOpenChange }: DecorDetailModa
                     {finish.products.map((product, idx) => (
                       <button
                         key={idx}
-                        onClick={() => handleProductClick(product._id, product._type)}
+                        onClick={() => handleProductClick(product._id)}
                         className={`inline-block px-3 py-1.5 text-xs border rounded transition-all ${selectedProductId === product._id
                             ? 'border-black bg-black text-white'
                             : 'border-black/20 text-black/70 hover:border-black/40 hover:bg-black/5'
                           }`}
                       >
-                        {product.name}
+                        {product.title || product.name}
                       </button>
                     ))}
                   </div>

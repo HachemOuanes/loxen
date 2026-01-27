@@ -23,7 +23,7 @@ export function InspirationSection({ data }: InspirationSectionProps) {
   const sectionLabel = data.sectionLabel
   const title = data.title
   const projects = (data.projects || [])
-    .sort((a, b) => (a.order || 0) - (b.order || 0))
+    .filter((project): project is NonNullable<typeof project> => project != null)
     .slice(0, 4) // Limit to 4 inspirations
 
   // Don't render if no projects
@@ -114,14 +114,19 @@ export function InspirationSection({ data }: InspirationSectionProps) {
           <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
               {projects.map((project, index) => {
+                // Skip if project is missing required fields
+                if (!project || !project._id || !project.slug?.current) {
+                  return null
+                }
+
                 // Alternating heights: even indices (0, 2) are tall, odd indices (1, 3) are short
                 const isTall = index % 2 === 0
                 const imageHeight = isTall ? 'h-[400px] md:h-[500px] lg:h-[600px]' : 'h-[260px] md:h-[360px] lg:h-[460px]'
-                const inspirationSlug = project.slug?.current || ''
+                const inspirationSlug = project.slug.current
 
                 return (
                   <Link
-                    key={project._id || index}
+                    key={project._id}
                     href={`/inspirations/${inspirationSlug}`}
                     className="js-reveal-card group bg-white"
                   >

@@ -30,7 +30,9 @@ export function ProductsSection({ data }: ProductsSectionProps) {
   const description = data.description
   const ctaText = data.ctaText
   const ctaLink = data.ctaLink
-  const products = (data.products || []).sort((a, b) => (a.order || 0) - (b.order || 0))
+  const products = (data.products || [])
+    .filter((product): product is NonNullable<typeof product> => product != null)
+    .sort((a, b) => (a.order || 0) - (b.order || 0))
 
   // Don't render if no products
   if (!products.length) {

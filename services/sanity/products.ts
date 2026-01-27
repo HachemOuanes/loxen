@@ -203,6 +203,35 @@ export async function getInteriorProductsForMegaMenu() {
 
 // ===== UNIFIED PRODUCT SCHEMA =====
 
+// Get product by ID
+export async function getProductById(productId: string) {
+  try {
+    if (!productId || typeof productId !== 'string') {
+      return null
+    }
+
+    const query = `*[_type == "product" && _id == $productId][0]{
+      _id,
+      title,
+      slug,
+      type,
+      specificationSection{
+        format{
+          title,
+          items
+        },
+        epaisseur
+      }
+    }`
+    
+    const result = await client.fetch(query, { productId })
+    return result || null
+  } catch (error) {
+    console.error('Error fetching product by ID:', error)
+    return null
+  }
+}
+
 // Get product by slug
 export async function getProductBySlug(slug: string) {
   try {
