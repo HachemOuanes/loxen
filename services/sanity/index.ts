@@ -3,6 +3,9 @@
 // Products
 export * from './products'
 
+// Applications
+export * from './applications'
+
 // Decors
 export * from './decors'
 

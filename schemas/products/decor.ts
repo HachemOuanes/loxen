@@ -49,9 +49,7 @@ export const decor = defineType({
         {
           type: 'reference',
           to: [
-            { type: 'interiorProduct' },
-            { type: 'exteriorProduct' },
-            { type: 'productItem' },
+            { type: 'product' },
           ],
         },
       ],

@@ -91,6 +91,35 @@ export async function getDecorsByProductType(productType: 'interior' | 'exterior
   return await client.fetch(query)
 }
 
+// Get decors by product ID
+export async function getDecorsByProductId(productId: string, limit: number = 20) {
+  const query = `*[_type == "decor" && $productId in products[]._ref] | order(featured desc, abet_order asc, name asc) [0...$limit] {
+    _id,
+    code,
+    name,
+    image,
+    image_url,
+    color,
+    colors,
+    abet_order,
+    products[]->{
+      _id,
+      _type,
+      title,
+      slug,
+      type
+    },
+    keywords,
+    interior,
+    exterior,
+    available,
+    is_new,
+    featured
+  }`
+  
+  return await client.fetch(query, { productId, limit })
+}
+
 // Get random decors for inspiration page
 export async function getRandomDecors(limit: number = 20) {
   const query = `*[_type == "decor"] | order(featured desc, abet_order asc) [0...$limit] {

@@ -76,17 +76,24 @@ export interface HomeProductsSection {
 }
 
 export interface HomeInspirationProject {
+  _id: string
   title: string
-  image: any
-  location?: string
-  category?: string
-  order?: number
+  slug: {
+    current: string
+  }
+  heroImage?: any
+  description?: string
+  heroLeftText?: string
+  heroRightText?: string
 }
 
 export interface HomeInspirationSection {
   _id: string
   sectionLabel: string
   title: string
+  description?: string[]
+  ctaText?: string
+  ctaLink?: string
   projects: HomeInspirationProject[]
   showSection?: boolean
 }

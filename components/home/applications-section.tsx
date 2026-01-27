@@ -1,6 +1,9 @@
 "use client"
 
+import { useEffect, useRef } from "react"
 import Link from "next/link"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { ArrowUpRight } from "lucide-react"
 import { CTAButton } from "@/components/ui/cta-button"
 import { urlFor } from "@/lib/sanity"
@@ -11,6 +14,8 @@ interface ApplicationsSectionProps {
 }
 
 export function ApplicationsSection({ data }: ApplicationsSectionProps) {
+  const sectionRef = useRef<HTMLElement | null>(null)
+
   // Don't display section if no data at all
   if (!data) {
     return null
@@ -25,27 +30,83 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
   const interiorCard = data.interiorCard
   const exteriorCard = data.exteriorCard
 
+  useEffect(() => {
+    if (!sectionRef.current) return
+    gsap.registerPlugin(ScrollTrigger)
+
+    const ctx = gsap.context(() => {
+      // Animate text elements
+      const textElements = sectionRef.current?.querySelectorAll('.js-reveal-text')
+      if (textElements) {
+        textElements.forEach((el, i) => {
+          gsap.fromTo(
+            el as HTMLElement,
+            { opacity: 0, y: 40 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: el as HTMLElement,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+              },
+              delay: i * 0.1,
+            }
+          )
+        })
+      }
+
+      // Animate image cards
+      const imageCards = sectionRef.current?.querySelectorAll('.js-reveal-image')
+      if (imageCards) {
+        imageCards.forEach((el, i) => {
+          gsap.fromTo(
+            el as HTMLElement,
+            { opacity: 0, scale: 0.9, y: 60 },
+            {
+              opacity: 1,
+              scale: 1,
+              y: 0,
+              duration: 1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: el as HTMLElement,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+              },
+              delay: i * 0.15,
+            }
+          )
+        })
+      }
+    }, sectionRef.current)
+
+    return () => ctx.revert()
+  }, [data])
+
   return (
-    <section id="applications" className="w-full relative z-10 m-0 p-0 bg-white overflow-hidden">
+    <section ref={sectionRef} id="applications" className="w-full relative z-10 m-0 p-0 bg-white overflow-hidden">
             <div className="relative w-[calc(100%-2rem)] ml-4 px-6 md:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 relative">
                     {/* Title at top - spans 2 columns */}
                     {(sectionLabel || title || description) && (
                       <div className="absolute top-8 md:top-12 lg:top-16 xl:top-20 left-0 mb-16 z-10 w-full">
                           {sectionLabel && (
-                            <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-4 font-light">
+                            <div className="js-reveal-text inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-4 font-light">
                                 <span className="h-[1px] w-8 bg-black/30" /> {sectionLabel}
                             </div>
                           )}
                           {title && (
-                            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em] leading-tight w-2/3 pr-10">
+                            <h2 className="js-reveal-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em] leading-tight w-2/3 pr-10">
                                 {title}
                             </h2>
                           )}
                           {description && description.length > 0 && (
-                            <div className=" w-1/3 pr-12 pt-12 space-y-3">
+                            <div className="js-reveal-text w-1/3 pt-12 space-y-3 pr-8">
                                 {description[0] && (
-                                    <p className="text-lg md:text-xl text-black/70 leading-relaxed ">
+                                    <p className="text-lg md:text-xl text-black/70 leading-relaxed">
                                         {description[0]}
                                     </p>
                                 )}
@@ -61,7 +122,7 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
 
                         {/* CTA Section - Positioned in lower half, below midpoint, on black background */}
                         {(description && description.length > 1 && description[1]) || (ctaText && ctaLink) ? (
-                          <div className="max-w-md mt-auto relative z-10">
+                          <div className="js-reveal-text max-w-md mt-auto relative z-10 pr-8 ">
                               {description && description.length > 1 && description[1] && (
                                 <p className="text-lg md:text-xl text-white/90 mb-6 leading-relaxed">
                                     {description[1]}
@@ -93,7 +154,7 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
 
                           <Link
                               href={interiorCard.link || "/produits/interieur"}
-                              className="relative w-full aspect-[3/4] group cursor-pointer mt-36 z-10"
+                              className="js-reveal-image relative w-full aspect-[3/4] group cursor-pointer mt-36 z-10"
                           >
                             <div className="relative w-full h-full overflow-hidden">
                                 {/* Background Image */}
@@ -149,7 +210,7 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
 
                           <Link
                               href={exteriorCard.link || "/produits/exterieur"}
-                              className="relative w-full aspect-[3/4] group cursor-pointer mt-4 md:mt-6 z-10"
+                              className="js-reveal-image relative w-full aspect-[3/4] group cursor-pointer mt-4 md:mt-6 z-10"
                           >
                             <div className="relative w-full h-full overflow-hidden">
                                 {/* Background Image */}

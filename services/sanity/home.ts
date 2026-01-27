@@ -59,11 +59,17 @@ export async function getHomeProductsSection() {
 export async function getHomeInspirationSection() {
   const query = `*[_type == "homeInspirationSection"][0]{
     ...,
-    projects[]{
-      ...,
-      image{
-        asset->
-      }
+    description,
+    ctaText,
+    ctaLink,
+    projects[]->{
+      _id,
+      title,
+      slug,
+      heroImage,
+      description,
+      heroLeftText,
+      heroRightText
     }
   }`
   return await client.fetch(query)

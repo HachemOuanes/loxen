@@ -21,6 +21,15 @@ export const catalogue = defineType({
       description: 'Catalogue title (e.g., "Plaquettes produits")',
     }),
     defineField({
+      name: 'megamenuImage',
+      title: 'Mega Menu Image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      description: 'Image displayed in the mega menu (optional)',
+    }),
+    defineField({
       name: 'category',
       title: 'Category',
       type: 'string',
@@ -38,15 +47,6 @@ export const catalogue = defineType({
       title: 'Overview',
       type: 'text',
       description: 'Longer overview text shown in the expanded content section',
-    }),
-    defineField({
-      name: 'image',
-      title: 'Image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-      description: 'Main image for the catalogue (optional)',
     }),
     defineField({
       name: 'imageAlt',

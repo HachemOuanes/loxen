@@ -72,24 +72,60 @@ export const structure: StructureResolver = (S) =>
             .title('Products Content')
             .items([
               S.listItem()
+                .title('All Products')
+                .icon(PackageIcon)
+                .child(S.documentTypeList('product').title('All Products')),
+
+              S.listItem()
                 .title('Interior Products')
                 .icon(HomeIcon)
-                .child(S.documentTypeList('interiorProduct').title('Interior Products')),
+                .child(
+                  S.documentTypeList('product')
+                    .title('Interior Products')
+                    .filter('_type == "product" && type == "interieur"')
+                ),
 
               S.listItem()
                 .title('Exterior Products')
                 .icon(StackIcon)
-                .child(S.documentTypeList('exteriorProduct').title('Exterior Products')),
+                .child(
+                  S.documentTypeList('product')
+                    .title('Exterior Products')
+                    .filter('_type == "product" && type == "exterieur"')
+                ),
+            ])
+        ),
+
+      // Applications - List of application documents
+      S.listItem()
+        .title('📋 Applications')
+        .icon(ComponentIcon)
+        .child(
+          S.list()
+            .title('Applications')
+            .items([
+              S.listItem()
+                .title('Interior Applications')
+                .icon(HomeIcon)
+                .child(
+                  S.documentTypeList('application')
+                    .title('Interior Applications')
+                    .filter('_type == "application" && type == "interieur"')
+                ),
 
               S.listItem()
-                .title('Interior Categories')
-                .icon(ComponentIcon)
-                .child(S.document().schemaType('interiorProductCategories').documentId('interiorProductCategories')),
+                .title('Exterior Applications')
+                .icon(StackIcon)
+                .child(
+                  S.documentTypeList('application')
+                    .title('Exterior Applications')
+                    .filter('_type == "application" && type == "exterieur"')
+                ),
 
               S.listItem()
-                .title('Exterior Categories')
+                .title('All Applications')
                 .icon(ComponentIcon)
-                .child(S.document().schemaType('exteriorProductCategories').documentId('exteriorProductCategories')),
+                .child(S.documentTypeList('application').title('All Applications')),
             ])
         ),
 
@@ -123,7 +159,34 @@ export const structure: StructureResolver = (S) =>
       S.listItem()
         .title('🏢 Secteurs')
         .icon(ComponentIcon)
-        .child(S.documentTypeList('secteur').title('All Secteurs')),
+        .child(
+          S.list()
+            .title('Secteurs Content')
+            .items([
+              S.listItem()
+                .title('All Secteurs')
+                .icon(ComponentIcon)
+                .child(S.documentTypeList('secteur').title('All Secteurs')),
+
+              S.listItem()
+                .title('Métiers')
+                .icon(UsersIcon)
+                .child(
+                  S.documentTypeList('secteur')
+                    .title('Métiers')
+                    .filter('_type == "secteur" && type == "metier"')
+                ),
+
+              S.listItem()
+                .title('Branches')
+                .icon(StackIcon)
+                .child(
+                  S.documentTypeList('secteur')
+                    .title('Branches')
+                    .filter('_type == "secteur" && type == "branche"')
+                ),
+            ])
+        ),
 
       // Catalogues Page Content
       S.listItem()

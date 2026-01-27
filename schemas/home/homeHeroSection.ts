@@ -8,7 +8,8 @@ export const homeHeroSection = defineType({
     defineField({
       name: 'title',
       title: 'Main Title',
-      type: 'string',
+      type: 'text',
+      rows: 3,
       initialValue: 'Solutions Facade Architect Premium',
       validation: (Rule) => Rule.required(),
     }),

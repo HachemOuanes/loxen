@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { urlFor } from "@/lib/sanity"
 import { Menu, X } from "lucide-react"
-import { getSecteursForMegaMenu, getExteriorProductsForMegaMenu, getInteriorProductsForMegaMenu, getInspirationsForMegaMenu, getCataloguesForMegaMenu } from '@/services/sanity'
+import { getSecteursForMegaMenu, getExteriorProductsForMegaMenu, getInteriorProductsForMegaMenu, getInspirationsForMegaMenu, getCataloguesForMegaMenu, getHomeApplicationsSection } from '@/services/sanity'
 import { scrollToContact } from "@/lib/scroll-to-contact"
+import { MegaMenuCard } from "./mega-menu-card"
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -30,7 +31,7 @@ export function Header() {
   // Minimal product type and state for products list (first 4)
   type MiniProduct = {
     _id: string
-    name: string
+    title: string
     slug: { current: string }
     description?: string
     image?: any
@@ -42,20 +43,37 @@ export function Header() {
   const [secteurs, setSecteurs] = useState<any[]>([])
   const [inspirations, setInspirations] = useState<any[]>([])
   const [catalogues, setCatalogues] = useState<any[]>([])
+  const [homeApplications, setHomeApplications] = useState<any>(null)
 
   useEffect(() => {
     // Prefetch products for the mega menu
     const fetchMini = async () => {
       try {
         // Fetch exterior products (current/available)
-        const exteriorData: MiniProduct[] = await getExteriorProductsForMegaMenu()
+        const exteriorData: any[] = await getExteriorProductsForMegaMenu()
 
-        // Fetch interior products (coming soon)
-        const interiorData: MiniProduct[] = await getInteriorProductsForMegaMenu()
+        // Fetch interior products
+        const interiorData: any[] = await getInteriorProductsForMegaMenu()
 
-        // Add type and category to products
-        const exteriorWithType = exteriorData.map(p => ({ ...p, type: 'exterior' as const, category: 'Extérieur' }))
-        const interiorWithType = interiorData.map(p => ({ ...p, type: 'interior' as const, category: 'Intérieur' }))
+        // Map to MiniProduct format
+        const exteriorWithType = exteriorData.map(p => ({ 
+          _id: p._id,
+          title: p.title || '',
+          slug: p.slug || { current: '' },
+          description: p.heroSection?.overviewRightText || '',
+          image: p.showcaseSection?.image || p.characteristicsSection?.defaultImage,
+          type: 'exterior' as const, 
+          category: 'Extérieur' 
+        }))
+        const interiorWithType = interiorData.map(p => ({ 
+          _id: p._id,
+          title: p.title || '',
+          slug: p.slug || { current: '' },
+          description: p.heroSection?.overviewRightText || '',
+          image: p.showcaseSection?.image || p.characteristicsSection?.defaultImage,
+          type: 'interior' as const, 
+          category: 'Intérieur' 
+        }))
 
         setMiniProducts(exteriorWithType || [])
         setInteriorProducts(interiorWithType || [])
@@ -94,10 +112,21 @@ export function Header() {
       }
     }
 
+    // Fetch home applications for mega menu cards
+    const fetchHomeApplications = async () => {
+      try {
+        const applicationsData = await getHomeApplicationsSection()
+        setHomeApplications(applicationsData)
+      } catch (error) {
+        console.error('Error fetching home applications:', error)
+      }
+    }
+
     fetchMini()
     fetchSecteurs()
     fetchInspirations()
     fetchCatalogues()
+    fetchHomeApplications()
   }, [])
 
 
@@ -383,42 +412,54 @@ export function Header() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
               {activeMega === "produits" && (
                 <>
-                  {/* Left half: Intérieur (Coming Soon) */}
+                  {/* Left half: Intérieur */}
                   <div className="md:col-span-6">
                     <div className="mb-4">
                       <h3 className="text-2xl font-light">
                         <span className="italic font-extralight">Intérieur</span>
                       </h3>
                       <p className="text-white/70 mt-2">Matériaux et systèmes pour l'agencement, cloisons, plans et revêtements.</p>
-                      <div className="mt-3 inline-flex border border-white/20 px-3 py-1 text-[10px] tracking-[0.18em] uppercase text-white/70">Coming Soon</div>
                     </div>
 
-                    {/* Intérieur products grid (blurred) */}
+                    {/* Intérieur big card */}
+                    {homeApplications?.interiorCard?.image && (
+                      <a 
+                        href={homeApplications.interiorCard.link || "/produits/interieur"} 
+                        className="block mb-4 group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-3"
+                      >
+                        <div className="relative aspect-[4/1] overflow-hidden border border-white/10">
+                          <img
+                            src={urlFor(homeApplications.interiorCard.image).width(600).height(150).quality(90).url()}
+                            alt={homeApplications.interiorCard.title || "Intérieur"}
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-700"></div>
+                          <div className="absolute inset-0 border-2 border-white/0 group-hover:border-white/20 transition-all duration-500 pointer-events-none z-20"></div>
+                          {homeApplications.interiorCard.title && (
+                            <div className="absolute inset-0 flex flex-col justify-center items-center p-3 z-30">
+                              <h3 className="text-xl md:text-2xl font-medium text-white mb-1 tracking-[-0.02em] text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-700">
+                                {homeApplications.interiorCard.title}
+                              </h3>
+                            </div>
+                          )}
+                        </div>
+                      </a>
+                    )}
+
+                    {/* Intérieur products grid */}
                     <div className="grid grid-cols-2 gap-3">
                       {interiorProducts.length === 0 ? (
-                        <div className="col-span-2 text-white/60 text-sm">Produits intérieurs bientôt disponibles.</div>
+                        <div className="col-span-2 text-white/60 text-sm">Aucun produit à afficher pour le moment.</div>
                       ) : (
                         interiorProducts.map((p) => (
-                          <div key={`int-${p._id}`} className="group border border-white/10 bg-white/0 p-2 flex flex-col relative h-32">
-                            <div className="aspect-[4/3] overflow-hidden border border-white/10 relative flex-1">
-                              {p.image ? (
-                                <img
-                                  src={urlFor(p.image).width(480).height(360).quality(80).url()}
-                                  alt={p.name}
-                                  className="w-full h-full object-cover filter blur-sm"
-                                />
-                              ) : (
-                                <div className="w-full h-full bg-white/5" />
-                              )}
-                              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <div className="text-white/60 text-xs tracking-[0.18em] uppercase">Coming Soon</div>
-                              </div>
-                            </div>
-                            <div className="mt-2">
-                              <div className="text-sm text-white/40 leading-tight">{p.name}</div>
-                              <div className="text-xs text-white/30 mt-1">{p.category}</div>
-                            </div>
-                          </div>
+                          <MegaMenuCard
+                            key={`int-${p._id}`}
+                            image={p.image}
+                            title={p.title}
+                            description={p.category}
+                            link={`/produits/${p.slug?.current ?? ''}`}
+                            aspectRatio="4/3"
+                          />
                         ))
                       )}
                     </div>
@@ -431,8 +472,32 @@ export function Header() {
                         <span className="italic font-extralight">Extérieur</span>
                       </h3>
                       <p className="text-white/70 mt-2">Façades ventilées, bardages et solutions enveloppe du bâtiment.</p>
-                      <a href="/produits/exterieur" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Voir tous</a>
                     </div>
+
+                    {/* Extérieur big card */}
+                    {homeApplications?.exteriorCard?.image && (
+                      <a 
+                        href={homeApplications.exteriorCard.link || "/produits/exterieur"} 
+                        className="block mb-4 group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-3"
+                      >
+                        <div className="relative aspect-[4/1] overflow-hidden border border-white/10">
+                          <img
+                            src={urlFor(homeApplications.exteriorCard.image).width(600).height(150).quality(90).url()}
+                            alt={homeApplications.exteriorCard.title || "Extérieur"}
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-700"></div>
+                          <div className="absolute inset-0 border-2 border-white/0 group-hover:border-white/20 transition-all duration-500 pointer-events-none z-20"></div>
+                          {homeApplications.exteriorCard.title && (
+                            <div className="absolute inset-0 flex flex-col justify-center items-center p-3 z-30">
+                              <h3 className="text-xl md:text-2xl font-medium text-white mb-1 tracking-[-0.02em] text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-700">
+                                {homeApplications.exteriorCard.title}
+                              </h3>
+                            </div>
+                          )}
+                        </div>
+                      </a>
+                    )}
 
                     {/* Extérieur products grid */}
                     <div className="grid grid-cols-2 gap-3">
@@ -440,23 +505,14 @@ export function Header() {
                         <div className="col-span-2 text-white/60 text-sm">Aucun produit à afficher pour le moment.</div>
                       ) : (
                         miniProducts.map((p) => (
-                          <a key={p._id} href={`/produits/exterieur/${p.slug?.current ?? ''}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-2 flex flex-col h-32">
-                            <div className="aspect-[4/3] overflow-hidden border border-white/10 flex-1">
-                              {p.image ? (
-                                <img
-                                  src={urlFor(p.image).width(480).height(360).quality(80).url()}
-                                  alt={p.name}
-                                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                />
-                              ) : (
-                                <div className="w-full h-full bg-white/5" />
-                              )}
-                            </div>
-                            <div className="mt-2">
-                              <div className="text-sm text-white leading-tight">{p.name}</div>
-                              <div className="text-xs text-white/60 mt-1">{p.category}</div>
-                            </div>
-                          </a>
+                          <MegaMenuCard
+                            key={p._id}
+                            image={p.image}
+                            title={p.title}
+                            description={p.category}
+                            link={`/produits/${p.slug?.current ?? ''}`}
+                            aspectRatio="4/3"
+                          />
                         ))
                       )}
                     </div>
@@ -466,68 +522,64 @@ export function Header() {
 
               {activeMega === "secteurs" && (
                 <>
-                  <div className="md:col-span-4 flex flex-col">
-                    <div>
-                      <h3 className="text-2xl font-light">Secteurs</h3>
-                      <p className="text-white/70 mt-2">Intérieur, extérieur et projets spécifiques.</p>
-                      <a href="/secteurs" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Explorer</a>
+                  {/* Left half: Métier */}
+                  <div className="md:col-span-6">
+                    <div className="mb-4">
+                      <h3 className="text-2xl font-light">
+                        <span className="italic font-extralight">Métier</span>
+                      </h3>
+                      <p className="text-white/70 mt-2">Solutions spécialisées pour les professionnels et leurs projets spécifiques.</p>
                     </div>
-                    
-                    {/* Métier items below Explorer button - Product-like design */}
-                    {(() => {
-                      const metierItems = secteurs.filter((s) => s.type === 'metier')
-                      if (metierItems.length === 0) return null
-                      
-                      return (
-                        <div className="mt-6 flex flex-col gap-3">
-                          {metierItems.map((s) => (
-                            <a 
-                              key={s.slug?.current || s.slug} 
-                              href={`/secteurs/${s.slug?.current || s.slug}`} 
-                              className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-2 flex flex-col h-32"
-                            >
-                              <div className="aspect-[4/3] overflow-hidden border border-white/10 flex-1">
-                                {s.heroImage ? (
-                                  <img
-                                    src={urlFor(s.heroImage).width(480).height(360).quality(80).url()}
-                                    alt={s.title}
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                  />
-                                ) : (
-                                  <div className="w-full h-full bg-white/5" />
-                                )}
-                              </div>
-                              <div className="mt-2">
-                                <div className="text-sm text-white leading-tight">{s.title}</div>
-                                {s.description && (
-                                  <div className="text-xs text-white/60 mt-1 line-clamp-1">{s.description}</div>
-                                )}
-                              </div>
-                            </a>
-                          ))}
-                        </div>
-                      )
-                    })()}
+
+                    {/* Métier items grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {(() => {
+                        const metierItems = secteurs.filter((s) => s.type === 'metier')
+                        if (metierItems.length === 0) {
+                          return <div className="col-span-2 text-white/60 text-sm">Aucun métier à afficher pour le moment.</div>
+                        }
+                        return metierItems.map((s) => (
+                          <MegaMenuCard
+                            key={s.slug?.current || s.slug}
+                            image={s.heroImage}
+                            title={s.title}
+                            description={s.description}
+                            link={`/secteurs/${s.slug?.current || s.slug}`}
+                            aspectRatio="4/3"
+                          />
+                        ))
+                      })()}
+                    </div>
                   </div>
-                  <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6 self-start">
-                    {(() => {
-                      const secteurItems = secteurs.filter((s) => s.type === 'secteur' || !s.type)
-                      if (secteurItems.length === 0) {
-                        return <div className="col-span-2 text-white/60 text-sm">Secteurs en cours de chargement...</div>
-                      }
-                      return secteurItems.map((s) => (
-                        <a key={s.slug?.current || s.slug} href={`/secteurs/${s.slug?.current || s.slug}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors overflow-hidden flex flex-col">
-                          <div className="relative aspect-[16/9] overflow-hidden border border-white/10 m-2">
-                            <img src={urlFor(s.heroImage).width(400).height(200).url()} alt={s.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
-                          </div>
-                          <div className="px-2 pb-2">
-                            <div className="text-base font-medium text-white truncate">{s.title}</div>
-                            <div className="mt-1 text-sm text-white/60 line-clamp-2">{s.description}</div>
-                          </div>
-                        </a>
-                      ))
-                    })()}
+
+                  {/* Right half: Branche */}
+                  <div className="md:col-span-6">
+                    <div className="mb-4">
+                      <h3 className="text-2xl font-light">
+                        <span className="italic font-extralight">Branche</span>
+                      </h3>
+                      <p className="text-white/70 mt-2">Secteurs d'activité et domaines d'application de nos solutions.</p>
+                    </div>
+
+                    {/* Branche items grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {(() => {
+                        const brancheItems = secteurs.filter((s) => s.type === 'branche' || !s.type)
+                        if (brancheItems.length === 0) {
+                          return <div className="col-span-2 text-white/60 text-sm">Aucune branche à afficher pour le moment.</div>
+                        }
+                        return brancheItems.map((s) => (
+                          <MegaMenuCard
+                            key={s.slug?.current || s.slug}
+                            image={s.heroImage}
+                            title={s.title}
+                            description={s.description}
+                            link={`/secteurs/${s.slug?.current || s.slug}`}
+                            aspectRatio="4/3"
+                          />
+                        ))
+                      })()}
+                    </div>
                   </div>
                 </>
               )}
@@ -539,29 +591,19 @@ export function Header() {
                     <p className="text-white/70 mt-2">Découvrez nos réalisations HPL dans différents espaces.</p>
                     <a href="/inspirations" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Explorer</a>
                   </div>
-                  <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 self-start">
+                  <div className="md:col-span-8 grid grid-cols-2 gap-3">
                     {inspirations.length === 0 ? (
                       <div className="col-span-2 text-white/60 text-sm">Inspirations en cours de chargement...</div>
                     ) : (
                       inspirations.map((inspiration) => (
-                        <a key={inspiration._id} href={`/inspirations/${inspiration.slug?.current || inspiration.slug}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors overflow-hidden flex flex-col">
-                          <div className="relative aspect-[16/9] overflow-hidden border border-white/10 m-2">
-                            {inspiration.heroImage ? (
-                              <img
-                                src={urlFor(inspiration.heroImage).width(400).height(200).url()}
-                                alt={inspiration.title}
-                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-white/5" />
-                            )}
-                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
-                          </div>
-                          <div className="px-2 pb-2">
-                            <div className="text-base font-medium text-white truncate">{inspiration.title}</div>
-                            <div className="mt-1 text-sm text-white/60 line-clamp-2">{inspiration.description}</div>
-                          </div>
-                        </a>
+                        <MegaMenuCard
+                          key={inspiration._id}
+                          image={inspiration.heroImage}
+                          title={inspiration.title}
+                          description={inspiration.description}
+                          link={`/inspirations/${inspiration.slug?.current || inspiration.slug}`}
+                          aspectRatio="4/3"
+                        />
                       ))
                     )}
                   </div>
@@ -575,16 +617,20 @@ export function Header() {
                     <p className="text-white/70 mt-2">Téléchargez nos documents et fiches techniques.</p>
                     <a href="/catalogues" className="inline-block mt-4 border border-white/20 px-4 py-2 text-xs tracking-[0.14em] uppercase hover:bg-white hover:text-black transition-colors">Accéder</a>
                   </div>
-                  <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-6">
+                  <div className="md:col-span-8 grid grid-cols-2 gap-3">
                     {catalogues && catalogues.length > 0 ? (
                       catalogues.map((catalogue) => (
-                        <a key={catalogue.id} href={`/catalogues#${catalogue.id}`} className="group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-4">
-                          <div className="text-sm text-white">{catalogue.title}</div>
-                          <div className="mt-1 text-xs text-white/60">Voir le catalogue</div>
-                        </a>
+                        <MegaMenuCard
+                          key={catalogue.id || catalogue._id}
+                          image={catalogue.megamenuImage}
+                          title={catalogue.title}
+                          description={catalogue.description}
+                          link={`/catalogues#${catalogue.id}`}
+                          aspectRatio="4/3"
+                        />
                       ))
                     ) : (
-                      <div className="text-white/60 text-sm">Chargement...</div>
+                      <div className="col-span-2 text-white/60 text-sm">Chargement...</div>
                     )}
                   </div>
                 </>

@@ -23,14 +23,14 @@ export const secteur = defineType({
       name: 'type',
       title: 'Type',
       type: 'string',
-      description: 'Type of secteur (Métier or Secteur)',
+      description: 'Type of secteur (Métier or Branche)',
       options: {
         list: [
           { title: 'Métier', value: 'metier' },
-          { title: 'Secteur', value: 'secteur' },
+          { title: 'Branche', value: 'branche' },
         ],
       },
-      initialValue: 'secteur',
+      initialValue: 'branche',
     }),
     defineField({
       name: 'description',
@@ -538,8 +538,8 @@ export const secteur = defineType({
                   type: 'string',
                   options: {
                     list: [
-                      { title: 'Interior', value: 'interior' },
-                      { title: 'Exterior', value: 'exterior' },
+                      { title: 'Intérieur', value: 'interieur' },
+                      { title: 'Extérieur', value: 'exterieur' },
                     ],
                   },
                 }),
@@ -548,8 +548,7 @@ export const secteur = defineType({
                   title: 'Product',
                   type: 'reference',
                   to: [
-                    { type: 'interiorProduct' },
-                    { type: 'exteriorProduct' },
+                    { type: 'product' },
                   ],
                 }),
               ],
@@ -559,9 +558,10 @@ export const secteur = defineType({
                   productName: 'product.name',
                 },
                 prepare({ productType, productName }) {
+                  const typeLabel = productType === 'interieur' ? 'Intérieur' : 'Extérieur'
                   return {
                     title: productName || 'Product',
-                    subtitle: productType === 'interior' ? 'Interior' : 'Exterior',
+                    subtitle: typeLabel,
                   }
                 },
               },

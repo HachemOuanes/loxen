@@ -73,12 +73,19 @@ export async function getExteriorProducts() {
 
 // Get exterior products for mega menu (first 4)
 export async function getExteriorProductsForMegaMenu() {
-  const query = `*[_type == "exteriorProduct"] | order(featured desc, order asc)[0...4]{
+  const query = `*[_type == "product" && type == "exterieur"] | order(order asc)[0...4]{
     _id,
-    name,
+    title,
     slug,
-    description,
+    heroSection{
+      overviewRightText
+    },
+    characteristicsSection{
+      defaultImage
+    },
+    showcaseSection{
     image
+    }
   }`
   
   return await client.fetch(query)
@@ -176,15 +183,136 @@ export async function getInteriorProducts() {
 
 // Get interior products for mega menu (first 4)
 export async function getInteriorProductsForMegaMenu() {
-  const query = `*[_type == "interiorProduct"] | order(featured desc, order asc)[0...4]{
+  const query = `*[_type == "product" && type == "interieur"] | order(order asc)[0...4]{
     _id,
-    name,
+    title,
     slug,
-    description,
+    heroSection{
+      overviewRightText
+    },
+    characteristicsSection{
+      defaultImage
+    },
+    showcaseSection{
     image
+    }
   }`
   
   return await client.fetch(query)
+}
+
+// ===== UNIFIED PRODUCT SCHEMA =====
+
+// Get product by slug
+export async function getProductBySlug(slug: string) {
+  try {
+    if (!slug || typeof slug !== 'string') {
+      return null
+    }
+
+    const query = `*[_type == "product" && slug.current == $slug][0]{
+      _id,
+      title,
+      slug,
+      type,
+      heroSection{
+        overviewLeftText,
+        overviewRightText,
+        contactCta
+      },
+      showDecors,
+      specificationSection{
+        caracteristiques{
+          title,
+          items
+        },
+        applications{
+          title,
+          items
+        },
+        format{
+          title,
+          items
+        },
+        epaisseur
+      },
+      showcaseSection{
+        enabled,
+        heroImage,
+        leftText{
+          subtitle,
+          title,
+          description
+        },
+        rightText{
+          subtitle,
+          title,
+          description
+        },
+        features[]{
+          icon,
+          label
+        }
+      },
+      characteristicsSection{
+        enabled,
+        defaultImage,
+        defaultImageAlt,
+        accordionItems[]{
+          title,
+          description,
+          content,
+          image,
+          imageAlt
+        }
+      },
+      splitImagesSection{
+        enabled,
+        title,
+        images[]{
+          leftImage,
+          leftImageAlt,
+          rightImage,
+          rightImageAlt,
+          leftText{
+            subtitle,
+            title,
+            description
+          },
+          rightText{
+            subtitle,
+            title,
+            description
+          }
+        }
+      },
+      technicalDocumentsSection{
+        enabled,
+        title,
+        description,
+        image,
+        imageAlt,
+        documents[]{
+          title,
+          fileUrl,
+          fileType,
+          downloadText
+        }
+      },
+      contactSection{
+        enabled,
+        title,
+        description,
+        contactCta
+      }
+    }`
+    
+    const result = await client.fetch(query, { slug })
+    return result || null
+  } catch (error) {
+    console.error('Error fetching product by slug:', error)
+    return null
+  }
 }
 
 

@@ -1,6 +1,9 @@
 "use client"
 
+import { useEffect, useRef } from "react"
 import Link from "next/link"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { ArrowUpRight } from "lucide-react"
 import { urlFor } from "@/lib/sanity"
 import { ProductsSkeleton } from "@/components/home/skeletons/products-skeleton"
@@ -15,6 +18,8 @@ interface ProductsSectionProps {
 }
 
 export function ProductsSection({ data }: ProductsSectionProps) {
+  const sectionRef = useRef<HTMLElement | null>(null)
+
   // Don't display section if no data at all
   if (!data) {
     return null
@@ -32,22 +37,78 @@ export function ProductsSection({ data }: ProductsSectionProps) {
     return null
   }
 
+  useEffect(() => {
+    if (!sectionRef.current) return
+    gsap.registerPlugin(ScrollTrigger)
+
+    const ctx = gsap.context(() => {
+      // Animate header elements
+      const headerElements = sectionRef.current?.querySelectorAll('.js-reveal-text')
+      if (headerElements) {
+        headerElements.forEach((el, i) => {
+          gsap.fromTo(
+            el as HTMLElement,
+            { opacity: 0, y: 40 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: el as HTMLElement,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+              },
+              delay: i * 0.1,
+            }
+          )
+        })
+      }
+
+      // Animate product cards
+      const productCards = sectionRef.current?.querySelectorAll('.js-reveal-card')
+      if (productCards) {
+        productCards.forEach((el, i) => {
+          gsap.fromTo(
+            el as HTMLElement,
+            { opacity: 0, y: 60, scale: 0.95 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.8,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: el as HTMLElement,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+              },
+              delay: i * 0.1,
+            }
+          )
+        })
+      }
+    }, sectionRef.current)
+
+    return () => ctx.revert()
+  }, [data])
+
   return (
-    <section id="produits" className="w-full relative z-10 m-0 p-0 bg-white">
+    <section ref={sectionRef} id="produits" className="w-full relative z-10 m-0 p-0 bg-white">
       <div className="w-[calc(100%-2rem)] ml-4 px-6 md:px-8 py-16 md:py-24 lg:py-32">
         {/* Header Section - Title on top */}
         {(sectionLabel || title) && (
           <div className="mb-12">
             {/* Section Indicator */}
             {sectionLabel && (
-              <div className="inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-4 font-light">
+              <div className="js-reveal-text inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 mb-4 font-light">
                 <span className="h-[1px] w-8 bg-black/30" />{sectionLabel}
               </div>
             )}
 
             {/* Main Headline */}
             {title && (
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em] leading-tight">
+              <h1 className="js-reveal-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em] leading-tight">
                 {title}
               </h1>
             )}
@@ -62,7 +123,7 @@ export function ProductsSection({ data }: ProductsSectionProps) {
               {(description || (ctaText && ctaLink)) && (
                 <div className="lg:col-span-1 flex flex-col gap-24 my-28">
                   {description && description.length > 0 && (
-                    <div className="space-y-3">
+                    <div className="js-reveal-text space-y-3">
                       {description.map((para, index) => (
                         <p key={index} className="text-lg md:text-xl text-black/70 leading-relaxed">
                           {para}
@@ -71,14 +132,16 @@ export function ProductsSection({ data }: ProductsSectionProps) {
                     </div>
                   )}
                   {ctaText && ctaLink && (
-                    <CTAButton
-                      asChild
-                      theme="black"
-                    >
-                      <Link href={ctaLink}>
-                        {ctaText}
-                      </Link>
-                    </CTAButton>
+                    <div className="js-reveal-text">
+                      <CTAButton
+                        asChild
+                        theme="black"
+                      >
+                        <Link href={ctaLink}>
+                          {ctaText}
+                        </Link>
+                      </CTAButton>
+                    </div>
                   )}
                 </div>
               )}
@@ -128,7 +191,7 @@ export function ProductsSection({ data }: ProductsSectionProps) {
                     <SwiperSlide key={`${product._key || 'product'}-${index}`}>
                       <Link
                         href={product.link || `/produits`}
-                        className="group block"
+                        className="js-reveal-card group block"
                       >
                         {/* Product Card */}
                         <div className="flex flex-col h-full">

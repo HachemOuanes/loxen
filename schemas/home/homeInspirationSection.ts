@@ -19,51 +19,34 @@ export const homeInspirationSection = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'array',
+      of: [{ type: 'text', rows: 2 }],
+      description: 'Description paragraphs (optional)',
+    }),
+    defineField({
+      name: 'ctaText',
+      title: 'CTA Button Text',
+      type: 'string',
+      initialValue: 'Voir toutes les inspirations',
+    }),
+    defineField({
+      name: 'ctaLink',
+      title: 'CTA Button Link',
+      type: 'string',
+      initialValue: '/inspirations',
+    }),
+    defineField({
       name: 'projects',
       title: 'Inspiration Projects',
       type: 'array',
       of: [
         {
-          type: 'object',
-          fields: [
-            defineField({
-              name: 'title',
-              title: 'Project Title',
-              type: 'string',
-              validation: (Rule) => Rule.required(),
-            }),
-            defineField({
-              name: 'image',
-              title: 'Project Image',
-              type: 'image',
-              options: {
-                hotspot: true,
-              },
-              validation: (Rule) => Rule.required(),
-            }),
-            defineField({
-              name: 'location',
-              title: 'Project Location',
-              type: 'string',
-            }),
-            defineField({
-              name: 'category',
-              title: 'Category',
-              type: 'string',
-            }),
-            defineField({
-              name: 'order',
-              title: 'Display Order',
-              type: 'number',
-              initialValue: 0,
-            }),
-          ],
-          preview: {
-            select: {
-              title: 'title',
-              subtitle: 'location',
-              media: 'image',
-            },
+          type: 'reference',
+          to: [{ type: 'inspiration' }],
+          options: {
+            disableNew: true,
           },
         },
       ],

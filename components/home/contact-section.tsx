@@ -1,6 +1,8 @@
 "use client"
 
-import { useState, type FormEvent, type ChangeEvent } from "react"
+import { useEffect, useRef, useState, type FormEvent, type ChangeEvent } from "react"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { CTAButton } from "@/components/ui/cta-button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -12,6 +14,7 @@ interface ContactSectionProps {
 }
 
 export function ContactSection({ data }: ContactSectionProps) {
+  const sectionRef = useRef<HTMLElement | null>(null)
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -34,6 +37,60 @@ export function ContactSection({ data }: ContactSectionProps) {
     })
   }
 
+  useEffect(() => {
+    if (!sectionRef.current) return
+    gsap.registerPlugin(ScrollTrigger)
+
+    const ctx = gsap.context(() => {
+      // Animate header
+      const headerElements = sectionRef.current?.querySelectorAll('.js-reveal-text')
+      if (headerElements) {
+        headerElements.forEach((el, i) => {
+          gsap.fromTo(
+            el as HTMLElement,
+            { opacity: 0, y: 40 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: el as HTMLElement,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+              },
+              delay: i * 0.1,
+            }
+          )
+        })
+      }
+
+      // Animate form and contact info
+      const contentElements = sectionRef.current?.querySelectorAll('.js-reveal-content')
+      if (contentElements) {
+        contentElements.forEach((el, i) => {
+          gsap.fromTo(
+            el as HTMLElement,
+            { opacity: 0, x: i % 2 === 0 ? -40 : 40 },
+            {
+              opacity: 1,
+              x: 0,
+              duration: 0.9,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: el as HTMLElement,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+              },
+              delay: i * 0.15,
+            }
+          )
+        })
+      }
+    }, sectionRef.current)
+
+    return () => ctx.revert()
+  }, [data])
 
   // Don't display section if no data at all
   if (!contactInfo) {
@@ -41,7 +98,7 @@ export function ContactSection({ data }: ContactSectionProps) {
   }
 
   return (
-    <section id="contact" className="py-32 bg-foreground text-background relative overflow-hidden">
+    <section ref={sectionRef} id="contact" className="py-32 bg-foreground text-background relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.02]">
         <svg width="100%" height="100%" className="absolute inset-0">
@@ -72,11 +129,11 @@ export function ContactSection({ data }: ContactSectionProps) {
             </svg>
           </div>
 
-          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-background mb-8 tracking-[-0.02em] leading-tight">
+          <h2 className="js-reveal-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-background mb-8 tracking-[-0.02em] leading-tight">
             Nous <span className="font-extralight italic text-background/70">Contacter</span>
           </h2>
 
-          <p className="text-base md:text-lg text-background/70 max-w-3xl mx-auto leading-relaxed">
+          <p className="js-reveal-text text-base md:text-lg text-background/70 max-w-3xl mx-auto leading-relaxed">
             Prêt à transformer votre vision architecturale ? Discutons de votre projet.
           </p>
         </div>
@@ -84,7 +141,7 @@ export function ContactSection({ data }: ContactSectionProps) {
         <div>
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-16 items-start">
             {/* Contact Form */}
-            <div className="lg:col-span-3">
+            <div className="js-reveal-content lg:col-span-3">
               <form onSubmit={handleSubmit} className="space-y-8">
                 {/* First Row: Prénom - Nom */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -176,7 +233,7 @@ export function ContactSection({ data }: ContactSectionProps) {
               </form>
             </div>
 
-            <div className="lg:col-span-2 space-y-12">
+            <div className="js-reveal-content lg:col-span-2 space-y-12">
               <div className="space-y-10">
                 {contactInfo.email && (
                   <div className="group">

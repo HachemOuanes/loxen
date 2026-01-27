@@ -7,13 +7,11 @@ import { homeProductsSection } from './home/homeProductsSection'
 import { homeInspirationSection } from './home/homeInspirationSection'
 import { contactInfo } from './home/contactInfo'
 
-// Products Page
-import { interiorProduct } from './products/interiorProduct'
-import { exteriorProduct } from './products/exteriorProduct'
-import { productItem } from './products/productItem'
-import { productImageSection, productBannerSection } from './products/productImageSection'
-import { exteriorProductCategories } from './products/exteriorProductCategories'
-import { interiorProductCategories } from './products/interiorProductCategories'
+// Products
+import { product } from './products/product'
+
+// Applications
+import { application } from './applications/application'
 
 // SEO & Settings
 import { seoSettings } from './seo/seoSettings'
@@ -23,10 +21,9 @@ import { pageSeo } from './seo/pageSeo'
 import { inspiration } from './inspirations/inspiration'
 import { decorFinishes } from './inspirations/decorFinishes'
 import { finitionTypes } from './inspirations/finitionTypes'
-import { productCategory } from './products/productCategory'
 
 // Decors
-import { decor } from './decor'
+import { decor } from './products/decor'
 
 // Secteurs
 import { secteur } from './secteurs/secteur'
@@ -45,15 +42,11 @@ export const schemaTypes = [
   homeInspirationSection,
   contactInfo,
   
-  // 🛍️ Products Page
-  interiorProduct,
-  exteriorProduct,
-  productItem,
-  productBannerSection,
-  productImageSection,
-  productCategory,
-  exteriorProductCategories,
-  interiorProductCategories,
+  // 🛍️ Products
+  product,
+  
+  // 📋 Applications
+  application,
   
   // ⚙️ SEO & Settings
   seoSettings,

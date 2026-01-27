@@ -53,7 +53,9 @@ export async function getCataloguesForMegaMenu() {
   const query = `*[_type == "catalogue"] | order(order asc) {
     _id,
     id,
-    title
+    title,
+    description,
+    megamenuImage
   }`
   
   return await client.fetch(query)

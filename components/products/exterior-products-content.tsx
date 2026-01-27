@@ -5,17 +5,19 @@ import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import gsap from "gsap"
 import { urlFor } from "@/lib/sanity"
-import { getExteriorProductCategories } from "@/services/sanity/products"
 import { InteriorExteriorSkeleton } from "@/components/home/skeletons/interior-exterior-skeleton"
 
 interface Product {
-  name: string
-  description: string
-  link?: string
-  order?: number
+  _id: string
+  _type: string
+  title: string
+  slug: {
+    current: string
+  }
+  type: string
 }
 
-interface ExteriorCategory {
+interface Application {
   _id: string
   name: string
   description?: string
@@ -25,9 +27,13 @@ interface ExteriorCategory {
   products?: Product[]
 }
 
-export function ExteriorProductsContent() {
-  const [categories, setCategories] = useState<ExteriorCategory[]>([])
-  const [loading, setLoading] = useState(true)
+interface ExteriorProductsContentProps {
+  applications: Application[]
+}
+
+export function ExteriorProductsContent({ applications: initialApplications }: ExteriorProductsContentProps) {
+  const [categories, setCategories] = useState<Application[]>(initialApplications || [])
+  const [loading, setLoading] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<number>(0)
   const [displayedCategory, setDisplayedCategory] = useState<number>(0)
   const [isAnimating, setIsAnimating] = useState(false)
@@ -38,41 +44,10 @@ export function ExteriorProductsContent() {
   const hasAnimated = useRef(false)
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch exterior product categories data
-        const sectionData = await getExteriorProductCategories()
-
-        if (sectionData?.categories) {
-          const formattedCategories = sectionData.categories.map((cat: any, index: number) => ({
-            _id: `exterior-${index}`,
-            name: cat.name,
-            description: cat.description,
-            image: cat.image,
-            order: cat.order || index,
-            link: cat.link,
-            products: (cat.products || []).map((product: any) => ({
-              name: product.name,
-              description: product.description,
-              link: product.link || '/',
-              order: product.order || 0
-            })).sort((a: Product, b: Product) => (a.order || 0) - (b.order || 0))
-          })).sort((a: any, b: any) => a.order - b.order)
-
-          setCategories(formattedCategories)
-        } else {
-          console.warn('No categories found for exterior products')
-        }
-
-      } catch (error) {
-        console.error('Error fetching exterior data:', error)
-      } finally {
-        setLoading(false)
-      }
+    if (initialApplications && initialApplications.length > 0) {
+      setCategories(initialApplications)
     }
-
-    fetchData()
-  }, [])
+  }, [initialApplications])
 
   // Initialize displayed category on first render
   useEffect(() => {
@@ -372,7 +347,7 @@ export function ExteriorProductsContent() {
       </div>
 
       {/* Products List - Glassmorphic overlay on the right - Fixed position - Moved outside image wrapper */}
-      <div className="hidden md:block absolute top-20 md:top-24 right-0 bottom-0 md:w-[26%] w-full flex flex-col p-4 md:p-6 lg:p-8 z-[60]">
+      <div className="hidden md:flex absolute top-20 md:top-24 right-0 bottom-0 md:w-[26%] w-full flex-col p-4 md:p-6 lg:p-8 z-[60]">
         <div className="h-full w-full bg-black/50 backdrop-blur-md border-l border-white/30 rounded-l-lg p-4 md:p-6 lg:p-8 flex flex-col overflow-y-auto">
           {/* Products Header */}
           <div className="mb-4 md:mb-6">
@@ -387,23 +362,16 @@ export function ExteriorProductsContent() {
               <div ref={productsContainerRef} className="space-y-6 md:space-y-8">
                 {currentProducts.map((product, index) => (
                   <Link
-                    key={`${product.name}-${index}`}
-                    href={product.link || '/'}
+                    key={product._id || `product-${index}`}
+                    href={product.slug ? `/produits/${product.slug.current}` : '/'}
                     className="product-item group/product block opacity-0 pb-6 md:pb-8 border-b border-white/10 last:border-b-0 hover:border-white/20 transition-all relative z-10 cursor-pointer"
                     style={{ transform: 'translateX(30px)' }}
                   >
                   <div className="flex flex-col">
                     {/* Title */}
                     <h4 className="text-base md:text-lg text-white mb-2 group-hover/product:text-white transition-colors tracking-tight drop-shadow-md">
-                      {product.name}
+                      {product.title}
                     </h4>
-                    
-                    {/* Description */}
-                    {product.description && (
-                      <p className="text-sm md:text-base text-white/90 group-hover/product:text-white/95 mb-3 leading-relaxed line-clamp-2 drop-shadow-sm transition-colors">
-                        {product.description}
-                      </p>
-                    )}
 
                     {/* Discover Link */}
                     <div className="flex items-center gap-2 text-white/80 group-hover/product:text-white transition-colors">

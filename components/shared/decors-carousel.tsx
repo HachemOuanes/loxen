@@ -48,24 +48,36 @@ export function DecorsCarousel({
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const trackRef = useRef<HTMLDivElement | null>(null)
 
-  // Filter out null/undefined decor references and unavailable decors, then sort by abet_order
+  // Filter out null/undefined decor references and unavailable decors, deduplicate by _id, then sort by abet_order
   const availableFinishes = decors
     .filter(f => f != null && f?._id && f?.code && (f?.available !== false))
+    .filter((f, index, self) => 
+      // Deduplicate by _id to prevent showing the same decor twice
+      index === self.findIndex((item) => item._id === f._id)
+    )
     .sort((a, b) => (a?.abet_order || 0) - (b?.abet_order || 0))
   
   // Calculate actual count from filtered array
   const actualFinishCount = availableFinishes.length
 
   // Precompute render list with cloned items for seamless looping
+  // Only clone if we have more items than what's visible (5 on desktop)
+  // This prevents duplicates from being visible when there are few items
   const renderItems = useMemo(() => {
     if (!availableFinishes || availableFinishes.length === 0) return []
-    const cloneCount = Math.min(5, availableFinishes.length) // clone first 5 items for seamless loop (5 visible on desktop)
+    // Only clone if we have more than 5 items (what's visible on desktop)
+    // For fewer items, don't clone to avoid visible duplicates
+    if (availableFinishes.length <= 5) {
+      return availableFinishes
+    }
+    const cloneCount = 5 // clone first 5 items for seamless loop (5 visible on desktop)
     return [...availableFinishes, ...availableFinishes.slice(0, cloneCount)]
   }, [availableFinishes])
 
   // Auto-advance one item at a time with seamless loop
+  // Only enable auto-sliding if there are strictly more than 5 items
   useEffect(() => {
-    if (!availableFinishes || availableFinishes.length <= 1) return
+    if (!availableFinishes || availableFinishes.length <= 5) return
     const prefersReduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReduced) return
     const track = trackRef.current

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { getProductItemBySlug } from '@/services/sanity'
 import { DecorsCarousel, type Decor } from '@/components/shared/decors-carousel'
+import { DecorsSkeleton } from '@/components/shared/skeletons/decors-skeleton'
 
 interface DecorsDispoGridProps {
   slug: string
@@ -10,25 +11,37 @@ interface DecorsDispoGridProps {
 }
 
 export function DecorsDispoGrid({ slug, shared }: DecorsDispoGridProps) {
-  const [finishes, setFinishes] = useState<Decor[] | null>(null)
-  const [collectionName, setCollectionName] = useState<string | undefined>(undefined)
-  const [loading, setLoading] = useState<boolean>(true)
+  // Check if decors are already available from shared data (server-side)
+  const initialDecors = shared?.finitionsDisponibles?.decors
+  const hasInitialDecors = initialDecors && Array.isArray(initialDecors) && initialDecors.length > 0
+  
+  const [finishes, setFinishes] = useState<Decor[] | null>(hasInitialDecors ? initialDecors : null)
+  const [collectionName, setCollectionName] = useState<string | undefined>(
+    hasInitialDecors ? (shared.finitionsDisponibles.collectionName || 'Collection variée') : undefined
+  )
+  const [loading, setLoading] = useState<boolean>(!hasInitialDecors)
 
   useEffect(() => {
     let mounted = true
     async function load() {
       try {
-        // Check if we have random decors from shared data
-        if (slug === 'random' && shared?.finitionsDisponibles?.decors) {
+        // Check if we have decors from shared data (from product page or other sources)
+        if (shared?.finitionsDisponibles?.decors && shared.finitionsDisponibles.decors.length > 0) {
           if (!mounted) return
           setFinishes(shared.finitionsDisponibles.decors)
-          setCollectionName('Collection variée')
-        } else {
+          setCollectionName(shared.finitionsDisponibles.collectionName || 'Collection variée')
+          if (mounted) setLoading(false)
+          return
+        }
+        
           // Fallback to product-based decors (decors are now independent)
+        if (slug !== 'random') {
           const data = await getProductItemBySlug(slug)
           if (!mounted) return
           setFinishes([])
           setCollectionName(data?.collectionName)
+        } else {
+          setFinishes([])
         }
       } catch (_e) {
         if (!mounted) return
@@ -44,14 +57,7 @@ export function DecorsDispoGrid({ slug, shared }: DecorsDispoGridProps) {
   }, [slug, shared])
 
   if (loading) {
-  return (
-    <div>
-      <div className="js-reveal inline-flex items-center gap-2 text-xs tracking-[0.18em] uppercase text-black/70 font-light mb-4">
-        <span className="h-[1px] w-8 bg-black/30" /> {shared?.finitionsDisponibles?.title || 'Finitions disponibles'}
-      </div>
-        <p className="text-base md:text-lg text-black/70">Chargement des finitions…</p>
-                </div>
-    )
+    return <DecorsSkeleton />
   }
 
   if (!finishes || finishes.length === 0) {
