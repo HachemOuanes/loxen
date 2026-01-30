@@ -6,19 +6,19 @@ export function InspirationSkeleton() {
         <div className="mb-12">
           {/* Section Indicator */}
           <div className="inline-flex items-center gap-2 mb-4">
-            <div className="h-[1px] w-8 bg-black/10"></div>
-            <div className="h-3 w-32 bg-black/5 rounded"></div>
+            <span className="h-[1px] w-8 bg-black/30"></span>
+            <div className="h-3 w-32 bg-black/5"></div>
           </div>
 
           {/* Main Headline */}
           <div className="space-y-3 mb-3">
-            <div className="h-12 md:h-16 lg:h-20 w-full bg-black/5 rounded"></div>
-            <div className="h-12 md:h-16 lg:h-20 w-4/5 bg-black/5 rounded"></div>
+            <div className="h-12 md:h-16 lg:h-20 w-full bg-black/5"></div>
+            <div className="h-12 md:h-16 lg:h-20 w-4/5 bg-black/5"></div>
           </div>
         </div>
 
         {/* Inspiration Items Grid - 4 columns with varying heights */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {[...Array(4)].map((_, index) => {
             // Alternating heights: even indices (0, 2) are tall, odd indices (1, 3) are short
             const isTall = index % 2 === 0
@@ -27,18 +27,18 @@ export function InspirationSkeleton() {
             return (
               <div key={index} className="group bg-white">
                 {/* Image Section - Top with varying heights */}
-                <div className={`relative overflow-hidden ${imageHeight} mb-4 bg-black/5 rounded`}></div>
+                <div className={`relative overflow-hidden ${imageHeight} mb-4 bg-gray-100`}></div>
 
                 {/* Content Section - Below image */}
                 <div className="flex flex-col">
-                  {/* Category and Read Time */}
+                  {/* Category and Location */}
                   <div className="flex items-center justify-between mb-3">
-                    <div className="h-3 w-24 bg-black/5 rounded"></div>
-                    <div className="h-3 w-24 bg-black/5 rounded"></div>
+                    <div className="h-3 w-24 bg-black/5"></div>
+                    <div className="h-3 w-24 bg-black/5"></div>
                   </div>
 
                   {/* Title */}
-                  <div className="h-6 md:h-7 lg:h-8 w-full bg-black/5 rounded"></div>
+                  <div className="h-6 md:h-7 lg:h-8 w-full bg-black/5"></div>
                 </div>
               </div>
             )

@@ -178,7 +178,7 @@ export function SecteursApplicationsSection({ primaryItems, secondaryItems }: Se
     // secondaryItems: optional second section (if provided)
 
     return (
-        <div className="space-y-12 md:space-y-16">
+        <div id="applications" className="space-y-12 md:space-y-16">
             {/* First applications (current CMS content) */}
             {primaryItems?.length > 0 && (
                 <ApplicationsSection items={primaryItems} imageOnRight />

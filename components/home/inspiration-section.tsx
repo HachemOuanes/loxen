@@ -106,7 +106,7 @@ export function InspirationSection({ data }: InspirationSectionProps) {
 
             {/* Main Headline */}
             {title && (
-              <h1 className="js-reveal-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em] leading-tight">
+              <h1 className="js-reveal-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em] leading-tight whitespace-pre-line">
                 {title}
               </h1>
             )}

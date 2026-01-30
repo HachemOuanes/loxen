@@ -427,9 +427,9 @@ export function Header() {
                         href={homeApplications.interiorCard.link || "/produits/interieur"} 
                         className="block mb-4 group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-3"
                       >
-                        <div className="relative aspect-[4/1] overflow-hidden border border-white/10">
+                        <div className="relative aspect-[6/1] overflow-hidden border border-white/10">
                           <img
-                            src={urlFor(homeApplications.interiorCard.image).width(600).height(150).quality(90).url()}
+                            src={urlFor(homeApplications.interiorCard.image).width(600).height(100).quality(90).url()}
                             alt={homeApplications.interiorCard.title || "Intérieur"}
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                           />
@@ -480,9 +480,9 @@ export function Header() {
                         href={homeApplications.exteriorCard.link || "/produits/exterieur"} 
                         className="block mb-4 group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-3"
                       >
-                        <div className="relative aspect-[4/1] overflow-hidden border border-white/10">
+                        <div className="relative aspect-[6/1] overflow-hidden border border-white/10">
                           <img
-                            src={urlFor(homeApplications.exteriorCard.image).width(600).height(150).quality(90).url()}
+                            src={urlFor(homeApplications.exteriorCard.image).width(600).height(100).quality(90).url()}
                             alt={homeApplications.exteriorCard.title || "Extérieur"}
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                           />

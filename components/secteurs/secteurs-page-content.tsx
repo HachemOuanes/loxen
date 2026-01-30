@@ -25,8 +25,7 @@ export function SecteursPageContent({ shared, specific }: SecteursPageContentPro
         title={specific?.title || 'Secteurs'}
         heroTextSections={specific?.heroTextSections}
         heroImage={specific?.heroImage ? urlFor(specific.heroImage).quality(100).url() : ''}
-        contactLink={shared?.contact?.link || '/#contact'}
-        contactCta={shared?.contact?.cta || 'Nous contacter'}
+        contactCta={shared?.contact?.cta || 'Voir Applications'}
       />
 
       {/* Decors Section - Conditionally rendered based on toggle */}

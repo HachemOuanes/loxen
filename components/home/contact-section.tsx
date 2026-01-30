@@ -65,24 +65,49 @@ export function ContactSection({ data }: ContactSectionProps) {
         })
       }
 
-      // Animate form and contact info
-      const contentElements = sectionRef.current?.querySelectorAll('.js-reveal-content')
-      if (contentElements) {
-        contentElements.forEach((el, i) => {
+      // Animate individual form fields
+      const formFields = sectionRef.current?.querySelectorAll('.js-reveal-field')
+      if (formFields) {
+        formFields.forEach((el, i) => {
           gsap.fromTo(
             el as HTMLElement,
-            { opacity: 0, x: i % 2 === 0 ? -40 : 40 },
+            { opacity: 0, y: 40, scale: 0.98 },
             {
               opacity: 1,
-              x: 0,
-              duration: 0.9,
+              y: 0,
+              scale: 1,
+              duration: 0.7,
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: el as HTMLElement,
-                start: 'top 85%',
+                start: 'top 90%',
                 toggleActions: 'play none none none',
               },
-              delay: i * 0.15,
+              delay: i * 0.08,
+            }
+          )
+        })
+      }
+
+      // Animate individual contact info items
+      const contactInfoItems = sectionRef.current?.querySelectorAll('.js-reveal-contact-item')
+      if (contactInfoItems) {
+        contactInfoItems.forEach((el, i) => {
+          gsap.fromTo(
+            el as HTMLElement,
+            { opacity: 0, y: 40, scale: 0.98 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.7,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: el as HTMLElement,
+                start: 'top 90%',
+                toggleActions: 'play none none none',
+              },
+              delay: i * 0.08,
             }
           )
         })
@@ -129,11 +154,11 @@ export function ContactSection({ data }: ContactSectionProps) {
             </svg>
           </div>
 
-          <h2 className="js-reveal-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-background mb-8 tracking-[-0.02em] leading-tight">
+          <h2 className="js-reveal-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-background mb-8 tracking-[-0.02em] leading-tight whitespace-pre-line">
             Nous <span className="font-extralight italic text-background/70">Contacter</span>
           </h2>
 
-          <p className="js-reveal-text text-base md:text-lg text-background/70 max-w-3xl mx-auto leading-relaxed">
+          <p className="js-reveal-text text-base md:text-lg text-background/70 max-w-3xl mx-auto leading-relaxed whitespace-pre-line">
             Prêt à transformer votre vision architecturale ? Discutons de votre projet.
           </p>
         </div>
@@ -141,11 +166,11 @@ export function ContactSection({ data }: ContactSectionProps) {
         <div>
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-16 items-start">
             {/* Contact Form */}
-            <div className="js-reveal-content lg:col-span-3">
+            <div className="lg:col-span-3">
               <form onSubmit={handleSubmit} className="space-y-8">
                 {/* First Row: Prénom - Nom */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
+                  <div className="js-reveal-field space-y-3">
                     <label className="text-sm text-background/70 tracking-widest uppercase">
                       Prénom
                     </label>
@@ -159,7 +184,7 @@ export function ContactSection({ data }: ContactSectionProps) {
                       required
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="js-reveal-field space-y-3">
                     <label className="text-sm text-background/70 tracking-widest uppercase">
                       Nom
                     </label>
@@ -177,7 +202,7 @@ export function ContactSection({ data }: ContactSectionProps) {
                 
                 {/* Second Row: Email - Société */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
+                  <div className="js-reveal-field space-y-3">
                     <label className="text-sm text-background/70 tracking-widest uppercase">
                       Email
                     </label>
@@ -191,7 +216,7 @@ export function ContactSection({ data }: ContactSectionProps) {
                       required
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="js-reveal-field space-y-3">
                     <label className="text-sm text-background/70 tracking-widest uppercase">
                       Société
                     </label>
@@ -207,7 +232,7 @@ export function ContactSection({ data }: ContactSectionProps) {
                 </div>
                 
                 {/* Third Row: Description */}
-                <div className="space-y-3">
+                <div className="js-reveal-field space-y-3">
                   <label className="text-sm text-background/70 tracking-widest uppercase">
                     Description
                   </label>
@@ -222,7 +247,7 @@ export function ContactSection({ data }: ContactSectionProps) {
                   />
                 </div>
                 
-                <div className="pt-8">
+                <div className="js-reveal-field pt-8">
                   <CTAButton
                     type="submit"
                     theme="white"
@@ -233,10 +258,10 @@ export function ContactSection({ data }: ContactSectionProps) {
               </form>
             </div>
 
-            <div className="js-reveal-content lg:col-span-2 space-y-12">
+            <div className="lg:col-span-2 space-y-12">
               <div className="space-y-10">
                 {contactInfo.email && (
-                  <div className="group">
+                  <div className="js-reveal-contact-item group">
                     <div className="flex items-center space-x-6">
                       <div className="flex items-center">
                         <svg width="20" height="20" className="text-background/40" viewBox="0 0 24 24" fill="none">
@@ -265,7 +290,7 @@ export function ContactSection({ data }: ContactSectionProps) {
                 )}
 
                 {contactInfo.phone && (
-                  <div className="group">
+                  <div className="js-reveal-contact-item group">
                     <div className="flex items-center space-x-6">
                       <div className="flex items-center">
                         <svg width="20" height="20" className="text-background/40" viewBox="0 0 24 24" fill="none">
@@ -289,7 +314,7 @@ export function ContactSection({ data }: ContactSectionProps) {
                 )}
 
                 {contactInfo.address && (
-                  <div className="group">
+                  <div className="js-reveal-contact-item group">
                     <div className="flex items-start space-x-6">
                       <div className="flex items-center pt-0.5">
                         <svg width="20" height="20" className="text-background/40" viewBox="0 0 24 24" fill="none">

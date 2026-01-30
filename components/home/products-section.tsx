@@ -11,6 +11,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay } from 'swiper/modules'
 import 'swiper/css'
 import { CTAButton } from "@/components/ui/cta-button"
+import { scrollToContact } from '@/lib/scroll-to-contact'
 import type { HomeProductsSection } from "@/lib/types/home"
 
 interface ProductsSectionProps {
@@ -29,7 +30,6 @@ export function ProductsSection({ data }: ProductsSectionProps) {
   const title = data.title
   const description = data.description
   const ctaText = data.ctaText
-  const ctaLink = data.ctaLink
   const products = (data.products || [])
     .filter((product): product is NonNullable<typeof product> => product != null)
     .sort((a, b) => (a.order || 0) - (b.order || 0))
@@ -110,7 +110,7 @@ export function ProductsSection({ data }: ProductsSectionProps) {
 
             {/* Main Headline */}
             {title && (
-              <h1 className="js-reveal-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em] leading-tight">
+              <h1 className="js-reveal-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em] leading-tight whitespace-pre-line">
                 {title}
               </h1>
             )}
@@ -122,26 +122,27 @@ export function ProductsSection({ data }: ProductsSectionProps) {
           <div>
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 lg:gap-16">
               {/* Left Column - Text Content (1/4 width) */}
-              {(description || (ctaText && ctaLink)) && (
+              {(description || ctaText) && (
                 <div className="lg:col-span-1 flex flex-col gap-24 my-28">
                   {description && description.length > 0 && (
                     <div className="js-reveal-text space-y-3">
                       {description.map((para, index) => (
-                        <p key={index} className="text-lg md:text-xl text-black/70 leading-relaxed">
+                        <p key={index} className="text-lg md:text-xl text-black/70 leading-relaxed whitespace-pre-line">
                           {para}
                         </p>
                       ))}
                     </div>
                   )}
-                  {ctaText && ctaLink && (
+                  {ctaText && (
                     <div className="js-reveal-text">
                       <CTAButton
-                        asChild
                         theme="black"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          scrollToContact(e)
+                        }}
                       >
-                        <Link href={ctaLink}>
-                          {ctaText}
-                        </Link>
+                        {ctaText}
                       </CTAButton>
                     </div>
                   )}
@@ -230,7 +231,7 @@ export function ProductsSection({ data }: ProductsSectionProps) {
 
                             {/* Description */}
                             {product.description && (
-                              <div className="text-base md:text-lg text-black/70 mb-4  leading-relaxed line-clamp-3">
+                              <div className="text-base md:text-lg text-black/70 mb-4  leading-relaxed line-clamp-3 whitespace-pre-line">
                                 {product.description}
                               </div>
                             )}

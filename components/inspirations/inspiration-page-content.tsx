@@ -32,6 +32,13 @@ export function InspirationPageContent({ shared, specific }: InspirationPageCont
         rightText={specific?.heroRightText}
       />
 
+      {/* Decors Section - Conditionally rendered based on toggle */}
+      <DecorsSection
+        enabled={specific?.showDecors === true}
+        slug={shared?.finitionsDisponibles?.productSlug || "meg-standard"}
+        shared={shared}
+      />
+
       {/* Applications Section - Conditionally rendered */}
       {specific?.applicationsSection?.enabled === true && specific?.applicationsSection && (
         <ApplicationsSection
@@ -84,15 +91,6 @@ export function InspirationPageContent({ shared, specific }: InspirationPageCont
           title={specific.gridSection.title}
         />
       )}
-
-
-
-      {/* Decors Section - Conditionally rendered based on toggle */}
-      <DecorsSection
-        enabled={specific?.showDecors === true}
-        slug={shared?.finitionsDisponibles?.productSlug || "meg-standard"}
-        shared={shared}
-      />
 
       {/* Contact Section - Conditionally rendered */}
       {specific?.contactSection?.enabled === true && (

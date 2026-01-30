@@ -5,7 +5,6 @@ export interface HomeHeroSection {
   title: string
   subtitle: string
   ctaText: string
-  ctaLink: string
   showSection?: boolean
 }
 
@@ -16,7 +15,6 @@ export interface HomeApplicationsSection {
   description: string[]
   ctaTitle: string
   ctaText: string
-  ctaLink: string
   interiorCard: {
     title: string
     image: any
@@ -70,7 +68,6 @@ export interface HomeProductsSection {
   title: string
   description: string[]
   ctaText: string
-  ctaLink: string
   products: HomeProduct[]
   showSection?: boolean
 }

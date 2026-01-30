@@ -277,7 +277,6 @@ export function ProductsPageContent({ product, shared }: ProductsPageContentProp
           title={productData.contactSection.title}
           description={productData.contactSection.description}
           contactCta={productData.contactSection.contactCta}
-          contactLink={shared?.contact?.link || '/#contact'}
         />
       )}
     </div>

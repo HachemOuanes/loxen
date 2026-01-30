@@ -28,12 +28,6 @@ export const homeHeroSection = defineType({
       initialValue: 'Découvrir',
     }),
     defineField({
-      name: 'ctaLink',
-      title: 'CTA Button Link',
-      type: 'string',
-      initialValue: '/produits/exterieur',
-    }),
-    defineField({
       name: 'showSection',
       title: 'Show Section',
       type: 'boolean',

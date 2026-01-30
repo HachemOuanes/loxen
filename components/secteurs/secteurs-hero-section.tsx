@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { CTAButton } from '@/components/ui/cta-button'
+import { scrollToContact } from '@/lib/scroll-to-contact'
 
 interface HeroTextSections {
   section1?: {
@@ -23,11 +24,10 @@ interface SecteursHeroSectionProps {
   title: string
   heroTextSections?: HeroTextSections
   heroImage: string
-  contactLink: string
   contactCta: string
 }
 
-export function SecteursHeroSection({ title, heroTextSections, heroImage, contactLink, contactCta }: SecteursHeroSectionProps) {
+export function SecteursHeroSection({ title, heroTextSections, heroImage, contactCta }: SecteursHeroSectionProps) {
   const imageRef = useRef<HTMLDivElement>(null)
   const sectionRef = useRef<HTMLDivElement>(null)
 
@@ -109,20 +109,16 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
                 </div>
               )}
 
-              <div className="flex flex-wrap gap-3 pt-6">
-                <CTAButton
-                  theme="black"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    const element = document.getElementById('applications')
-                    if (element) {
-                      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                    }
-                  }}
-                >
-                  Voir Applications
-                </CTAButton>
-              </div>
+              {contactCta && (
+                <div className="flex flex-wrap gap-3 pt-6">
+                  <CTAButton
+                    theme="black"
+                    onClick={scrollToContact}
+                  >
+                    {contactCta}
+                  </CTAButton>
+                </div>
+              )}
             </div>
           </div>
         </div>

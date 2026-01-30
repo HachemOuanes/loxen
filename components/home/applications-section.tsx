@@ -26,7 +26,6 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
   const description = data.description
   const ctaTitle = data.ctaTitle
   const ctaText = data.ctaText
-  const ctaLink = data.ctaLink
   const interiorCard = data.interiorCard
   const exteriorCard = data.exteriorCard
 
@@ -99,14 +98,14 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                             </div>
                           )}
                           {title && (
-                            <h2 className="js-reveal-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em] leading-tight w-2/3 pr-10">
+                            <h2 className="js-reveal-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-black mb-3 tracking-[-0.02em] leading-tight w-2/3 pr-10 whitespace-pre-line">
                                 {title}
                             </h2>
                           )}
                           {description && description.length > 0 && (
                             <div className="js-reveal-text w-1/3 pt-12 space-y-3 pr-8">
                                 {description[0] && (
-                                    <p className="text-lg md:text-xl text-black/70 leading-relaxed">
+                                    <p className="text-lg md:text-xl text-black/70 leading-relaxed whitespace-pre-line">
                                         {description[0]}
                                     </p>
                                 )}
@@ -121,25 +120,27 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                         <div className="absolute top-[55%] -left-8 md:-left-12 lg:-left-16 xl:-left-20 -right-8 md:-right-12 lg:-right-16 xl:-right-20 bottom-0 bg-black"></div>
 
                         {/* CTA Section - Positioned in lower half, below midpoint, on black background */}
-                        {(description && description.length > 1 && description[1]) || (ctaText && ctaLink) ? (
+                        {(description && description.length > 1 && description[1]) || ctaText ? (
                           <div className="js-reveal-text max-w-md mt-auto relative z-10 pr-8 ">
                               {description && description.length > 1 && description[1] && (
-                                <p className="text-lg md:text-xl text-white/90 mb-6 leading-relaxed">
+                                <p className="text-lg md:text-xl text-white/90 mb-6 leading-relaxed whitespace-pre-line">
                                     {description[1]}
                                 </p>
                               )}
-                              {ctaText && ctaLink && (
+                              {ctaText && (
                                 <CTAButton
-                                    asChild
                                     theme="white"
+                                    onClick={(e) => {
+                                      e.preventDefault()
+                                      const element = document.getElementById('produits')
+                                      if (element) {
+                                        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                                      }
+                                    }}
+                                    className="inline-flex items-center gap-2 cursor-pointer"
                                 >
-                                <Link
-                                    href={ctaLink}
-                                        className="inline-flex items-center gap-2"
-                                >
-                                        <span>{ctaText}</span>
+                                    <span>{ctaText}</span>
                                     <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
-                                </Link>
                                 </CTAButton>
                               )}
                           </div>

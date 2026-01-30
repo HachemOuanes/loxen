@@ -11,19 +11,15 @@ import { scrollToContact } from '@/lib/scroll-to-contact'
 interface ArtisticCtaSectionProps {
   title: string
   description: string
-  contactLink?: string
   contactCta: string
 }
 
 export function ArtisticCtaSection({ 
   title, 
   description, 
-  contactLink, 
   contactCta 
 }: ArtisticCtaSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null)
-  const normalizedLink = contactLink || '/#contact'
-  const handleClick = normalizedLink === '/#contact' ? scrollToContact : undefined
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -125,19 +121,17 @@ export function ArtisticCtaSection({
           <div className="js-reveal flex flex-col items-center md:items-end justify-center">
             <div className="relative">
               {/* Geometric Background Shape */}
-              <div className="absolute -inset-4 border border-white/10 rotate-45" />
-              <div className="absolute -inset-8 border border-white/5 rotate-12" />
+              <div className="absolute -inset-4 border border-white/10 rotate-45 pointer-events-none" />
+              <div className="absolute -inset-8 border border-white/5 rotate-12 pointer-events-none" />
               
               <CTAButton
                 asChild
                 theme="white"
               >
                 <Link 
-                  href={normalizedLink}
-                  onClick={(e) => {
-                    handleClick?.(e)
-                  }}
-                  className="group inline-flex items-center gap-2"
+                  href="/#contact"
+                  onClick={scrollToContact}
+                  className="group inline-flex items-center gap-2 cursor-pointer relative z-10"
                 >
                   <span>{contactCta}</span>
                   <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />

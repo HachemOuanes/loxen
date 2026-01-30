@@ -14,7 +14,8 @@ export const homeInspirationSection = defineType({
     defineField({
       name: 'title',
       title: 'Main Title',
-      type: 'string',
+      type: 'text',
+      rows: 3,
       initialValue: 'Architectural excellence. Realized through innovative design.',
       validation: (Rule) => Rule.required(),
     }),

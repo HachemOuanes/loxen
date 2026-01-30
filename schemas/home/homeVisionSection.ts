@@ -8,7 +8,8 @@ export const homeVisionSection = defineType({
     defineField({
       name: 'largeText',
       title: 'Large Text (Left)',
-      type: 'string',
+      type: 'text',
+      rows: 3,
       initialValue: 'Made to matter',
       validation: (Rule) => Rule.required(),
     }),

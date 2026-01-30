@@ -14,7 +14,8 @@ export const homeApplicationsSection = defineType({
     defineField({
       name: 'title',
       title: 'Main Title',
-      type: 'string',
+      type: 'text',
+      rows: 3,
       initialValue: 'Interior and exterior integral solutions.',
       validation: (Rule) => Rule.required(),
     }),
@@ -37,12 +38,6 @@ export const homeApplicationsSection = defineType({
       title: 'CTA Button Text',
       type: 'string',
       initialValue: 'Explore Our Products',
-    }),
-    defineField({
-      name: 'ctaLink',
-      title: 'CTA Button Link',
-      type: 'string',
-      initialValue: '/produits',
     }),
     defineField({
       name: 'interiorCard',

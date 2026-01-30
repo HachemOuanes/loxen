@@ -14,7 +14,8 @@ export const homeProductsSection = defineType({
     defineField({
       name: 'title',
       title: 'Main Title',
-      type: 'string',
+      type: 'text',
+      rows: 3,
       initialValue: 'High-performance hardscaping. Consciously crafted + fully customisable.',
       validation: (Rule) => Rule.required(),
     }),
@@ -31,12 +32,6 @@ export const homeProductsSection = defineType({
       title: 'CTA Button Text',
       type: 'string',
       initialValue: 'Découvrir nos produits',
-    }),
-    defineField({
-      name: 'ctaLink',
-      title: 'CTA Button Link',
-      type: 'string',
-      initialValue: '/produits',
     }),
     defineField({
       name: 'products',

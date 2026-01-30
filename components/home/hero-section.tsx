@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { useRouter } from "next/navigation"
 import gsap from "gsap"
 import { CTAButton } from "@/components/ui/cta-button"
 import type { HomeHeroSection } from "@/lib/types/home"
@@ -11,7 +10,6 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ heroData }: HeroSectionProps) {
-  const router = useRouter()
   const sectionRef = useRef<HTMLElement | null>(null)
   const titleRef = useRef<HTMLHeadingElement | null>(null)
   const subtitleRef = useRef<HTMLDivElement | null>(null)
@@ -25,7 +23,6 @@ export function HeroSection({ heroData }: HeroSectionProps) {
   const title = heroData.title
   const subtitle = heroData.subtitle
   const ctaText = heroData.ctaText
-  const ctaLink = heroData.ctaLink
 
   useEffect(() => {
     if (!sectionRef.current) return
@@ -104,12 +101,18 @@ export function HeroSection({ heroData }: HeroSectionProps) {
             </div>
           )}
 
-          {ctaText && ctaLink && (
+          {ctaText && (
             <div ref={ctaRef} className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 lg:gap-8 justify-center items-center w-full">
               <CTAButton
                 theme="blurred"
                 className="w-full sm:w-48 md:w-56 lg:w-64 xl:w-72"
-                onClick={() => router.push(ctaLink)}
+                onClick={(e) => {
+                  e.preventDefault()
+                  const element = document.getElementById('applications')
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }
+                }}
               >
                 {ctaText}
               </CTAButton>

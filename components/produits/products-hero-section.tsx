@@ -22,7 +22,7 @@ export function ProductsHeroSection({
     <section className="relative bg-white">
       <div className="max-w-7xl mx-auto px-4 md:px-6 pt-24 md:pt-40 pb-8 md:pb-12">
         {/* Top Section: Title and Button */}
-        <div className="flex items-start justify-between gap-8 mb-8 md:mb-12">
+        <div className="flex items-end justify-between gap-8 mb-8 md:mb-12">
           {/* Title on the left */}
           <div className="flex-1">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-black tracking-[-0.02em] leading-tight">
