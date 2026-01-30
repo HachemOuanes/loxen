@@ -64,7 +64,7 @@ export function VisionSection({ data }: VisionSectionProps) {
           {/* Large text on the left */}
           {largeText && (
             <div className="flex flex-col col-span-6">
-              <h2 className="js-reveal-text text-[120px] text-black tracking-[-0.02em] leading-tight whitespace-pre-line">
+              <h2 className="js-reveal-text text-[65px] sm:text-[75px] md:text-[80px] lg:text-[95px] xl:text-[110px] text-black tracking-[-0.02em] leading-tight whitespace-pre-line">
                 {largeText}
               </h2>
             </div>

@@ -123,7 +123,7 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                         {(description && description.length > 1 && description[1]) || ctaText ? (
                           <div className="js-reveal-text max-w-md mt-auto relative z-10 pr-8 ">
                               {description && description.length > 1 && description[1] && (
-                                <p className="text-lg md:text-xl text-white/90 mb-6 leading-relaxed whitespace-pre-line">
+                                <p className="text-base lg:text-xl xl:text-2xl text-white/90 mb-6 leading-relaxed whitespace-pre-line">
                                     {description[1]}
                                 </p>
                               )}
