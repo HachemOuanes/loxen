@@ -225,8 +225,11 @@ export function ProductsSection({ data }: ProductsSectionProps) {
                           <div className="flex flex-col">
 
                             {/* Title */}
-                            <h3 className="text-lg md:text-xl lg:text-2xl text-black mb-2 group-hover:opacity-70 transition-opacity">
-                              {product.name}
+                            <h3 className="text-lg md:text-xl lg:text-2xl text-black mb-2 inline-block">
+                              <span className="relative">
+                                {product.name}
+                                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-black/40 group-hover:w-full transition-all duration-500 ease-out"></span>
+                              </span>
                             </h3>
 
                             {/* Description */}
@@ -239,7 +242,7 @@ export function ProductsSection({ data }: ProductsSectionProps) {
                             {/* Discover Link */}
                             <div className="flex items-center gap-2 text-black/70 group-hover:text-black transition-colors mt-auto">
                               <span className="text-sm tracking-wider uppercase hover:underline">Découvrir</span>
-                              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                              <ArrowUpRight className="w-4 h-4 group-hover:rotate-45 transition-all" strokeWidth={1.5} />
                             </div>
                           </div>
                         </div>

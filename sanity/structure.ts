@@ -211,6 +211,11 @@ export const structure: StructureResolver = (S) =>
                 .title('Page SEO')
                 .icon(SearchIcon)
                 .child(S.documentTypeList('pageSeo').title('Page SEO')),
+
+              S.listItem()
+                .title('Settings')
+                .icon(CogIcon)
+                .child(S.document().schemaType('settings').documentId('settings')),
             ])
         ),
 

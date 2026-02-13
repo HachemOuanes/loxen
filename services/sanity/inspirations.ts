@@ -92,6 +92,22 @@ export async function getInspirationBySlug(slug: string) {
         },
         images[]
       },
+      productsSection{
+        enabled,
+        title,
+        description,
+        products[]{
+          productType,
+          product->{
+            _id,
+            name,
+            slug,
+            description,
+            image,
+            category
+          }
+        }
+      },
       contactSection{
         title,
         enabled,

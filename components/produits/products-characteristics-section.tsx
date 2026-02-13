@@ -12,14 +12,10 @@ interface AccordionItem {
 }
 
 interface ProductsCharacteristicsSectionProps {
-  defaultImage: string
-  defaultImageAlt?: string
   accordionItems: AccordionItem[]
 }
 
 export function ProductsCharacteristicsSection({ 
-  defaultImage, 
-  defaultImageAlt = 'Product characteristics',
   accordionItems 
 }: ProductsCharacteristicsSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
@@ -27,27 +23,30 @@ export function ProductsCharacteristicsSection({
   const imageWrapperRef = useRef<HTMLDivElement>(null)
   const isFirstRender = useRef(true)
 
-  // Get all images including default
-  const allImages = [
-    { image: defaultImage, alt: defaultImageAlt },
-    ...accordionItems.map(item => ({
-      image: item.image || defaultImage,
-      alt: item.imageAlt || item.title || defaultImageAlt
-    }))
-  ]
+  // Get all images from accordion items (keep all to maintain index mapping)
+  const allImages = accordionItems.map(item => ({
+    image: item.image || '',
+    alt: item.imageAlt || item.title || 'Product characteristic'
+  }))
 
   // Update slide position when accordion opens
   useEffect(() => {
     if (!imageContainerRef.current || !imageWrapperRef.current) return
     if (isFirstRender.current) {
       isFirstRender.current = false
+      // Set initial position to show first accordion item's image
+      const wrapper = imageWrapperRef.current
+      const imageWidth = wrapper.offsetWidth
+      const imageIndex = openIndex !== null ? openIndex : 0
+      const translateX = -imageIndex * imageWidth
+      imageContainerRef.current.style.transform = `translateX(${translateX}px)`
       return
     }
 
     const wrapper = imageWrapperRef.current
     const imageWidth = wrapper.offsetWidth
-    // Calculate which image to show: 0 = default, 1+ = accordion items
-    const imageIndex = openIndex !== null ? openIndex + 1 : 0
+    // Calculate which image to show: 0 = first accordion item, 1 = second, etc.
+    const imageIndex = openIndex !== null ? openIndex : 0
     const translateX = -imageIndex * imageWidth
 
     imageContainerRef.current.style.transform = `translateX(${translateX}px)`
@@ -78,13 +77,19 @@ export function ProductsCharacteristicsSection({
                   className="relative flex-shrink-0 h-full"
                   style={{ width: `${100 / allImages.length}%` }}
                 >
-                  <img
-                    src={img.image}
-                    alt={img.alt}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    loading={index === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                  />
+                  {img.image ? (
+                    <img
+                      src={img.image}
+                      alt={img.alt}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 w-full h-full bg-black/5 flex items-center justify-center">
+                      <span className="text-black/20 text-sm">No image</span>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

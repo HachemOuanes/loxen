@@ -16,6 +16,7 @@ import { application } from './applications/application'
 // SEO & Settings
 import { seoSettings } from './seo/seoSettings'
 import { pageSeo } from './seo/pageSeo'
+import { settings } from './seo/settings'
 
 // Inspirations
 import { inspiration } from './inspirations/inspiration'
@@ -51,6 +52,7 @@ export const schemaTypes = [
   // ⚙️ SEO & Settings
   seoSettings,
   pageSeo,
+  settings,
   
   // 🎨 Inspirations
   inspiration,

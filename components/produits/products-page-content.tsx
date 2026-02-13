@@ -57,8 +57,6 @@ interface Product {
   }
   characteristicsSection?: {
     enabled?: boolean
-    defaultImage?: any
-    defaultImageAlt?: string
     accordionItems?: Array<{
       title: string
       description?: string
@@ -91,10 +89,14 @@ interface Product {
     enabled?: boolean
     title?: string
     description?: string
-    image?: any
-    imageAlt?: string
     documents?: Array<{
       title: string
+      file?: {
+        asset?: {
+          _id: string
+          url: string
+        }
+      }
       fileUrl?: string
       fileType?: string
       downloadText?: string
@@ -171,8 +173,6 @@ export function ProductsPageContent({ product, shared }: ProductsPageContentProp
       }))
     },
     characteristics: {
-      defaultImage: getImageUrl(product.characteristicsSection?.defaultImage),
-      defaultImageAlt: product.characteristicsSection?.defaultImageAlt || '',
       accordionItems: (product.characteristicsSection?.accordionItems || []).map(item => ({
         ...item,
         image: getImageUrl(item.image)
@@ -185,11 +185,12 @@ export function ProductsPageContent({ product, shared }: ProductsPageContentProp
     })),
     technicalDocumentsSection: {
       title: product.technicalDocumentsSection?.title || '',
-      description: product.technicalDocumentsSection?.description || '',
-      image: getImageUrl(product.technicalDocumentsSection?.image),
-      imageAlt: product.technicalDocumentsSection?.imageAlt || ''
+      description: product.technicalDocumentsSection?.description || ''
     },
-    technicalDocuments: product.technicalDocumentsSection?.documents || [],
+    technicalDocuments: (product.technicalDocumentsSection?.documents || []).map(doc => ({
+      ...doc,
+      fileUrl: doc.file?.asset?.url || doc.fileUrl, // Use uploaded file URL if available, otherwise use fileUrl
+    })),
     contactSection: {
       title: product.contactSection?.title || product.title,
       description: product.contactSection?.description || '',
@@ -243,10 +244,8 @@ export function ProductsPageContent({ product, shared }: ProductsPageContentProp
       )}
 
       {/* Characteristics Section - Big image left, accordion right */}
-      {product?.characteristicsSection?.enabled !== false && productData.characteristics.defaultImage && (
+      {product?.characteristicsSection?.enabled !== false && productData.characteristics.accordionItems.length > 0 && (
         <ProductsCharacteristicsSection
-          defaultImage={productData.characteristics.defaultImage}
-          defaultImageAlt={productData.characteristics.defaultImageAlt}
           accordionItems={productData.characteristics.accordionItems}
         />
       )}
@@ -265,8 +264,6 @@ export function ProductsPageContent({ product, shared }: ProductsPageContentProp
           documents={productData.technicalDocuments}
           sectionTitle={productData.technicalDocumentsSection.title}
           description={productData.technicalDocumentsSection.description}
-          image={productData.technicalDocumentsSection.image}
-          imageAlt={productData.technicalDocumentsSection.imageAlt}
         />
       )}
 

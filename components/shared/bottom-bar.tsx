@@ -5,7 +5,11 @@ import gsap from "gsap"
 import { ArrowUpRight } from "lucide-react"
 import { scrollToContact } from "@/lib/scroll-to-contact"
 
-export function BottomBar() {
+interface BottomBarProps {
+  whatsappNumber?: string
+}
+
+export function BottomBar({ whatsappNumber }: BottomBarProps) {
   const bottomBarRef = useRef<HTMLElement | null>(null)
   const lastScrollY = useRef(0)
   const scrollDirection = useRef<'up' | 'down'>('up')
@@ -82,10 +86,11 @@ export function BottomBar() {
     }
   }, [])
 
-  // WhatsApp link - you can update this with your actual WhatsApp number
-  const whatsappNumber = "+33612345678" // Replace with your actual WhatsApp number
+  // WhatsApp link - use provided number or fallback
+  const defaultWhatsappNumber = "+33612345678"
+  const finalWhatsappNumber = whatsappNumber || defaultWhatsappNumber
   const whatsappMessage = encodeURIComponent("Bonjour, j'aimerais obtenir de l'aide.")
-  const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${whatsappMessage}`
+  const whatsappUrl = `https://wa.me/${finalWhatsappNumber.replace(/[^0-9]/g, '')}?text=${whatsappMessage}`
 
   return (
     <footer
@@ -101,7 +106,7 @@ export function BottomBar() {
             className="group flex items-center gap-1.5 text-black/70 hover:text-black transition-all duration-300 text-[10px] md:text-xs font-light tracking-[0.1em] uppercase"
           >
             REQUEST SAMPLES
-            <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" strokeWidth={1.5} />
+            <ArrowUpRight className="w-3 h-3 group-hover:rotate-45 transition-all" strokeWidth={1.5} />
           </a>
           <a
             href="/#contact"
@@ -109,7 +114,7 @@ export function BottomBar() {
             className="group flex items-center gap-1.5 text-black/70 hover:text-black transition-all duration-300 text-[10px] md:text-xs font-light tracking-[0.1em] uppercase"
           >
             CONTACT US
-            <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" strokeWidth={1.5} />
+            <ArrowUpRight className="w-3 h-3 group-hover:rotate-45 transition-all" strokeWidth={1.5} />
           </a>
         </div>
 
@@ -122,7 +127,7 @@ export function BottomBar() {
             className="group flex items-center gap-1.5 text-white/90 hover:text-white hover:opacity-100 transition-all duration-300 text-[10px] md:text-xs font-light tracking-[0.1em] uppercase drop-shadow-md"
           >
             NEED HELP? <span className="font-medium">CHAT</span> ON WHATSAPP
-            <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" strokeWidth={1.5} />
+            <ArrowUpRight className="w-3 h-3 group-hover:rotate-45 transition-all" strokeWidth={1.5} />
           </a>
         </div>
       </div>

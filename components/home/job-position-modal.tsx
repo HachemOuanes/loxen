@@ -283,7 +283,7 @@ export function JobPositionModal() {
                 className="group bg-white text-black hover:opacity-80 hover:underline transition-all duration-300 rounded-full p-3 text-xs font-light tracking-[0.1em] uppercase flex items-center justify-center gap-2"
               >
                 Poursuivre
-                <ArrowUpRight className="w-3 h-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                <ArrowUpRight className="w-3 h-3 group-hover:rotate-45 transition-all" strokeWidth={1.5} />
               </button>
             </div>
           )}

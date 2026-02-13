@@ -352,7 +352,7 @@ export function InteriorProductsContent({ applications: initialApplications }: I
                     {/* Discover Link */}
                     <div className="flex items-center gap-2 text-white/80 group-hover/product:text-white transition-colors">
                       <span className="text-xs md:text-sm tracking-wider uppercase">Découvrir</span>
-                      <ArrowUpRight className="w-3 h-3 md:w-4 md:h-4 group-hover/product:translate-x-1 group-hover/product:-translate-y-1 transition-all" strokeWidth={1.5} />
+                      <ArrowUpRight className="w-3 h-3 md:w-4 md:h-4 group-hover/product:rotate-45 transition-all" strokeWidth={1.5} />
                     </div>
                   </div>
                 </Link>

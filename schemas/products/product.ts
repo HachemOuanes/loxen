@@ -257,19 +257,6 @@ export const product = defineType({
           initialValue: true,
         }),
         defineField({
-          name: 'defaultImage',
-          title: 'Default Image',
-          type: 'image',
-          options: {
-            hotspot: true,
-          },
-        }),
-        defineField({
-          name: 'defaultImageAlt',
-          title: 'Default Image Alt Text',
-          type: 'string',
-        }),
-        defineField({
           name: 'accordionItems',
           title: 'Accordion Items',
           type: 'array',
@@ -459,19 +446,6 @@ export const product = defineType({
           rows: 3,
         }),
         defineField({
-          name: 'image',
-          title: 'Image',
-          type: 'image',
-          options: {
-            hotspot: true,
-          },
-        }),
-        defineField({
-          name: 'imageAlt',
-          title: 'Image Alt Text',
-          type: 'string',
-        }),
-        defineField({
           name: 'documents',
           title: 'Documents',
           type: 'array',
@@ -486,10 +460,19 @@ export const product = defineType({
                   validation: (Rule) => Rule.required(),
                 }),
                 defineField({
+                  name: 'file',
+                  title: 'Upload File',
+                  type: 'file',
+                  description: 'Upload a PDF or other document file',
+                  options: {
+                    accept: '.pdf,.doc,.docx,.zip,.rfa,.rvt',
+                  },
+                }),
+                defineField({
                   name: 'fileUrl',
-                  title: 'File URL',
+                  title: 'File URL (Alternative)',
                   type: 'url',
-                  description: 'URL to download the document',
+                  description: 'Or provide a URL to download the document (if not uploading a file)',
                 }),
                 defineField({
                   name: 'fileType',

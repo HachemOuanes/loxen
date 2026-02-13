@@ -464,6 +464,79 @@ export const inspiration = defineType({
       initialValue: true,
     }),
     defineField({
+      name: 'productsSection',
+      title: 'Products Section',
+      type: 'object',
+      description: 'Products section displayed at the end of the page',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Section Title',
+          type: 'string',
+          initialValue: 'Produits',
+        }),
+        defineField({
+          name: 'description',
+          title: 'Description',
+          type: 'text',
+          rows: 2,
+          description: 'Description text displayed on the right side',
+        }),
+        defineField({
+          name: 'products',
+          title: 'Selected Products',
+          type: 'array',
+          description: 'Select specific products to display (max 6)',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({
+                  name: 'productType',
+                  title: 'Product Type',
+                  type: 'string',
+                  options: {
+                    list: [
+                      { title: 'Intérieur', value: 'interieur' },
+                      { title: 'Extérieur', value: 'exterieur' },
+                    ],
+                  },
+                }),
+                defineField({
+                  name: 'product',
+                  title: 'Product',
+                  type: 'reference',
+                  to: [
+                    { type: 'product' },
+                  ],
+                }),
+              ],
+              preview: {
+                select: {
+                  productType: 'productType',
+                  productName: 'product.name',
+                },
+                prepare({ productType, productName }) {
+                  const typeLabel = productType === 'interieur' ? 'Intérieur' : 'Extérieur'
+                  return {
+                    title: productName || 'Product',
+                    subtitle: typeLabel,
+                  }
+                },
+              },
+            },
+          ],
+        }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Section',
+          type: 'boolean',
+          description: 'Toggle to display/hide this section on the inspiration page',
+          initialValue: true,
+        }),
+      ],
+    }),
+    defineField({
       name: 'contactSection',
       title: 'Contact Section',
       type: 'object',

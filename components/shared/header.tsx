@@ -293,9 +293,13 @@ export function Header() {
       
       // Determine scroll direction
       if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-        // Scrolling down and past 100px - hide header
+        // Scrolling down and past 100px - hide header and close mega menu
         if (scrollDirection.current !== 'down') {
           scrollDirection.current = 'down'
+          // Close mega menu if open
+          if (megaOpen) {
+            closeMega()
+          }
           gsap.to(header, {
             y: -100,
             opacity: 0,
@@ -340,7 +344,7 @@ export function Header() {
         cancelAnimationFrame(rafId)
       }
     }
-  }, [])
+  }, [megaOpen, closeMega])
 
 
   return (

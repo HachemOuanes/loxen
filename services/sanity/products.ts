@@ -285,8 +285,6 @@ export async function getProductBySlug(slug: string) {
       },
       characteristicsSection{
         enabled,
-        defaultImage,
-        defaultImageAlt,
         accordionItems[]{
           title,
           description,
@@ -319,10 +317,14 @@ export async function getProductBySlug(slug: string) {
         enabled,
         title,
         description,
-        image,
-        imageAlt,
         documents[]{
           title,
+          file{
+            asset->{
+              _id,
+              url
+            }
+          },
           fileUrl,
           fileType,
           downloadText

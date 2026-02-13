@@ -43,3 +43,14 @@ export async function getPageSeoSlugs() {
   const query = `*[_type == "pageSeo"].slug.current`
   return await client.fetch(query)
 }
+
+// ===== SETTINGS =====
+
+// Get settings
+export async function getSettings() {
+  const query = `*[_type == "settings"][0]{
+    whatsappNumber
+  }`
+  
+  return await client.fetch(query)
+}

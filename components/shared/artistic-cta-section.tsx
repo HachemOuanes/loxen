@@ -134,7 +134,7 @@ export function ArtisticCtaSection({
                   className="group inline-flex items-center gap-2 cursor-pointer relative z-10"
                 >
                   <span>{contactCta}</span>
-                  <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                  <ArrowUpRight className="w-5 h-5 group-hover:rotate-45 transition-all" strokeWidth={1.5} />
                 </Link>
               </CTAButton>
             </div>

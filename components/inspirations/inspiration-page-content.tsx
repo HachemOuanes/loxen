@@ -9,6 +9,7 @@ import { GridSection } from '@/components/inspirations/grid-section'
 import { FinitionsSection } from '@/components/inspirations/finitions-section'
 import { DecorsSection } from '@/components/shared/decors-section'
 import { ArtisticCtaSection } from '@/components/shared/artistic-cta-section'
+import { SecteursProductsSection } from '@/components/secteurs/secteurs-products-section'
 import { useAnimations } from '@/components/shared/use-animations'
 
 interface InspirationPageContentProps {
@@ -89,6 +90,23 @@ export function InspirationPageContent({ shared, specific }: InspirationPageCont
           text={specific.gridSection.text}
           images={specific.gridSection.images || []}
           title={specific.gridSection.title}
+        />
+      )}
+
+      {/* Products Section - Conditionally rendered */}
+      {specific?.productsSection?.enabled === true && specific?.productsSection && (
+        <SecteursProductsSection
+          title={specific.productsSection.title || "Produits"}
+          description={specific.productsSection.description}
+          products={specific.productsSection.products?.map((item: any) => ({
+            _id: item.product?._id || '',
+            name: item.product?.name || '',
+            slug: item.product?.slug || { current: '' },
+            description: item.product?.description || '',
+            image: item.product?.image,
+            _productType: item.productType === 'interieur' ? 'interior' : 'exterior',
+            category: item.product?.category
+          })) || []}
         />
       )}
 

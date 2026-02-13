@@ -140,7 +140,7 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                                     className="inline-flex items-center gap-2 cursor-pointer"
                                 >
                                     <span>{ctaText}</span>
-                                    <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                                    <ArrowUpRight className="w-5 h-5 group-hover:rotate-45 transition-all" strokeWidth={1.5} />
                                 </CTAButton>
                               )}
                           </div>
@@ -180,11 +180,11 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                                 </div>
 
-                                {/* Corner Brackets - Inside but inverted/flipped outward */}
-                                <div className="absolute top-12 left-12 w-8 h-8 border-b-4 border-r-4 border-white z-30"></div>
-                                <div className="absolute top-12 right-12 w-8 h-8 border-b-4 border-l-4 border-white z-30"></div>
-                                <div className="absolute bottom-12 left-12 w-8 h-8 border-t-4 border-r-4 border-white z-30"></div>
-                                <div className="absolute bottom-12 right-12 w-8 h-8 border-t-4 border-l-4 border-white z-30"></div>
+                                {/* Corner Brackets - Inside but inverted/flipped outward - Shrink in on hover */}
+                                <div className="absolute top-12 left-12 w-8 h-8 border-b-4 border-r-4 border-white z-30 origin-top-left group-hover:scale-75 transition-transform duration-500 ease-out"></div>
+                                <div className="absolute top-12 right-12 w-8 h-8 border-b-4 border-l-4 border-white z-30 origin-top-right group-hover:scale-75 transition-transform duration-500 ease-out"></div>
+                                <div className="absolute bottom-12 left-12 w-8 h-8 border-t-4 border-r-4 border-white z-30 origin-bottom-left group-hover:scale-75 transition-transform duration-500 ease-out"></div>
+                                <div className="absolute bottom-12 right-12 w-8 h-8 border-t-4 border-l-4 border-white z-30 origin-bottom-right group-hover:scale-75 transition-transform duration-500 ease-out"></div>
 
                                 {/* Content */}
                                 {interiorCard.title && (
@@ -194,7 +194,7 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                                       </h3>
                                       <div className="flex items-center gap-2 text-white/80 group-hover:text-white transition-all duration-700 delay-150 transform translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100">
                                           <span className="text-sm md:text-base tracking-wider uppercase ">Découvrir</span>
-                                          <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                                          <ArrowUpRight className="w-5 h-5 group-hover:rotate-45 transition-all" strokeWidth={1.5} />
                                       </div>
                                   </div>
                                 )}
@@ -236,11 +236,11 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                                 </div>
 
-                                {/* Corner Brackets - Inside with padding */}
-                                <div className="absolute top-12 left-12 w-8 h-8 border-t-4 border-l-4 border-white z-30"></div>
-                                <div className="absolute top-12 right-12 w-8 h-8 border-t-4 border-r-4 border-white z-30"></div>
-                                <div className="absolute bottom-12 left-12 w-8 h-8 border-b-4 border-l-4 border-white z-30"></div>
-                                <div className="absolute bottom-12 right-12 w-8 h-8 border-b-4 border-r-4 border-white z-30"></div>
+                                {/* Corner Brackets - Inside with padding - Expand out on hover */}
+                                <div className="absolute top-12 left-12 w-8 h-8 border-t-4 border-l-4 border-white z-30 origin-top-left group-hover:scale-125 transition-transform duration-500 ease-out"></div>
+                                <div className="absolute top-12 right-12 w-8 h-8 border-t-4 border-r-4 border-white z-30 origin-top-right group-hover:scale-125 transition-transform duration-500 ease-out"></div>
+                                <div className="absolute bottom-12 left-12 w-8 h-8 border-b-4 border-l-4 border-white z-30 origin-bottom-left group-hover:scale-125 transition-transform duration-500 ease-out"></div>
+                                <div className="absolute bottom-12 right-12 w-8 h-8 border-b-4 border-r-4 border-white z-30 origin-bottom-right group-hover:scale-125 transition-transform duration-500 ease-out"></div>
 
                                 {/* Content */}
                                 {exteriorCard.title && (
@@ -250,7 +250,7 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                                       </h3>
                                       <div className="flex items-center gap-2 text-white/80 group-hover:text-white transition-all duration-700 delay-150 transform translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100">
                                           <span className="text-sm md:text-base tracking-wider uppercase ">Découvrir</span>
-                                          <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                                          <ArrowUpRight className="w-5 h-5 group-hover:rotate-45 transition-all" strokeWidth={1.5} />
                                       </div>
                                   </div>
                                 )}

@@ -115,7 +115,7 @@ export function SecteursProductsSection({
                                                     {/* Discover Link */}
                                                     <div className="flex items-center gap-2 text-black/70 group-hover:text-black transition-colors mt-auto">
                                                         <span className="text-sm tracking-wider uppercase hover:underline">Découvrir</span>
-                                                        <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" strokeWidth={1.5} />
+                                                        <ArrowUpRight className="w-4 h-4 group-hover:rotate-45 transition-all" strokeWidth={1.5} />
                                                     </div>
                                                 </div>
                                             </div>

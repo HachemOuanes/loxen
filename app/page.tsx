@@ -19,6 +19,7 @@ import {
   getHomeInspirationSection,
   getContactInfo,
 } from "@/services/sanity/home"
+import { getSettings } from "@/services/sanity/seo"
 import type { Metadata } from 'next'
 
 // Enable ISR - revalidate once per day (24 hours)
@@ -71,9 +72,10 @@ async function getHomePageData() {
 
 export default async function HomePage() {
   // Fetch data at build time
-  const [homeData, siteSettings] = await Promise.all([
+  const [homeData, siteSettings, settings] = await Promise.all([
     getHomePageData(),
-    getSiteSettings()
+    getSiteSettings(),
+    getSettings()
   ])
 
   const structuredData = generateStructuredData(siteSettings)
@@ -98,7 +100,7 @@ export default async function HomePage() {
         <InspirationSection data={homeData.inspiration} />
         <ContactSection data={homeData.contact} />
         <Footer />
-        <BottomBar />
+        <BottomBar whatsappNumber={settings?.whatsappNumber} />
         <JobPositionModal />
       </main>
     </>
