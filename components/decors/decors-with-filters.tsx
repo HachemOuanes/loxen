@@ -7,43 +7,43 @@ import { DecorDetailModal } from './decor-detail-modal'
 import { SearchIcon, FilterIcon } from 'lucide-react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 
-type Finish = {
+type Decor = {
   _id: string
-  code: string
+  external_code: string
+  loxen_code?: string
   name: string
   image?: any
   image_url?: string
-  color?: string
+  collections?: string[]
+  finishes?: string[]
   colors?: string[]
-  abet_order?: number
+  external_order?: number
   products?: Array<{
     _id: string
     _type: string
-    name: string
+    title?: string
+    name?: string
     productId?: string
     slug?: { current: string }
   }>
-  keywords?: string[]
   interior?: boolean
   exterior?: boolean
-  available?: boolean
-  is_new?: boolean
-  featured?: boolean
 }
 
 interface DecorsWithFiltersProps {
-  finishes: Finish[]
+  finishes: Decor[]
 }
 
 export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedColors, setSelectedColors] = useState<string[]>([])
+  const [selectedCollections, setSelectedCollections] = useState<string[]>([])
+  const [selectedFinishes, setSelectedFinishes] = useState<string[]>([])
   const [selectedProducts, setSelectedProducts] = useState<string[]>([])
   const [interiorFilter, setInteriorFilter] = useState<boolean | null>(null)
   const [exteriorFilter, setExteriorFilter] = useState<boolean | null>(null)
-  const [isNewFilter, setIsNewFilter] = useState<boolean | null>(null)
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-  const [selectedDecor, setSelectedDecor] = useState<Finish | null>(null)
+  const [selectedDecor, setSelectedDecor] = useState<Decor | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
 
   // Extract unique filter values
@@ -51,9 +51,24 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
     const colorSet = new Set<string>()
     finishes.forEach(f => {
       if (f.colors) f.colors.forEach(c => colorSet.add(c))
-      if (f.color) colorSet.add(f.color)
     })
     return Array.from(colorSet).sort()
+  }, [finishes])
+
+  const allCollections = useMemo(() => {
+    const set = new Set<string>()
+    finishes.forEach(f => {
+      if (f.collections) f.collections.forEach(c => set.add(c))
+    })
+    return Array.from(set).sort()
+  }, [finishes])
+
+  const allFinishes = useMemo(() => {
+    const set = new Set<string>()
+    finishes.forEach(f => {
+      if (f.finishes) f.finishes.forEach(fin => set.add(fin))
+    })
+    return Array.from(set).sort()
   }, [finishes])
 
   const allProducts = useMemo(() => {
@@ -61,82 +76,98 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
     finishes.forEach(f => {
       if (f.products) {
         f.products.forEach(p => {
-          if (p.name) productSet.add(p.name)
+          const name = p.title || p.name
+          if (name) productSet.add(name)
         })
       }
     })
     return Array.from(productSet).sort()
   }, [finishes])
 
-  // Filter decors based on search and filters
+  // Filter decors
   const filteredFinishes = useMemo(() => {
     return finishes.filter(finish => {
-      // Search filter - trim and check for empty string
+      // Search filter
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase().trim()
+        const displayCode = finish.loxen_code || finish.external_code
         const matchesSearch =
           finish.name?.toLowerCase().includes(query) ||
-          finish.code?.toLowerCase().includes(query) ||
-          (finish.products && finish.products.some(p => p.name?.toLowerCase().includes(query))) ||
-          (finish.keywords && finish.keywords.some(k => k?.toLowerCase().includes(query)))
-        
+          displayCode?.toLowerCase().includes(query) ||
+          (finish.products && finish.products.some(p => (p.title || p.name)?.toLowerCase().includes(query))) ||
+          (finish.collections && finish.collections.some(c => c.toLowerCase().includes(query))) ||
+          (finish.finishes && finish.finishes.some(f => f.toLowerCase().includes(query)))
+
         if (!matchesSearch) return false
       }
 
-      // Color filter - must match at least one selected color
+      // Color filter
       if (selectedColors.length > 0) {
         const hasColor = selectedColors.some(color =>
-          (finish.colors && finish.colors.includes(color)) || 
-          finish.color === color
+          finish.colors && finish.colors.includes(color)
         )
         if (!hasColor) return false
       }
 
-      // Product filter - must match at least one selected product
+      // Collection filter
+      if (selectedCollections.length > 0) {
+        const hasCollection = selectedCollections.some(col =>
+          finish.collections && finish.collections.includes(col)
+        )
+        if (!hasCollection) return false
+      }
+
+      // Finish filter
+      if (selectedFinishes.length > 0) {
+        const hasFinish = selectedFinishes.some(fin =>
+          finish.finishes && finish.finishes.includes(fin)
+        )
+        if (!hasFinish) return false
+      }
+
+      // Product filter
       if (selectedProducts.length > 0) {
         const hasProduct = selectedProducts.some(productName =>
-          finish.products && finish.products.some(p => p.name === productName)
+          finish.products && finish.products.some(p => (p.title || p.name) === productName)
         )
         if (!hasProduct) return false
       }
 
-
       // Interior/Exterior filter
-      // If both filters are checked, show decors that are interior OR exterior (union)
-      // If only one is checked, show decors matching that filter
-      // If neither is checked, show all
       const hasUsageFilter = interiorFilter === true || exteriorFilter === true
       if (hasUsageFilter) {
         let matchesUsage = false
-        
+
         if (interiorFilter === true && exteriorFilter === true) {
-          // Both checked: show if interior OR exterior
           matchesUsage = finish.interior === true || finish.exterior === true
         } else if (interiorFilter === true) {
-          // Only interior checked
           matchesUsage = finish.interior === true
         } else if (exteriorFilter === true) {
-          // Only exterior checked
           matchesUsage = finish.exterior === true
         }
-        
-        if (!matchesUsage) return false
-      }
 
-      // Is New filter
-      if (isNewFilter !== null) {
-        if (finish.is_new !== isNewFilter) return false
+        if (!matchesUsage) return false
       }
 
       return true
     })
-  }, [finishes, searchQuery, selectedColors, selectedProducts, interiorFilter, exteriorFilter, isNewFilter])
-
-  const availableFinishes = filteredFinishes.filter(f => f.available !== false)
+  }, [finishes, searchQuery, selectedColors, selectedCollections, selectedFinishes, selectedProducts, interiorFilter, exteriorFilter])
 
   const toggleColor = (color: string) => {
     setSelectedColors(prev =>
       prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]
+    )
+  }
+
+  const toggleCollection = (col: string) => {
+    setSelectedCollections(prev =>
+      prev.includes(col) ? prev.filter(c => c !== col) : [...prev, col]
+    )
+  }
+
+  const toggleFinish = (fin: string) => {
+    setSelectedFinishes(prev =>
+      prev.includes(fin) ? prev.filter(f => f !== fin) : [...prev, fin]
     )
   }
 
@@ -149,13 +180,14 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
   const clearFilters = () => {
     setSearchQuery('')
     setSelectedColors([])
+    setSelectedCollections([])
+    setSelectedFinishes([])
     setSelectedProducts([])
     setInteriorFilter(null)
     setExteriorFilter(null)
-    setIsNewFilter(null)
   }
 
-  const hasActiveFilters = searchQuery || selectedColors.length > 0 || selectedProducts.length > 0 || interiorFilter !== null || exteriorFilter !== null || isNewFilter !== null
+  const hasActiveFilters = searchQuery || selectedColors.length > 0 || selectedCollections.length > 0 || selectedFinishes.length > 0 || selectedProducts.length > 0 || interiorFilter !== null || exteriorFilter !== null
 
   // Reusable filter content component
   const FilterContent = () => (
@@ -172,6 +204,26 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
         )}
       </div>
 
+      {/* Collections Filter */}
+      {allCollections.length > 0 && (
+        <div>
+          <h3 className="text-xs font-medium text-black mb-3 uppercase tracking-wide">Collections</h3>
+          <div className="space-y-2 max-h-48 overflow-y-auto">
+            {allCollections.map(col => (
+              <label key={col} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={selectedCollections.includes(col)}
+                  onChange={() => toggleCollection(col)}
+                  className="w-4 h-4 border border-black/20 rounded focus:ring-black/20 focus:ring-2"
+                />
+                <span className="text-xs text-black/70">{col}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Colors Filter */}
       {allColors.length > 0 && (
         <div>
@@ -186,6 +238,26 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
                   className="w-4 h-4 border border-black/20 rounded focus:ring-black/20 focus:ring-2"
                 />
                 <span className="text-xs text-black/70 capitalize">{color}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Finishes Filter */}
+      {allFinishes.length > 0 && (
+        <div>
+          <h3 className="text-xs font-medium text-black mb-3 uppercase tracking-wide">Finitions</h3>
+          <div className="space-y-2 max-h-48 overflow-y-auto">
+            {allFinishes.map(fin => (
+              <label key={fin} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={selectedFinishes.includes(fin)}
+                  onChange={() => toggleFinish(fin)}
+                  className="w-4 h-4 border border-black/20 rounded focus:ring-black/20 focus:ring-2"
+                />
+                <span className="text-xs text-black/70 capitalize">{fin}</span>
               </label>
             ))}
           </div>
@@ -236,20 +308,6 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
           </label>
         </div>
       </div>
-
-      {/* New Filter */}
-      <div>
-        <h3 className="text-xs font-medium text-black mb-3 uppercase tracking-wide">Statut</h3>
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={isNewFilter === true}
-            onChange={(e) => setIsNewFilter(e.target.checked ? true : null)}
-            className="w-4 h-4 border border-black/20 rounded focus:ring-black/20 focus:ring-2"
-          />
-          <span className="text-xs text-black/70">Nouveau</span>
-        </label>
-      </div>
     </div>
   )
 
@@ -287,7 +345,7 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
             <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-black/40" />
             <Input
               type="text"
-              placeholder="Rechercher par nom, code, produit..."
+              placeholder="Rechercher par nom, code, collection, finition..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 border-black/20 focus:border-black/40 rounded-none"
@@ -296,25 +354,20 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
         </div>
 
         {/* Results Count */}
-        {availableFinishes.length > 0 && (
-          <div className="mb-6 flex flex-wrap gap-2">
+        {filteredFinishes.length > 0 && (
+          <div className="mb-6">
             <div className="text-sm text-black/60">
-              {availableFinishes.length} décors{availableFinishes.length !== finishes.length && ` sur ${finishes.length}`}
+              {filteredFinishes.length} décors{filteredFinishes.length !== finishes.length && ` sur ${finishes.length}`}
             </div>
-            {availableFinishes.filter(f => f.is_new).length > 0 && (
-              <div className="text-sm text-black/60">
-                • {availableFinishes.filter(f => f.is_new).length} nouveaux
-              </div>
-            )}
           </div>
         )}
 
         {/* Decors Grid */}
-        {availableFinishes.length > 0 ? (
+        {filteredFinishes.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 md:gap-6">
-            {availableFinishes.map((finish) => (
-              <DecorCard 
-                key={finish.code + finish.name} 
+            {filteredFinishes.map((finish) => (
+              <DecorCard
+                key={finish._id}
                 finish={finish}
                 onClick={() => {
                   setSelectedDecor(finish)
@@ -339,4 +392,3 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
     </div>
   )
 }
-

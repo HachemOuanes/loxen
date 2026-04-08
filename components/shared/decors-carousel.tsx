@@ -9,25 +9,25 @@ import { scrollToContact } from '@/lib/scroll-to-contact'
 
 export type Decor = {
   _id: string
-  code: string
+  external_code: string
+  loxen_code?: string
   name: string
   image?: any
   image_url?: string
-  color?: string
+  collections?: string[]
+  finishes?: string[]
   colors?: string[]
-  abet_order?: number
+  external_order?: number
   products?: Array<{
     _id: string
     _type: string
-    name: string
+    title?: string
+    name?: string
     productId?: string
     slug?: { current: string }
   }>
   interior?: boolean
   exterior?: boolean
-  available?: boolean
-  is_new?: boolean
-  featured?: boolean
 }
 
 interface DecorsCarouselProps {
@@ -38,9 +38,9 @@ interface DecorsCarouselProps {
   className?: string
 }
 
-export function DecorsCarousel({ 
-  decors, 
-  collectionName, 
+export function DecorsCarousel({
+  decors,
+  collectionName,
   title = "Décors disponibles",
   showCollectionBar = true,
   className = ""
@@ -48,34 +48,25 @@ export function DecorsCarousel({
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const trackRef = useRef<HTMLDivElement | null>(null)
 
-  // Filter out null/undefined decor references and unavailable decors, deduplicate by _id, then sort by abet_order
+  // Filter out null/undefined decor references, deduplicate by _id, then sort by external_order
   const availableFinishes = decors
-    .filter(f => f != null && f?._id && f?.code && (f?.available !== false))
-    .filter((f, index, self) => 
-      // Deduplicate by _id to prevent showing the same decor twice
+    .filter(f => f != null && f?._id && f?.external_code)
+    .filter((f, index, self) =>
       index === self.findIndex((item) => item._id === f._id)
     )
-    .sort((a, b) => (a?.abet_order || 0) - (b?.abet_order || 0))
-  
-  // Calculate actual count from filtered array
+    .sort((a, b) => (a?.external_order || 0) - (b?.external_order || 0))
+
   const actualFinishCount = availableFinishes.length
 
-  // Precompute render list with cloned items for seamless looping
-  // Only clone if we have more items than what's visible (5 on desktop)
-  // This prevents duplicates from being visible when there are few items
   const renderItems = useMemo(() => {
     if (!availableFinishes || availableFinishes.length === 0) return []
-    // Only clone if we have more than 5 items (what's visible on desktop)
-    // For fewer items, don't clone to avoid visible duplicates
     if (availableFinishes.length <= 5) {
       return availableFinishes
     }
-    const cloneCount = 5 // clone first 5 items for seamless loop (5 visible on desktop)
+    const cloneCount = 5
     return [...availableFinishes, ...availableFinishes.slice(0, cloneCount)]
   }, [availableFinishes])
 
-  // Auto-advance one item at a time with seamless loop
-  // Only enable auto-sliding if there are strictly more than 5 items
   useEffect(() => {
     if (!availableFinishes || availableFinishes.length <= 5) return
     const prefersReduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -114,7 +105,6 @@ export function DecorsCarousel({
         onComplete: () => {
           if (disposed) return
           if (next >= total) {
-            // Snap back to start (after sliding onto the first cloned item)
             gsap.set(track, { x: 0 })
             index = 0
             setCurrentIndex(0)
@@ -164,64 +154,62 @@ export function DecorsCarousel({
         <div className="md:col-span-8">
           <div className="relative overflow-hidden">
             <div ref={trackRef} className="flex gap-4 lg:gap-6 will-change-transform">
-              {renderItems.map((finish, idx) => (
-                <article
-                  key={(finish.code + finish.name) + '-' + idx}
-                  className="js-decor-card basis-1/2 shrink-0 group bg-white box-border lg:basis-[calc((100%_-_1.5rem_*_4)/5)]"
-                >
-                  <div className="aspect-[4/5] overflow-hidden bg-gray-50 relative rounded-2xl border-2 border-gray-100">
-                    {finish.image ? (
-                      <img
-                        src={urlFor(finish.image).width(320).height(400).quality(85).url()}
-                        alt={finish.name || finish.code || 'Decor'}
-                        className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110 rounded-2xl"
-                        loading="lazy"
-                        decoding="async"
-                        onError={(e) => {
-                          if (finish?.image_url) {
-                            (e.target as HTMLImageElement).src = finish.image_url
-                          }
-                        }}
-                      />
-                    ) : finish?.image_url ? (
-                      <img
-                        src={finish.image_url}
-                        alt={finish.name || finish.code || 'Decor'}
-                        className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110 rounded-2xl"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    ) : (
-                      <div className="h-full w-full rounded-2xl" style={{ backgroundColor: finish.color || finish.colors?.[0] || '#e5e7eb' }} />
-                    )}
-                    {finish.is_new && (
-                      <div className="absolute top-2 right-2 bg-black text-white text-[10px] px-2 py-1 uppercase tracking-wide">
-                        Nouveau
-                      </div>
-                    )}
-                    {(finish.interior || finish.exterior) && (
-                      <div className="absolute bottom-2 left-2 flex gap-1">
-                        {finish.interior && (
-                          <span className="bg-white/90 text-black text-[9px] px-1.5 py-0.5 uppercase rounded">Int</span>
-                        )}
-                        {finish.exterior && (
-                          <span className="bg-white/90 text-black text-[9px] px-1.5 py-0.5 uppercase rounded">Ext</span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-3">
-                    <p className="text-xs text-black">{finish.code}</p>
-                    <p className="text-xs text-black/70 truncate">{finish.name}</p>
-                    {finish.products && finish.products.length > 0 && (
-                      <p className="mt-1 text-xs text-black/50 truncate">
-                        {finish.products.slice(0, 2).map(p => p.name).join(', ')}
-                        {finish.products.length > 2 && ` +${finish.products.length - 2}`}
-                      </p>
-                    )}
-                  </div>
-                </article>
-              ))}
+              {renderItems.map((finish, idx) => {
+                const displayCode = finish.loxen_code || finish.external_code
+                return (
+                  <article
+                    key={(finish.external_code + finish.name) + '-' + idx}
+                    className="js-decor-card basis-1/2 shrink-0 group bg-white box-border lg:basis-[calc((100%_-_1.5rem_*_4)/5)]"
+                  >
+                    <div className="aspect-[4/5] overflow-hidden bg-gray-50 relative rounded-2xl border-2 border-gray-100">
+                      {finish.image ? (
+                        <img
+                          src={urlFor(finish.image).width(320).height(400).quality(85).url()}
+                          alt={finish.name || displayCode || 'Decor'}
+                          className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110 rounded-2xl"
+                          loading="lazy"
+                          decoding="async"
+                          onError={(e) => {
+                            if (finish?.image_url) {
+                              (e.target as HTMLImageElement).src = finish.image_url
+                            }
+                          }}
+                        />
+                      ) : finish?.image_url ? (
+                        <img
+                          src={finish.image_url}
+                          alt={finish.name || displayCode || 'Decor'}
+                          className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110 rounded-2xl"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : (
+                        <div className="h-full w-full rounded-2xl bg-gray-200" />
+                      )}
+                      {(finish.interior || finish.exterior) && (
+                        <div className="absolute bottom-2 left-2 flex gap-1">
+                          {finish.interior && (
+                            <span className="bg-white/90 text-black text-[9px] px-1.5 py-0.5 uppercase rounded">Int</span>
+                          )}
+                          {finish.exterior && (
+                            <span className="bg-white/90 text-black text-[9px] px-1.5 py-0.5 uppercase rounded">Ext</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-3">
+                      <p className="text-xs text-black">{displayCode}</p>
+                      <p className="text-xs text-black/70 truncate">{finish.name}</p>
+                      {finish.products && finish.products.length > 0 && (
+                        <p className="mt-1 text-xs text-black/50 truncate">
+                          {finish.products.slice(0, 2).map(p => p.title || p.name).join(', ')}
+                          {finish.products.length > 2 && ` +${finish.products.length - 2}`}
+                        </p>
+                      )}
+                    </div>
+                  </article>
+                )
+              })}
             </div>
           </div>
         </div>
@@ -235,8 +223,8 @@ export function DecorsCarousel({
                 Collection <span className="">{collectionName}</span>
                 {actualFinishCount > 0 && <span> • {actualFinishCount} décors</span>}
                 {" "}
-                <Link 
-                  href="/decors" 
+                <Link
+                  href="/decors"
                   className="underline underline-offset-2 decoration-black/30 hover:decoration-black ml-1"
                 >
                   Voir tous
@@ -246,8 +234,8 @@ export function DecorsCarousel({
           ) : actualFinishCount > 0 ? (
             <div className="bg-gray-50 mt-6 p-3 border-2 border-gray-100">
               <p className="text-xs text-gray-700 text-center">
-                <Link 
-                  href="/decors" 
+                <Link
+                  href="/decors"
                   className="underline underline-offset-2 decoration-black/30 hover:decoration-black"
                 >
                   Voir tous les décors ({actualFinishCount}) →
@@ -260,4 +248,3 @@ export function DecorsCarousel({
     </div>
   )
 }
-

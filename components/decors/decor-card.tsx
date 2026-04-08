@@ -2,39 +2,40 @@
 
 import { urlFor } from '@/lib/sanity'
 
-type Finish = {
+type Decor = {
   _id: string
-  code: string
+  external_code: string
+  loxen_code?: string
   name: string
   image?: any
   image_url?: string
-  color?: string
+  collections?: string[]
+  finishes?: string[]
   colors?: string[]
-  abet_order?: number
+  external_order?: number
   products?: Array<{
     _id: string
     _type: string
-    name: string
+    title?: string
+    name?: string
     productId?: string
     slug?: { current: string }
   }>
-  keywords?: string[]
   interior?: boolean
   exterior?: boolean
-  available?: boolean
-  is_new?: boolean
-  featured?: boolean
 }
 
 interface DecorCardProps {
-  finish: Finish
+  finish: Decor
   onClick?: () => void
 }
 
 export function DecorCard({ finish, onClick }: DecorCardProps) {
+  const displayCode = finish.loxen_code || finish.external_code
+
   return (
-    <article 
-      key={finish.code + finish.name} 
+    <article
+      key={finish.external_code + finish.name}
       className="group border border-black/10 bg-white overflow-hidden rounded-t-2xl cursor-pointer hover:border-black/30 transition-colors"
       onClick={onClick}
     >
@@ -61,12 +62,7 @@ export function DecorCard({ finish, onClick }: DecorCardProps) {
             decoding="async"
           />
         ) : (
-          <div className="h-full w-full rounded-2xl" style={{ backgroundColor: finish.color || finish.colors?.[0] || '#e5e7eb' }} />
-        )}
-        {finish.is_new && (
-          <div className="absolute top-2 right-2 bg-black text-white text-[10px] px-2 py-1 uppercase tracking-wide rounded">
-            Nouveau
-          </div>
+          <div className="h-full w-full rounded-2xl bg-gray-200" />
         )}
         {(finish.interior || finish.exterior) && (
           <div className="absolute bottom-2 left-2 flex gap-1">
@@ -80,11 +76,11 @@ export function DecorCard({ finish, onClick }: DecorCardProps) {
         )}
       </div>
       <div className="p-3">
-        <p className="text-xs font-medium text-black">{finish.code}</p>
+        <p className="text-xs font-medium text-black">{displayCode}</p>
         <p className="text-xs text-black/70 truncate">{finish.name}</p>
         {finish.products && finish.products.length > 0 && (
           <p className="mt-1 text-[11px] text-black/50 truncate">
-            {finish.products.slice(0, 2).map(p => p.name).join(', ')}
+            {finish.products.slice(0, 2).map(p => p.title || p.name).join(', ')}
             {finish.products.length > 2 && ` +${finish.products.length - 2}`}
           </p>
         )}
@@ -97,4 +93,3 @@ export function DecorCard({ finish, onClick }: DecorCardProps) {
     </article>
   )
 }
-

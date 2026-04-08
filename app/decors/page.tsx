@@ -4,30 +4,6 @@ import { DecorsWithFilters } from '@/components/decors/decors-with-filters'
 import { Header } from '@/components/shared/header'
 import { Footer } from '@/components/shared/footer'
 
-type Finish = {
-  _id: string
-  code: string
-  name: string
-  image?: any
-  image_url?: string
-  color?: string
-  colors?: string[]
-  abet_order?: number
-  products?: Array<{
-    _id: string
-    _type: string
-    name: string
-    productId?: string
-    slug?: { current: string }
-  }>
-  keywords?: string[]
-  interior?: boolean
-  exterior?: boolean
-  available?: boolean
-  is_new?: boolean
-  featured?: boolean
-}
-
 export const revalidate = 86400
 
 export const metadata: Metadata = {
@@ -35,35 +11,13 @@ export const metadata: Metadata = {
   description: 'Découvrez tous les décors disponibles pour nos produits: codes, visuels et collections.'
 }
 
-async function getAllFinishes(): Promise<Finish[]> {
+export default async function DecorsPage() {
+  let finishes = []
   try {
-    const decors = await getAllDecors()
-    return decors.map(decor => ({
-      _id: decor._id,
-      code: decor.code,
-      name: decor.name,
-      image: decor.image,
-      image_url: decor.image_url,
-      color: decor.color,
-      colors: decor.colors,
-      abet_order: decor.abet_order,
-      products: decor.products,
-      keywords: decor.keywords,
-      interior: decor.interior,
-      exterior: decor.exterior,
-      available: decor.available,
-      is_new: decor.is_new,
-      featured: decor.featured
-    }))
+    finishes = await getAllDecors()
   } catch (error) {
     console.error('Error fetching decors:', error)
-    return []
   }
-}
-
-export default async function DecorsPage() {
-  const finishes = await getAllFinishes()
-  const availableFinishes = finishes.filter(f => f.available !== false)
 
   return (
     <main className="min-h-screen bg-white">
