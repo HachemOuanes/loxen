@@ -220,7 +220,8 @@ export async function getProductById(productId: string) {
           title,
           items
         },
-        epaisseur
+        epaisseur,
+        finishes
       }
     }`
     
@@ -263,7 +264,8 @@ export async function getProductBySlug(slug: string) {
           title,
           items
         },
-        epaisseur
+        epaisseur,
+        finishes
       },
       showcaseSection{
         enabled,

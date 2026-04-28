@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
+import Image from 'next/image'
 import { urlFor } from "@/lib/sanity"
 import { CTAButton } from '@/components/ui/cta-button'
 import { scrollToContact } from '@/lib/scroll-to-contact'
@@ -14,17 +15,18 @@ export type Decor = {
   name: string
   image?: any
   image_url?: string
-  collections?: string[]
-  finishes?: string[]
   colors?: string[]
   external_order?: number
   products?: Array<{
-    _id: string
-    _type: string
-    title?: string
-    name?: string
-    productId?: string
-    slug?: { current: string }
+    _key?: string
+    product: {
+      _id: string
+      _type: string
+      title?: string
+      name?: string
+      productId?: string
+      slug?: { current: string }
+    }
   }>
   interior?: boolean
   exterior?: boolean
@@ -163,12 +165,13 @@ export function DecorsCarousel({
                   >
                     <div className="aspect-[4/5] overflow-hidden bg-gray-50 relative rounded-2xl border-2 border-gray-100">
                       {finish.image ? (
-                        <img
+                        <Image
                           src={urlFor(finish.image).width(320).height(400).quality(85).url()}
                           alt={finish.name || displayCode || 'Decor'}
-                          className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110 rounded-2xl"
-                          loading="lazy"
-                          decoding="async"
+                          width={320}
+                          height={400}
+                          sizes="(max-width: 768px) 50vw, 20vw"
+                          className="h-full w-full object-cover transform-gpu will-change-transform transition-all duration-500 ease-out group-hover:brightness-105 rounded-2xl"
                           onError={(e) => {
                             if (finish?.image_url) {
                               (e.target as HTMLImageElement).src = finish.image_url
@@ -176,12 +179,13 @@ export function DecorsCarousel({
                           }}
                         />
                       ) : finish?.image_url ? (
-                        <img
+                        <Image
                           src={finish.image_url}
                           alt={finish.name || displayCode || 'Decor'}
-                          className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110 rounded-2xl"
-                          loading="lazy"
-                          decoding="async"
+                          width={320}
+                          height={400}
+                          sizes="(max-width: 768px) 50vw, 20vw"
+                          className="h-full w-full object-cover transform-gpu will-change-transform transition-all duration-500 ease-out group-hover:brightness-105 rounded-2xl"
                         />
                       ) : (
                         <div className="h-full w-full rounded-2xl bg-gray-200" />
@@ -200,12 +204,15 @@ export function DecorsCarousel({
                     <div className="p-3">
                       <p className="text-xs text-black">{displayCode}</p>
                       <p className="text-xs text-black/70 truncate">{finish.name}</p>
-                      {finish.products && finish.products.length > 0 && (
-                        <p className="mt-1 text-xs text-black/50 truncate">
-                          {finish.products.slice(0, 2).map(p => p.title || p.name).join(', ')}
-                          {finish.products.length > 2 && ` +${finish.products.length - 2}`}
-                        </p>
-                      )}
+                      {(() => {
+                        const vp = (finish.products ?? []).filter(p => p.product?._id)
+                        return vp.length > 0 ? (
+                          <p className="mt-1 text-xs text-black/50 truncate">
+                            {vp.slice(0, 2).map(p => p.product.title || p.product.name).join(', ')}
+                            {vp.length > 2 && ` +${vp.length - 2}`}
+                          </p>
+                        ) : null
+                      })()}
                     </div>
                   </article>
                 )

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { urlFor } from '@/lib/sanity'
 
 interface FinitionItem {
@@ -56,10 +57,13 @@ export function FinitionsSection({ title, items }: FinitionsSectionProps) {
                 <div key={f.key + idx} style={slideStyle} className="flex-shrink-0">
                   <article className="group border border-black/10 bg-white overflow-hidden pb-4">
                     <div className="aspect-[4/3] overflow-hidden">
-                      <img 
-                        src={f.image ? urlFor(f.image).quality(90).url() : '/placeholder.jpg'} 
-                        alt={f.title + ' — ' + f.subtitle} 
-                        className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110" 
+                      <Image
+                        src={f.image ? urlFor(f.image).quality(90).url() : '/placeholder.jpg'}
+                        alt={f.title + ' — ' + f.subtitle}
+                        width={400}
+                        height={300}
+                        sizes="400px"
+                        className="h-full w-full object-cover transform-gpu will-change-transform transition-transform duration-500 ease-out group-hover:scale-110"
                       />
                     </div>
                     <div className="p-5 md:p-6">
@@ -68,10 +72,13 @@ export function FinitionsSection({ title, items }: FinitionsSectionProps) {
                       <p className="mt-3 text-base md:text-lg text-black/70 leading-relaxed">{f.description}</p>
                     </div>
                     {f.schema && (
-                      <img 
-                        src={urlFor(f.schema).quality(90).url()} 
-                        alt={f.title + ' schema'} 
-                        className="mx-auto h-auto w-2/3 object-contain" 
+                      <Image
+                        src={urlFor(f.schema).quality(90).url()}
+                        alt={f.title + ' schema'}
+                        width={267}
+                        height={200}
+                        sizes="267px"
+                        className="mx-auto h-auto w-2/3 object-contain"
                       />
                     )}
                   </article>

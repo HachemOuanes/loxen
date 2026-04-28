@@ -1,5 +1,6 @@
 "use client"
 
+import Image from 'next/image'
 import { urlFor } from '@/lib/sanity'
 
 interface GridSectionProps {
@@ -41,12 +42,13 @@ export function GridSection({ text, images, title }: GridSectionProps) {
           {/* Top right: Image */}
           {images[0] && (
             <div className="relative overflow-hidden h-[47.5vh]">
-              <img
+              <Image
                 src={urlFor(images[0]).quality(100).url()}
                 alt="Detail 1"
+                width={800}
+                height={600}
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-110"
-                loading="lazy"
-                decoding="async"
               />
             </div>
           )}
@@ -54,12 +56,13 @@ export function GridSection({ text, images, title }: GridSectionProps) {
           {/* Bottom left: Image */}
           {images[1] && (
             <div className="relative overflow-hidden h-[47.5vh]">
-              <img
+              <Image
                 src={urlFor(images[1]).quality(100).url()}
                 alt="Detail 2"
+                width={800}
+                height={600}
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-110"
-                loading="lazy"
-                decoding="async"
               />
             </div>
           )}
@@ -67,12 +70,13 @@ export function GridSection({ text, images, title }: GridSectionProps) {
           {/* Bottom right: Image */}
           {images[2] && (
             <div className="relative overflow-hidden h-[47.5vh]">
-              <img
+              <Image
                 src={urlFor(images[2]).quality(100).url()}
                 alt="Detail 3"
+                width={800}
+                height={600}
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-110"
-                loading="lazy"
-                decoding="async"
               />
             </div>
           )}

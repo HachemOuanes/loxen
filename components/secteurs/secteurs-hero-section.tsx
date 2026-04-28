@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { CTAButton } from '@/components/ui/cta-button'
@@ -124,13 +125,13 @@ export function SecteursHeroSection({ title, heroTextSections, heroImage, contac
         </div>
         <div className="relative overflow-hidden aspect-[3/4] min-h-[60vh]">
           <div ref={imageRef} className="absolute inset-0 w-full h-full">
-            <img
+            <Image
               src={heroImage || '/contemporary-cultural-center-glass-facade-paris.png'}
               alt={`Secteur ${title}`}
-              className="w-full h-full object-cover"
-              loading="eager"
-              decoding="async"
-              fetchPriority="high"
+              fill
+              priority
+              sizes="50vw"
+              className="object-cover"
             />
           </div>
         </div>

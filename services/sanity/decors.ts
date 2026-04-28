@@ -3,6 +3,7 @@ import { client } from '@/lib/sanity'
 // ===== DECORS =====
 
 // Common projection for decor queries
+// Normalizes both old (plain reference) and new (object with nested product ref) formats
 const DECOR_PROJECTION = `{
   _id,
   external_code,
@@ -10,17 +11,17 @@ const DECOR_PROJECTION = `{
   name,
   image,
   image_url,
-  collections,
-  finishes,
   colors,
   external_order,
-  products[]->{
-    _id,
-    _type,
-    title,
-    name,
-    productId,
-    slug
+  "products": products[]{
+    _key,
+    formats,
+    epaisseurs,
+    finishes,
+    "product": select(
+      defined(product) => product->{_id, _type, title, name, productId, slug},
+      defined(_ref) => @->{_id, _type, title, name, productId, slug}
+    )
   },
   interior,
   exterior
@@ -51,7 +52,7 @@ export async function getDecorsByProductType(productType: 'interior' | 'exterior
 
 // Get decors by product ID
 export async function getDecorsByProductId(productId: string, limit: number = 20) {
-  const query = `*[_type == "decor" && $productId in products[]._ref] | order(external_order asc, name asc) [0...$limit] ${DECOR_PROJECTION}`
+  const query = `*[_type == "decor" && ($productId in products[].product._ref || $productId in products[]._ref)] | order(external_order asc, name asc) [0...$limit] ${DECOR_PROJECTION}`
 
   return await client.fetch(query, { productId, limit })
 }
@@ -63,18 +64,18 @@ export async function getRandomDecors(limit: number = 20) {
   return await client.fetch(query, { limit })
 }
 
-// Get decors by collection
-export async function getDecorsByCollection(collectionName: string) {
-  const query = `*[_type == "decor" && $collectionName in collections] | order(external_order asc, name asc) ${DECOR_PROJECTION}`
-
-  return await client.fetch(query, { collectionName })
-}
-
 // Get decors by colors
 export async function getDecorsByColors(colors: string[]) {
   const query = `*[_type == "decor" && count(colors[@ in $colors]) > 0] | order(external_order asc, name asc) ${DECOR_PROJECTION}`
 
   return await client.fetch(query, { colors })
+}
+
+// Get decor by ID (fresh, bypasses page cache)
+export async function getDecorById(id: string) {
+  const query = `*[_type == "decor" && _id == $id][0] ${DECOR_PROJECTION}`
+
+  return await client.fetch(query, { id })
 }
 
 // Get decor by external code

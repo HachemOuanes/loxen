@@ -11,14 +11,16 @@ interface ProductsSpecificationSectionProps {
   caracteristiques?: SpecificationItem
   applications?: SpecificationItem
   format?: SpecificationItem
-  epaisseur?: string
+  epaisseur?: string | string[]
+  finishes?: string[]
 }
 
-export function ProductsSpecificationSection({ 
-  caracteristiques, 
-  applications, 
+export function ProductsSpecificationSection({
+  caracteristiques,
+  applications,
   format,
-  epaisseur
+  epaisseur,
+  finishes
 }: ProductsSpecificationSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null)
 
@@ -83,11 +85,31 @@ export function ProductsSpecificationSection({
                   <h3 className="text-sm tracking-[0.18em] uppercase text-black/60 font-light mb-4">
                     Épaisseur (mm)
                   </h3>
-                  <p className="text-base text-black leading-relaxed">
-                    {epaisseur}
-                  </p>
+                  <div className="space-y-2">
+                    {(Array.isArray(epaisseur) ? epaisseur : [epaisseur]).map((item: string, idx: number) => (
+                      <p key={idx} className="text-base text-black leading-relaxed">
+                        {item}
+                      </p>
+                    ))}
+                  </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Finishes */}
+          {finishes && finishes.length > 0 && (
+            <div className="js-reveal">
+              <h3 className="text-sm tracking-[0.18em] uppercase text-black/60 font-light mb-4">
+                Finitions
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {finishes.map((finish: string, idx: number) => (
+                  <span key={idx} className="inline-block px-3 py-1.5 text-sm border border-black/15 text-black/70 rounded capitalize">
+                    {finish}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </div>

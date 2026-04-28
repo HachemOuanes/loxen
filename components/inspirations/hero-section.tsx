@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Image from 'next/image'
 import { urlFor } from '@/lib/sanity'
 
 interface HeroSectionProps {
@@ -107,13 +108,14 @@ export function HeroSection({ title, description, heroImage, contactLink, contac
     <section className="relative bg-white">
       {/* Full-viewport overlay image that animates to the right */}
       <div ref={stickyHeroRef} className='h-[210vh]'>
-        <img
+        <Image
           src={heroImage ? urlFor(heroImage).quality(90).url() : '/salle-de-bain/solid-top-piano-hpl-bagni-02.jpg'}
           alt={`Plan ${title} effet bois`}
+          width={1920}
+          height={1080}
+          sizes="100vw"
+          priority
           className="js-hero-figure h-screen w-full object-cover"
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
         />
 
         <div className="relative h-[120vh] max-w-7xl mx-auto py-20 gap-6 js-hero-text flex flex-col justify-end items-center">

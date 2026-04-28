@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import Image from 'next/image'
 import { urlFor } from "@/lib/sanity"
 import { Menu, X } from "lucide-react"
 import { getSecteursForMegaMenu, getExteriorProductsForMegaMenu, getInteriorProductsForMegaMenu, getInspirationsForMegaMenu, getCataloguesForMegaMenu, getHomeApplicationsSection } from '@/services/sanity'
@@ -46,77 +47,84 @@ export function Header() {
   const [homeApplications, setHomeApplications] = useState<any>(null)
 
   useEffect(() => {
+    // Preload a Sanity image into the browser cache
+    const preloadImage = (image: any) => {
+      if (!image) return
+      try {
+        const url = urlFor(image).width(240).height(180).quality(60).format('webp').url()
+        const img = new window.Image()
+        img.src = url
+      } catch {}
+    }
+
     // Prefetch products for the mega menu
     const fetchMini = async () => {
       try {
-        // Fetch exterior products (current/available)
-        const exteriorData: any[] = await getExteriorProductsForMegaMenu()
+        const [exteriorData, interiorData]: [any[], any[]] = await Promise.all([
+          getExteriorProductsForMegaMenu(),
+          getInteriorProductsForMegaMenu(),
+        ])
 
-        // Fetch interior products
-        const interiorData: any[] = await getInteriorProductsForMegaMenu()
-
-        // Map to MiniProduct format
-        const exteriorWithType = exteriorData.map(p => ({ 
+        const mapProduct = (p: any, type: 'exterior' | 'interior', category: string) => ({
           _id: p._id,
           title: p.title || '',
           slug: p.slug || { current: '' },
           description: p.heroSection?.overviewRightText || '',
           image: p.showcaseSection?.image || p.characteristicsSection?.defaultImage,
-          type: 'exterior' as const, 
-          category: 'Extérieur' 
-        }))
-        const interiorWithType = interiorData.map(p => ({ 
-          _id: p._id,
-          title: p.title || '',
-          slug: p.slug || { current: '' },
-          description: p.heroSection?.overviewRightText || '',
-          image: p.showcaseSection?.image || p.characteristicsSection?.defaultImage,
-          type: 'interior' as const, 
-          category: 'Intérieur' 
-        }))
+          type: type as const,
+          category,
+        })
 
-        setMiniProducts(exteriorWithType || [])
-        setInteriorProducts(interiorWithType || [])
+        const exterior = exteriorData.map(p => mapProduct(p, 'exterior', 'Extérieur'))
+        const interior = interiorData.map(p => mapProduct(p, 'interior', 'Intérieur'))
+
+        setMiniProducts(exterior)
+        setInteriorProducts(interior)
+
+        // Preload images
+        exterior.forEach(p => preloadImage(p.image))
+        interior.forEach(p => preloadImage(p.image))
       } catch (e) {
         console.error('Mega menu products fetch failed', e)
       }
     }
 
-    // Fetch secteurs for the mega menu
     const fetchSecteurs = async () => {
       try {
-        const secteursData = await getSecteursForMegaMenu()
-        setSecteurs(secteursData || [])
+        const data = await getSecteursForMegaMenu()
+        setSecteurs(data || [])
+        data?.forEach((s: any) => preloadImage(s.heroImage))
       } catch (error) {
         console.error('Error fetching secteurs:', error)
       }
     }
 
-    // Fetch inspirations for the mega menu
     const fetchInspirations = async () => {
       try {
-        const inspirationsData = await getInspirationsForMegaMenu()
-        setInspirations(inspirationsData || [])
+        const data = await getInspirationsForMegaMenu()
+        setInspirations(data || [])
+        data?.forEach((i: any) => preloadImage(i.heroImage))
       } catch (error) {
         console.error('Error fetching inspirations:', error)
       }
     }
 
-    // Fetch catalogues for the mega menu
     const fetchCatalogues = async () => {
       try {
-        const cataloguesData = await getCataloguesForMegaMenu()
-        setCatalogues(cataloguesData || [])
+        const data = await getCataloguesForMegaMenu()
+        setCatalogues(data || [])
+        data?.forEach((c: any) => preloadImage(c.megamenuImage))
       } catch (error) {
         console.error('Error fetching catalogues:', error)
       }
     }
 
-    // Fetch home applications for mega menu cards
     const fetchHomeApplications = async () => {
       try {
-        const applicationsData = await getHomeApplicationsSection()
-        setHomeApplications(applicationsData)
+        const data = await getHomeApplicationsSection()
+        setHomeApplications(data)
+        preloadImage(data?.interiorCard?.image)
+        preloadImage(data?.exteriorCard?.image)
       } catch (error) {
         console.error('Error fetching home applications:', error)
       }
@@ -432,10 +440,12 @@ export function Header() {
                         className="block mb-4 group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-3"
                       >
                         <div className="relative aspect-[6/1] overflow-hidden border border-white/10">
-                          <img
-                            src={urlFor(homeApplications.interiorCard.image).width(600).height(100).quality(90).url()}
+                          <Image
+                            src={urlFor(homeApplications.interiorCard.image).width(600).height(100).quality(60).format('webp').url()}
                             alt={homeApplications.interiorCard.title || "Intérieur"}
-                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="absolute inset-0 object-cover transition-all duration-700 ease-out group-hover:brightness-110"
                           />
                           <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-700"></div>
                           <div className="absolute inset-0 border-2 border-white/0 group-hover:border-white/20 transition-all duration-500 pointer-events-none z-20"></div>
@@ -485,10 +495,12 @@ export function Header() {
                         className="block mb-4 group border border-white/10 bg-white/0 hover:bg-white/5 transition-colors p-3"
                       >
                         <div className="relative aspect-[6/1] overflow-hidden border border-white/10">
-                          <img
-                            src={urlFor(homeApplications.exteriorCard.image).width(600).height(100).quality(90).url()}
+                          <Image
+                            src={urlFor(homeApplications.exteriorCard.image).width(600).height(100).quality(60).format('webp').url()}
                             alt={homeApplications.exteriorCard.title || "Extérieur"}
-                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="absolute inset-0 object-cover transition-all duration-700 ease-out group-hover:brightness-110"
                           />
                           <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-700"></div>
                           <div className="absolute inset-0 border-2 border-white/0 group-hover:border-white/20 transition-all duration-500 pointer-events-none z-20"></div>

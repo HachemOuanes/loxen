@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -106,15 +107,15 @@ function ApplicationsSection({ items, imageOnRight = true }: ApplicationsSection
                 <div className="grid grid-cols-2 gap-8">
                     {/* Sticky Image */}
                     <div className={`relative ${imageOnRight ? 'md:order-2' : 'md:order-1'}`}>
-                        <div ref={stickyImageRef} className="h-[96vh] overflow-hidden">
+                        <div ref={stickyImageRef} className="relative h-[96vh] overflow-hidden">
                             {items?.map((item, index) => (
-                                <img
+                                <Image
                                     key={index}
                                     src={item.image || '/placeholder.jpg'}
                                     alt={item.title || 'Application'}
-                                    className={`absolute h-full w-full object-cover ${index === 0 ? 'opacity-100' : 'opacity-0'}`}
-                                    loading="lazy"
-                                    decoding="async"
+                                    fill
+                                    sizes="50vw"
+                                    className={`object-cover ${index === 0 ? 'opacity-100' : 'opacity-0'}`}
                                 />
                             ))}
                         </div>

@@ -14,17 +14,18 @@ type Decor = {
   name: string
   image?: any
   image_url?: string
-  collections?: string[]
-  finishes?: string[]
   colors?: string[]
   external_order?: number
   products?: Array<{
-    _id: string
-    _type: string
-    title?: string
-    name?: string
-    productId?: string
-    slug?: { current: string }
+    _key?: string
+    product: {
+      _id: string
+      _type: string
+      title?: string
+      name?: string
+      productId?: string
+      slug?: { current: string }
+    }
   }>
   interior?: boolean
   exterior?: boolean
@@ -37,8 +38,6 @@ interface DecorsWithFiltersProps {
 export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedColors, setSelectedColors] = useState<string[]>([])
-  const [selectedCollections, setSelectedCollections] = useState<string[]>([])
-  const [selectedFinishes, setSelectedFinishes] = useState<string[]>([])
   const [selectedProducts, setSelectedProducts] = useState<string[]>([])
   const [interiorFilter, setInteriorFilter] = useState<boolean | null>(null)
   const [exteriorFilter, setExteriorFilter] = useState<boolean | null>(null)
@@ -55,28 +54,12 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
     return Array.from(colorSet).sort()
   }, [finishes])
 
-  const allCollections = useMemo(() => {
-    const set = new Set<string>()
-    finishes.forEach(f => {
-      if (f.collections) f.collections.forEach(c => set.add(c))
-    })
-    return Array.from(set).sort()
-  }, [finishes])
-
-  const allFinishes = useMemo(() => {
-    const set = new Set<string>()
-    finishes.forEach(f => {
-      if (f.finishes) f.finishes.forEach(fin => set.add(fin))
-    })
-    return Array.from(set).sort()
-  }, [finishes])
-
   const allProducts = useMemo(() => {
     const productSet = new Set<string>()
     finishes.forEach(f => {
       if (f.products) {
         f.products.forEach(p => {
-          const name = p.title || p.name
+          const name = p.product?.title || p.product?.name
           if (name) productSet.add(name)
         })
       }
@@ -94,9 +77,7 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
         const matchesSearch =
           finish.name?.toLowerCase().includes(query) ||
           displayCode?.toLowerCase().includes(query) ||
-          (finish.products && finish.products.some(p => (p.title || p.name)?.toLowerCase().includes(query))) ||
-          (finish.collections && finish.collections.some(c => c.toLowerCase().includes(query))) ||
-          (finish.finishes && finish.finishes.some(f => f.toLowerCase().includes(query)))
+          (finish.products && finish.products.some(p => (p.product?.title || p.product?.name)?.toLowerCase().includes(query)))
 
         if (!matchesSearch) return false
       }
@@ -109,26 +90,10 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
         if (!hasColor) return false
       }
 
-      // Collection filter
-      if (selectedCollections.length > 0) {
-        const hasCollection = selectedCollections.some(col =>
-          finish.collections && finish.collections.includes(col)
-        )
-        if (!hasCollection) return false
-      }
-
-      // Finish filter
-      if (selectedFinishes.length > 0) {
-        const hasFinish = selectedFinishes.some(fin =>
-          finish.finishes && finish.finishes.includes(fin)
-        )
-        if (!hasFinish) return false
-      }
-
       // Product filter
       if (selectedProducts.length > 0) {
         const hasProduct = selectedProducts.some(productName =>
-          finish.products && finish.products.some(p => (p.title || p.name) === productName)
+          finish.products && finish.products.some(p => (p.product?.title || p.product?.name) === productName)
         )
         if (!hasProduct) return false
       }
@@ -151,23 +116,11 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
 
       return true
     })
-  }, [finishes, searchQuery, selectedColors, selectedCollections, selectedFinishes, selectedProducts, interiorFilter, exteriorFilter])
+  }, [finishes, searchQuery, selectedColors, selectedProducts, interiorFilter, exteriorFilter])
 
   const toggleColor = (color: string) => {
     setSelectedColors(prev =>
       prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]
-    )
-  }
-
-  const toggleCollection = (col: string) => {
-    setSelectedCollections(prev =>
-      prev.includes(col) ? prev.filter(c => c !== col) : [...prev, col]
-    )
-  }
-
-  const toggleFinish = (fin: string) => {
-    setSelectedFinishes(prev =>
-      prev.includes(fin) ? prev.filter(f => f !== fin) : [...prev, fin]
     )
   }
 
@@ -180,14 +133,12 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
   const clearFilters = () => {
     setSearchQuery('')
     setSelectedColors([])
-    setSelectedCollections([])
-    setSelectedFinishes([])
     setSelectedProducts([])
     setInteriorFilter(null)
     setExteriorFilter(null)
   }
 
-  const hasActiveFilters = searchQuery || selectedColors.length > 0 || selectedCollections.length > 0 || selectedFinishes.length > 0 || selectedProducts.length > 0 || interiorFilter !== null || exteriorFilter !== null
+  const hasActiveFilters = searchQuery || selectedColors.length > 0 || selectedProducts.length > 0 || interiorFilter !== null || exteriorFilter !== null
 
   // Reusable filter content component
   const FilterContent = () => (
@@ -204,26 +155,6 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
         )}
       </div>
 
-      {/* Collections Filter */}
-      {allCollections.length > 0 && (
-        <div>
-          <h3 className="text-xs font-medium text-black mb-3 uppercase tracking-wide">Collections</h3>
-          <div className="space-y-2 max-h-48 overflow-y-auto">
-            {allCollections.map(col => (
-              <label key={col} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={selectedCollections.includes(col)}
-                  onChange={() => toggleCollection(col)}
-                  className="w-4 h-4 border border-black/20 rounded focus:ring-black/20 focus:ring-2"
-                />
-                <span className="text-xs text-black/70">{col}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Colors Filter */}
       {allColors.length > 0 && (
         <div>
@@ -238,26 +169,6 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
                   className="w-4 h-4 border border-black/20 rounded focus:ring-black/20 focus:ring-2"
                 />
                 <span className="text-xs text-black/70 capitalize">{color}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Finishes Filter */}
-      {allFinishes.length > 0 && (
-        <div>
-          <h3 className="text-xs font-medium text-black mb-3 uppercase tracking-wide">Finitions</h3>
-          <div className="space-y-2 max-h-48 overflow-y-auto">
-            {allFinishes.map(fin => (
-              <label key={fin} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={selectedFinishes.includes(fin)}
-                  onChange={() => toggleFinish(fin)}
-                  className="w-4 h-4 border border-black/20 rounded focus:ring-black/20 focus:ring-2"
-                />
-                <span className="text-xs text-black/70 capitalize">{fin}</span>
               </label>
             ))}
           </div>
@@ -345,7 +256,7 @@ export function DecorsWithFilters({ finishes }: DecorsWithFiltersProps) {
             <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-black/40" />
             <Input
               type="text"
-              placeholder="Rechercher par nom, code, collection, finition..."
+              placeholder="Rechercher par nom, code, produit..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 border-black/20 focus:border-black/40 rounded-none"

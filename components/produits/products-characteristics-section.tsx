@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 import { Plus, X } from 'lucide-react'
 
 interface AccordionItem {
@@ -78,12 +79,12 @@ export function ProductsCharacteristicsSection({
                   style={{ width: `${100 / allImages.length}%` }}
                 >
                   {img.image ? (
-                    <img
+                    <Image
                       src={img.image}
                       alt={img.alt}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      loading={index === 0 ? "eager" : "lazy"}
-                      decoding="async"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover"
                     />
                   ) : (
                     <div className="absolute inset-0 w-full h-full bg-black/5 flex items-center justify-center">

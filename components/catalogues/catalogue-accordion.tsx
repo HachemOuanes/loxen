@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Plus, X, Download } from 'lucide-react'
+import Image from 'next/image'
 import { urlFor } from '@/lib/sanity'
 
 interface CatalogueDocument {
@@ -205,10 +206,12 @@ export function CatalogueAccordion({ catalogue, index, isLast, id }: CatalogueAc
                 {catalogue.image && (
                   <div className="mb-6 md:mb-8 relative overflow-hidden rounded-sm border border-black/10">
                     <div className="relative w-full h-[400px] md:h-[600px] bg-black/5">
-                      <img
+                      <Image
                         src={typeof catalogue.image === 'string' ? catalogue.image : urlFor(catalogue.image).width(1200).height(800).quality(90).url()}
                         alt={catalogue.imageAlt || catalogue.title}
-                        className="w-full h-full object-cover"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 80vw"
+                        className="object-cover"
                         onError={(e) => {
                           (e.target as HTMLImageElement).style.display = 'none'
                         }}

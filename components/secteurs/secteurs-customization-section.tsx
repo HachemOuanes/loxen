@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -87,13 +88,13 @@ export function SecteursCustomizationSection({
           </div>
 
           {/* Right Column - Image */}
-          <div className="relative overflow-hidden group">
-            <img
+          <div className="relative overflow-hidden group h-[600px] md:h-[700px]">
+            <Image
               src={image}
               alt={title}
-              className="w-full h-[600px] md:h-[700px] object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-              loading="lazy"
-              decoding="async"
+              fill
+              sizes="50vw"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
             />
           </div>
         </div>

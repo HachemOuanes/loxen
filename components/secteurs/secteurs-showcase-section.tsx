@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SecteursFeaturesSection } from './secteurs-features-section'
@@ -47,13 +48,13 @@ export function SecteursShowcaseSection({
     <section ref={sectionRef} className="relative bg-white py-8 md:py-12">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* Big Hero Image - moved to top, same height as products page hero image */}
-        <div className="relative overflow-hidden mb-8 md:mb-12 group">
-          <img
+        <div className="relative overflow-hidden mb-8 md:mb-12 group h-[95vh]">
+          <Image
             src={heroImage}
             alt="Secteurs showcase"
-            className="w-full h-[95vh] object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-            loading="lazy"
-            decoding="async"
+            fill
+            sizes="100vw"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
           />
         </div>
 
@@ -104,10 +105,12 @@ export function SecteursShowcaseSection({
             <div key={imageIndex} className="space-y-8 md:space-y-12">
               {/* Image */}
               <div className="relative overflow-hidden h-[95vh] group">
-                <img
+                <Image
                   src={image.src}
                   alt={image.alt || ''}
-                  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  fill
+                  sizes="50vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                 />
               </div>
 

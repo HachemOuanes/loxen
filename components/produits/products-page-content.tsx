@@ -35,7 +35,8 @@ interface Product {
       title?: string
       items?: string[]
     }
-    epaisseur?: string
+    epaisseur?: string | string[]
+    finishes?: string[]
   }
   showcaseSection?: {
     enabled?: boolean
@@ -161,7 +162,8 @@ export function ProductsPageContent({ product, shared }: ProductsPageContentProp
         title: product.specificationSection?.format?.title || '',
         items: product.specificationSection?.format?.items || []
       },
-      epaisseur: product.specificationSection?.epaisseur || ''
+      epaisseur: product.specificationSection?.epaisseur || [],
+      finishes: product.specificationSection?.finishes || []
     },
     showcase: {
       heroImage: getImageUrl(product.showcaseSection?.heroImage),
@@ -214,12 +216,14 @@ export function ProductsPageContent({ product, shared }: ProductsPageContentProp
         (productData.specifications.caracteristiques.items.length > 0 ||
          productData.specifications.applications.items.length > 0 ||
          productData.specifications.format.items.length > 0 ||
-         productData.specifications.epaisseur) && (
+         productData.specifications.epaisseur ||
+         productData.specifications.finishes.length > 0) && (
           <ProductsSpecificationSection
             caracteristiques={productData.specifications.caracteristiques}
             applications={productData.specifications.applications}
             format={productData.specifications.format}
             epaisseur={productData.specifications.epaisseur}
+            finishes={productData.specifications.finishes}
           />
         )
       )}

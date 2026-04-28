@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import gsap from "gsap"
+import Image from "next/image"
 import { urlFor } from "@/lib/sanity"
 import { InteriorExteriorSkeleton } from "@/components/home/skeletons/interior-exterior-skeleton"
 
@@ -296,9 +297,12 @@ export function ExteriorProductsContent({ applications: initialApplications }: E
               <div
                 className="relative w-full aspect-[3/4] overflow-hidden bg-gray-100 opacity-100 group cursor-pointer"
               >
-                <img
+                <Image
                   src={urlFor(currentCategory.image).width(1200).height(900).quality(90).url()}
                   alt={currentCategory.name}
+                  width={1200}
+                  height={900}
+                  sizes="100vw"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all duration-700"></div>
@@ -326,10 +330,12 @@ export function ExteriorProductsContent({ applications: initialApplications }: E
                 className="relative flex-shrink-0 bg-gray-100 group/image cursor-pointer h-full"
                 style={{ width: `${100 / categories.length}%` }}
               >
-                <img
+                <Image
                   src={urlFor(category.image).width(1200).height(900).quality(90).url()}
                   alt={category.name}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  fill
+                  sizes="66vw"
+                  className="object-cover"
                 />
 
                 {/* Border highlight on hover */}

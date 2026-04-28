@@ -1,5 +1,6 @@
 "use client"
 
+import Image from 'next/image'
 import { urlFor } from '@/lib/sanity'
 
 interface SplitSectionProps {
@@ -27,12 +28,13 @@ export function SplitSection({ topImage, topText, bottomImage, title }: SplitSec
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-4 md:mb-8">
           {/* Left: Image */}
           <div className="relative overflow-hidden h-[47.5vh]">
-            <img
+            <Image
               src={topImage ? urlFor(topImage).quality(100).url() : '/placeholder.jpg'}
               alt={topText?.title || 'Detail'}
+              width={800}
+              height={600}
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="h-full w-full object-cover"
-              loading="lazy"
-              decoding="async"
             />
           </div>
 
@@ -62,12 +64,13 @@ export function SplitSection({ topImage, topText, bottomImage, title }: SplitSec
 
         {/* Bottom half: Full width image */}
         <div className="relative overflow-hidden h-[47.5vh]">
-          <img
+          <Image
             src={bottomImage ? urlFor(bottomImage).quality(100).url() : '/placeholder.jpg'}
             alt="Detail"
+            width={800}
+            height={600}
+            sizes="100vw"
             className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-110"
-            loading="lazy"
-            decoding="async"
           />
         </div>
       </div>

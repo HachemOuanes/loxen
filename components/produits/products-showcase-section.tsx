@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef } from 'react'
+import Image from 'next/image'
 import { SecteursFeaturesSection } from '@/components/secteurs/secteurs-features-section'
 
 interface ProductsShowcaseSectionProps {
@@ -34,12 +35,13 @@ export function ProductsShowcaseSection({
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* Big Hero Image - same height as secteurs showcase */}
         <div className="relative overflow-hidden mb-8 md:mb-12 group">
-          <img
+          <Image
             src={heroImage}
             alt="Products showcase"
+            width={800}
+            height={600}
+            sizes="100vw"
             className="w-full h-[95vh] object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-            loading="lazy"
-            decoding="async"
           />
         </div>
 

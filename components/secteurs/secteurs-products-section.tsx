@@ -1,5 +1,6 @@
 "use client"
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { urlFor } from '@/lib/sanity'
@@ -79,10 +80,12 @@ export function SecteursProductsSection({
                                                 <div className="relative overflow-hidden aspect-[4/3] mb-4">
                                                     {product.image ? (
                                                         <>
-                                                                <img
+                                                                <Image
                                                                 src={urlFor(product.image).width(800).height(600).quality(90).url()}
                                                                 alt={product.name}
-                                                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                                                                fill
+                                                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                                                className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                                                             />
 
                                                             {/* Border highlight on hover */}

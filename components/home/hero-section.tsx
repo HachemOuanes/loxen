@@ -78,7 +78,7 @@ export function HeroSection({ heroData }: HeroSectionProps) {
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
       />
 
       {/* Overlay */}

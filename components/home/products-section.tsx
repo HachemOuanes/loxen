@@ -5,6 +5,7 @@ import Link from "next/link"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { ArrowUpRight } from "lucide-react"
+import Image from "next/image"
 import { urlFor } from "@/lib/sanity"
 import { ProductsSkeleton } from "@/components/home/skeletons/products-skeleton"
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -189,8 +190,7 @@ export function ProductsSection({ data }: ProductsSectionProps) {
                   }}
                   className="products-swiper"
                 >
-                  {/* Duplicate products array multiple times to ensure seamless loop */}
-                  {[...products, ...products, ...products].map((product, index) => (
+                  {products.map((product, index) => (
                     <SwiperSlide key={`${product._key || 'product'}-${index}`}>
                       <Link
                         href={product.link || `/produits`}
@@ -202,11 +202,13 @@ export function ProductsSection({ data }: ProductsSectionProps) {
                           <div className="relative overflow-hidden aspect-[3/4] mb-4">
                             {product.image ? (
                               <>
-                              <img
-                                src={urlFor(product.image).width(1200).height(1600).quality(90).url()}
+                              <Image
+                                src={urlFor(product.image).width(600).height(800).quality(75).format('webp').url()}
                                 alt={product.name}
-                                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                                />
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                className="absolute inset-0 object-cover transition-all duration-700 ease-out group-hover:brightness-110"
+                              />
 
                                 {/* Border highlight on hover */}
                                 <div className="absolute inset-0 border-2 border-white/0 group-hover:border-white/20 transition-all duration-500 pointer-events-none z-20"></div>

@@ -1,5 +1,7 @@
 "use client"
 
+import Image from 'next/image'
+
 interface ImageWithText {
   leftImage?: string
   leftImageAlt?: string
@@ -44,12 +46,13 @@ export function ProductsSplitImagesSection({ images, title }: ProductsSplitImage
                   {/* Left Image */}
                   {item.leftImage && (
                     <div className="relative overflow-hidden h-[95vh] group">
-                      <img
+                      <Image
                         src={item.leftImage}
                         alt={item.leftImageAlt || `Left image ${index + 1}`}
+                        width={800}
+                        height={600}
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                        loading="lazy"
-                        decoding="async"
                       />
                     </div>
                   )}
@@ -57,12 +60,13 @@ export function ProductsSplitImagesSection({ images, title }: ProductsSplitImage
                   {/* Right Image */}
                   {item.rightImage && (
                     <div className="relative overflow-hidden h-[95vh] group">
-                      <img
+                      <Image
                         src={item.rightImage}
                         alt={item.rightImageAlt || `Right image ${index + 1}`}
+                        width={800}
+                        height={600}
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                        loading="lazy"
-                        decoding="async"
                       />
                     </div>
                   )}

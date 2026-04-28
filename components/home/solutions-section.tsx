@@ -54,12 +54,16 @@ export function SolutionsSection({ data }: SolutionsSectionProps) {
 
     const ctx = gsap.context(() => {
       const benefitItems = content.querySelectorAll('.benefit-item')
-      
-      // Ensure initial state is set (in case inline styles weren't applied)
+      const leftCol = section.querySelector('.js-reveal-left')
+
+      // Ensure initial state is set
       gsap.set([title, ...Array.from(benefitItems)], {
         opacity: 0,
-        x: 30
+        y: 40
       })
+      if (leftCol) {
+        gsap.set(leftCol, { opacity: 0, y: 40 })
+      }
 
       // Create timeline for staggered animation on scroll
       const tl = gsap.timeline({
@@ -73,22 +77,32 @@ export function SolutionsSection({ data }: SolutionsSectionProps) {
         }
       })
 
-      // Animate title first (this is the first element)
+      // Animate left column first
+      if (leftCol) {
+        tl.to(leftCol, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out"
+        })
+      }
+
+      // Animate title
       tl.to(title, {
         opacity: 1,
-        x: 0,
-        duration: 0.4,
+        y: 0,
+        duration: 0.8,
         ease: "power2.out"
-      })
+      }, leftCol ? "-=0.5" : "+=0")
 
-      // Then animate each benefit with a small delay (0.1s between each)
+      // Then animate each benefit with stagger
       benefitItems.forEach((item, index) => {
         tl.to(item, {
           opacity: 1,
-          x: 0,
-          duration: 0.4,
+          y: 0,
+          duration: 0.8,
           ease: "power2.out"
-        }, index === 0 ? "+=0.1" : "+=0.1")
+        }, `-=0.6`)
       })
     }, section)
 
@@ -106,14 +120,13 @@ export function SolutionsSection({ data }: SolutionsSectionProps) {
 
     setIsAnimating(true)
 
-    // Slide out all elements together
+    // Fade out all elements together
     gsap.to([title, ...Array.from(benefitItems)], {
       opacity: 0,
-      x: -30,
+      y: -20,
       duration: 0.3,
       ease: "power2.in",
       onComplete: () => {
-        // Update displayed solution after slide out
         setDisplayedSolution(selectedSolution)
       }
     })
@@ -135,7 +148,7 @@ export function SolutionsSection({ data }: SolutionsSectionProps) {
       // Set initial state for all elements
       gsap.set([title, ...Array.from(benefitItems)], {
         opacity: 0,
-        x: 30
+        y: 20
       })
 
       // Create timeline for staggered animation
@@ -146,19 +159,19 @@ export function SolutionsSection({ data }: SolutionsSectionProps) {
       // Animate title first
       tl.to(title, {
         opacity: 1,
-        x: 0,
-        duration: 0.4,
+        y: 0,
+        duration: 0.5,
         ease: "power2.out"
       })
 
-      // Then animate each benefit with a small delay (0.1s between each starting)
+      // Then animate each benefit with stagger
       benefitItems.forEach((item, index) => {
         tl.to(item, {
           opacity: 1,
-          x: 0,
-          duration: 0.4,
+          y: 0,
+          duration: 0.5,
           ease: "power2.out"
-        }, index === 0 ? "+=0.1" : "+=0.1") // Start 0.1s after previous animation starts
+        }, `-=0.35`)
       })
     })
   }, [displayedSolution, selectedSolution])
@@ -179,7 +192,7 @@ export function SolutionsSection({ data }: SolutionsSectionProps) {
 
         <div className="grid md:grid-cols-2 gap-0">
           {/* Left Column - Slogan */}
-          <div className="py-6 md:py-8 pr-6 md:pr-8 border-r border-black/10">
+          <div className="js-reveal-left py-6 md:py-8 pr-6 md:pr-8 border-r border-black/10">
             {/* Section Header */}
             {sectionLabel && (
               <div className="inline-flex items-center gap-2 mb-5">
@@ -246,7 +259,7 @@ export function SolutionsSection({ data }: SolutionsSectionProps) {
                   <h3 
                     ref={titleRef}
                     className="text-2xl md:text-3xl lg:text-4xl text-black tracking-tight mb-2 opacity-0"
-                    style={{ transform: 'translateX(30px)' }}
+                    style={{ transform: 'translateY(40px)' }}
                   >
                     {currentSolution.name}
                   </h3>
@@ -262,7 +275,7 @@ export function SolutionsSection({ data }: SolutionsSectionProps) {
                       className={`benefit-item py-4 md:py-5 px-4 flex flex-col gap-2 rounded-sm opacity-0 ${
                         index < currentSolution.benefits.length - 1 ? 'border-b border-black/5' : ''
                       }`}
-                      style={{ transform: 'translateX(30px)' }}
+                      style={{ transform: 'translateY(40px)' }}
                     >
                       {/* Benefit Title */}
                       {benefit.title && (

@@ -8,7 +8,7 @@ export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: 'Décors disponibles',
-  description: 'Découvrez tous les décors disponibles pour nos produits: codes, visuels et collections.'
+  description: 'Découvrez tous les décors disponibles pour nos produits: codes, visuels et produits associés.'
 }
 
 export default async function DecorsPage() {

@@ -6,6 +6,7 @@ import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { ArrowUpRight } from "lucide-react"
 import { CTAButton } from "@/components/ui/cta-button"
+import Image from "next/image"
 import { urlFor } from "@/lib/sanity"
 import type { HomeApplicationsSection } from "@/lib/types/home"
 
@@ -63,10 +64,9 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
         imageCards.forEach((el, i) => {
           gsap.fromTo(
             el as HTMLElement,
-            { opacity: 0, scale: 0.9, y: 60 },
+            { opacity: 0, y: 60 },
             {
               opacity: 1,
-              scale: 1,
               y: 0,
               duration: 1,
               ease: 'power3.out',
@@ -160,10 +160,12 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                             <div className="relative w-full h-full overflow-hidden">
                                 {/* Background Image */}
                                 {interiorCard.image ? (
-                                  <img
-                                      src={urlFor(interiorCard.image).url()}
+                                  <Image
+                                      src={urlFor(interiorCard.image).width(800).height(1067).quality(75).format('webp').url()}
                                       alt={interiorCard.title || "Intérieur"}
-                                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                                      fill
+                                      sizes="(max-width: 768px) 100vw, 50vw"
+                                      className="absolute inset-0 object-cover transition-all duration-700 ease-out group-hover:brightness-110"
                                   />
                                 ) : (
                                   <div className="absolute inset-0 w-full h-full bg-gray-200"></div>
@@ -181,10 +183,10 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                                 </div>
 
                                 {/* Corner Brackets - Inside but inverted/flipped outward - Shrink in on hover */}
-                                <div className="absolute top-12 left-12 w-8 h-8 border-b-4 border-r-4 border-white z-30 origin-top-left group-hover:scale-75 transition-transform duration-500 ease-out"></div>
-                                <div className="absolute top-12 right-12 w-8 h-8 border-b-4 border-l-4 border-white z-30 origin-top-right group-hover:scale-75 transition-transform duration-500 ease-out"></div>
-                                <div className="absolute bottom-12 left-12 w-8 h-8 border-t-4 border-r-4 border-white z-30 origin-bottom-left group-hover:scale-75 transition-transform duration-500 ease-out"></div>
-                                <div className="absolute bottom-12 right-12 w-8 h-8 border-t-4 border-l-4 border-white z-30 origin-bottom-right group-hover:scale-75 transition-transform duration-500 ease-out"></div>
+                                <div className="absolute top-12 left-12 w-8 h-8 border-b-4 border-r-4 border-white z-30 origin-top-left group-hover:opacity-60 transition-opacity duration-500 ease-out"></div>
+                                <div className="absolute top-12 right-12 w-8 h-8 border-b-4 border-l-4 border-white z-30 origin-top-right group-hover:opacity-60 transition-opacity duration-500 ease-out"></div>
+                                <div className="absolute bottom-12 left-12 w-8 h-8 border-t-4 border-r-4 border-white z-30 origin-bottom-left group-hover:opacity-60 transition-opacity duration-500 ease-out"></div>
+                                <div className="absolute bottom-12 right-12 w-8 h-8 border-t-4 border-l-4 border-white z-30 origin-bottom-right group-hover:opacity-60 transition-opacity duration-500 ease-out"></div>
 
                                 {/* Content */}
                                 {interiorCard.title && (
@@ -216,10 +218,12 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                             <div className="relative w-full h-full overflow-hidden">
                                 {/* Background Image */}
                                 {exteriorCard.image ? (
-                                  <img
-                                      src={urlFor(exteriorCard.image).url()}
+                                  <Image
+                                      src={urlFor(exteriorCard.image).width(800).height(1067).quality(75).format('webp').url()}
                                       alt={exteriorCard.title || "Extérieur"}
-                                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                                      fill
+                                      sizes="(max-width: 768px) 100vw, 50vw"
+                                      className="absolute inset-0 object-cover transition-all duration-700 ease-out group-hover:brightness-110"
                                   />
                                 ) : (
                                   <div className="absolute inset-0 w-full h-full bg-gray-200"></div>
@@ -237,10 +241,10 @@ export function ApplicationsSection({ data }: ApplicationsSectionProps) {
                                 </div>
 
                                 {/* Corner Brackets - Inside with padding - Expand out on hover */}
-                                <div className="absolute top-12 left-12 w-8 h-8 border-t-4 border-l-4 border-white z-30 origin-top-left group-hover:scale-125 transition-transform duration-500 ease-out"></div>
-                                <div className="absolute top-12 right-12 w-8 h-8 border-t-4 border-r-4 border-white z-30 origin-top-right group-hover:scale-125 transition-transform duration-500 ease-out"></div>
-                                <div className="absolute bottom-12 left-12 w-8 h-8 border-b-4 border-l-4 border-white z-30 origin-bottom-left group-hover:scale-125 transition-transform duration-500 ease-out"></div>
-                                <div className="absolute bottom-12 right-12 w-8 h-8 border-b-4 border-r-4 border-white z-30 origin-bottom-right group-hover:scale-125 transition-transform duration-500 ease-out"></div>
+                                <div className="absolute top-12 left-12 w-8 h-8 border-t-4 border-l-4 border-white z-30 origin-top-left group-hover:opacity-60 transition-opacity duration-500 ease-out"></div>
+                                <div className="absolute top-12 right-12 w-8 h-8 border-t-4 border-r-4 border-white z-30 origin-top-right group-hover:opacity-60 transition-opacity duration-500 ease-out"></div>
+                                <div className="absolute bottom-12 left-12 w-8 h-8 border-b-4 border-l-4 border-white z-30 origin-bottom-left group-hover:opacity-60 transition-opacity duration-500 ease-out"></div>
+                                <div className="absolute bottom-12 right-12 w-8 h-8 border-b-4 border-r-4 border-white z-30 origin-bottom-right group-hover:opacity-60 transition-opacity duration-500 ease-out"></div>
 
                                 {/* Content */}
                                 {exteriorCard.title && (

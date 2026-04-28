@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useRef, useState, useEffect } from "react"
+import Image from 'next/image'
 import { urlFor } from "@/lib/sanity"
 import { cn } from "@/lib/utils"
 
@@ -102,12 +103,12 @@ export function ImageAlbum({ images, alt, className, imageClassName }: ImageAlbu
       >
         {extendedList.map((img, idx) => (
           <div key={idx} className="relative shrink-0 h-full" style={{ width: `${100 / extendedList.length}%` }}>
-            <img
+            <Image
               src={img ? urlFor(img).quality(90).url() : "/placeholder.jpg"}
               alt={alt}
-              className={cn("h-full w-full object-cover", imageClassName)}
-              loading="lazy"
-              decoding="async"
+              fill
+              sizes="100vw"
+              className={cn("object-cover", imageClassName)}
             />
           </div>
         ))}

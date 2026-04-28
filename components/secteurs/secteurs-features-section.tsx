@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 
 interface Feature {
   icon: string | null
@@ -102,11 +103,13 @@ export function SecteursFeaturesSection({ features }: SecteursFeaturesSectionPro
                 <div className="absolute right-0 top-0 bottom-0 w-px bg-black/5" />
                 <div className="flex items-center justify-center mb-5 md:mb-6 text-black">
                   {feature.icon ? (
-                    <img 
-                      src={feature.icon} 
+                    <Image
+                      src={feature.icon}
                       alt={feature.label}
+                      width={64}
+                      height={64}
+                      sizes="(max-width: 768px) 56px, 64px"
                       className="w-14 h-14 md:w-16 md:h-16 object-contain"
-                      loading="lazy"
                     />
                   ) : (
                     <div className="w-11 h-11 bg-black/10" />

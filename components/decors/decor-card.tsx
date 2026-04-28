@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+import Image from 'next/image'
 import { urlFor } from '@/lib/sanity'
 
 type Decor = {
@@ -9,17 +11,18 @@ type Decor = {
   name: string
   image?: any
   image_url?: string
-  collections?: string[]
-  finishes?: string[]
   colors?: string[]
   external_order?: number
   products?: Array<{
-    _id: string
-    _type: string
-    title?: string
-    name?: string
-    productId?: string
-    slug?: { current: string }
+    _key?: string
+    product: {
+      _id: string
+      _type: string
+      title?: string
+      name?: string
+      productId?: string
+      slug?: { current: string }
+    }
   }>
   interior?: boolean
   exterior?: boolean
@@ -31,7 +34,9 @@ interface DecorCardProps {
 }
 
 export function DecorCard({ finish, onClick }: DecorCardProps) {
+  const [imgError, setImgError] = useState(false)
   const displayCode = finish.loxen_code || finish.external_code
+  const validProducts = (finish.products ?? []).filter(p => p.product?._id)
 
   return (
     <article
@@ -40,26 +45,22 @@ export function DecorCard({ finish, onClick }: DecorCardProps) {
       onClick={onClick}
     >
       <div className="aspect-[4/5] overflow-hidden bg-gray-50 relative rounded-2xl">
-        {finish.image ? (
-          <img
+        {finish.image && !imgError ? (
+          <Image
             src={urlFor(finish.image).width(480).height(600).quality(85).url()}
             alt={finish.name}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 rounded-2xl"
-            loading="lazy"
-            decoding="async"
-            onError={(e) => {
-              if (finish?.image_url) {
-                (e.target as HTMLImageElement).src = finish.image_url
-              }
-            }}
+            fill
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+            className="object-cover transition-all duration-500 group-hover:brightness-105 rounded-2xl"
+            onError={() => setImgError(true)}
           />
         ) : finish.image_url ? (
-          <img
+          <Image
             src={finish.image_url}
             alt={finish.name}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 rounded-2xl"
-            loading="lazy"
-            decoding="async"
+            fill
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+            className="object-cover transition-all duration-500 group-hover:brightness-105 rounded-2xl"
           />
         ) : (
           <div className="h-full w-full rounded-2xl bg-gray-200" />
@@ -78,10 +79,10 @@ export function DecorCard({ finish, onClick }: DecorCardProps) {
       <div className="p-3">
         <p className="text-xs font-medium text-black">{displayCode}</p>
         <p className="text-xs text-black/70 truncate">{finish.name}</p>
-        {finish.products && finish.products.length > 0 && (
+        {validProducts.length > 0 && (
           <p className="mt-1 text-[11px] text-black/50 truncate">
-            {finish.products.slice(0, 2).map(p => p.title || p.name).join(', ')}
-            {finish.products.length > 2 && ` +${finish.products.length - 2}`}
+            {validProducts.slice(0, 2).map(p => p.product.title || p.product.name).join(', ')}
+            {validProducts.length > 2 && ` +${validProducts.length - 2}`}
           </p>
         )}
         {finish.colors && finish.colors.length > 0 && (

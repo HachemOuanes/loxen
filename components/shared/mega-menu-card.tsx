@@ -1,6 +1,7 @@
 "use client"
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { urlFor } from '@/lib/sanity'
 
 interface MegaMenuCardProps {
@@ -33,10 +34,14 @@ export function MegaMenuCard({
     >
       <div className={`${aspectClass} overflow-hidden border border-white/10 flex-1`}>
         {image ? (
-          <img
-            src={urlFor(image).width(480).height(500).quality(80).url()}
+          <Image
+            src={urlFor(image).width(240).height(180).quality(60).format('webp').url()}
             alt={title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            width={240}
+            height={180}
+            sizes="(max-width: 768px) 50vw, 25vw"
+            priority={true}
+            className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-80"
           />
         ) : (
           <div className="w-full h-full bg-white/5" />

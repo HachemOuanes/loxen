@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react"
 import Link from "next/link"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import Image from "next/image"
 import { urlFor } from "@/lib/sanity"
 import { InspirationSkeleton } from "@/components/home/skeletons/inspiration-skeleton"
 import type { HomeInspirationSection } from "@/lib/types/home"
@@ -137,10 +138,12 @@ export function InspirationSection({ data }: InspirationSectionProps) {
                     <div className={`relative overflow-hidden ${imageHeight} mb-4 bg-gray-100`}>
                       {project.image ? (
                         <>
-                          <img
-                            src={urlFor(project.image).width(1200).height(900).quality(90).url()}
+                          <Image
+                            src={urlFor(project.image).width(600).height(450).quality(75).format('webp').url()}
                             alt={project.title}
-                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="absolute inset-0 object-cover transition-all duration-700 ease-out group-hover:brightness-110"
                           />
 
                           {/* Border highlight on hover */}
