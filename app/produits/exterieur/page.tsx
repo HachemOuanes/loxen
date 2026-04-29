@@ -1,0 +1,21 @@
+import { Header } from '@/components/shared/header'
+import { BottomBar } from '@/components/shared/bottom-bar'
+import { Footer } from '@/components/shared/footer'
+import { ExteriorProductsContent } from '@/components/products/exterior-products-content'
+import { getApplicationsByType } from '@/services/sanity/applications'
+
+// Revalidate every 60 seconds
+export const revalidate = 60
+
+export default async function ExteriorProductsPage() {
+  const applications = await getApplicationsByType('exterieur').catch(() => [])
+
+  return (
+    <main className="min-h-screen bg-white">
+      <Header />
+      <ExteriorProductsContent applications={applications} />
+      <Footer />
+      <BottomBar />
+    </main>
+  )
+}

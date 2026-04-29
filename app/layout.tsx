@@ -5,12 +5,13 @@ import { Playfair_Display } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import "./globals.css"
+import { SmoothScrollProvider } from "@/components/providers/smooth-scroll"
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "700"],
 })
 
 const playfair = Playfair_Display({
@@ -33,7 +34,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable} ${playfair.variable}`}>
-        <Suspense fallback={null}>{children}</Suspense>
+        <SmoothScrollProvider>
+          <Suspense fallback={null}>{children}</Suspense>
+        </SmoothScrollProvider>
         <Analytics />
       </body>
     </html>
